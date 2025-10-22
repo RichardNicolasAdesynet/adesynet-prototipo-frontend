@@ -1,0 +1,1 @@
+export { PermisoCell } from './PermisoCell';

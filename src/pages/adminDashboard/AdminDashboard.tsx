@@ -6,7 +6,9 @@ import { Sidebar } from '../../components/navigation';
 import { DashboardHeader } from './components/dashboardHeader';
 import { UsersManagement } from './components/usersManagement';
 import { RolesManagement } from './components/rolesManagement';
-import { mockDashboardStats, mockUsuarios, mockRolesCompletos } from '../../services/mocks/adminMocks';
+import { ModulesManagement } from './components/modulesManagement';
+import { AccessManagement } from './components/accessManagement';
+import { mockDashboardStats, mockUsuarios, mockRolesCompletos, mockModulos, mockAccesos } from '../../services/mocks/adminMocks';
 import type { DashboardStats, UsuarioFilters } from '../../types/admin.types';
 
 export const AdminDashboard: React.FC = () => {
@@ -136,6 +138,40 @@ export const AdminDashboard: React.FC = () => {
                     console.log(`Cambiando estado del rol ${cdRol} a ${nuevoEstado}`);
                   }}
                   onFiltersChange={(filters) => console.log('Filtros roles:', filters)}
+                />
+              )}
+
+              {location.pathname === '/admin/modulos' && (
+                <ModulesManagement
+                  modulos={mockModulos}
+                  onModuloEdit={(modulo) => console.log('Editando módulo:', modulo)}
+                  onModuloCreate={() => console.log('Creando nuevo módulo')}
+                  onModuloToggleEdicion={async (cdModulo, nuevoEstado) => {
+                    // Simular cambio de estado de edición
+                    console.log(`Cambiando edición del módulo ${cdModulo} a ${nuevoEstado}`);
+                  }}
+                  onFiltersChange={(filters) => console.log('Filtros módulos:', filters)}
+                />
+              )}
+
+              
+              {location.pathname === '/admin/accesos' && (
+                <AccessManagement
+                  roles={mockRolesCompletos}
+                  modulos={mockModulos}
+                  accesos={mockAccesos}
+                  onPermisoChange={async (cdRol, cdModulo, tipoPermiso, asignado) => {
+                    console.log(`Permiso ${tipoPermiso} ${asignado ? 'asignado' : 'removido'} para rol ${cdRol} en módulo ${cdModulo}`);
+                    // Aquí llamarás a la API real
+                  }}
+                  onModuloHabilitadoChange={async (cdRol, cdModulo, habilitado) => {
+                    console.log(`Módulo ${cdModulo} ${habilitado ? 'habilitado' : 'deshabilitado'} para rol ${cdRol}`);
+                    // Aquí llamarás a la API real
+                  }}
+                  onBulkPermissionChange={async (cdRol, permisos) => {
+                    console.log(`Asignación masiva de permisos ${permisos.join(', ')} para rol ${cdRol}`);
+                    // Aquí llamarás a la API real
+                  }}
                 />
               )}
 

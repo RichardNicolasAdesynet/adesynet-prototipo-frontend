@@ -1,0 +1,1 @@
+export { ModuloHabilitadoCell } from './ModuloHabilitadoCell';

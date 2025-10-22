@@ -1,0 +1,1 @@
+export { MatrizAccesos } from './MatrizAccesos';

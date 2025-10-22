@@ -234,3 +234,66 @@ export interface ModulesFiltersProps {
   onFiltersChange: (filters: ModuloFilters) => void;
 }
 
+
+// Tipos para la matriz de accesos
+export interface AccesoCompleto {
+  cdRol: string;
+  rolNombre: string;
+  cdModulo: string;
+  moduloNombre: string;
+  moduloHabilitado: boolean;
+  permisos: Permiso[];
+  fecCreacion: string;
+  fecModificacion: string;
+}
+
+export interface Permiso {
+  id: number;
+  tipoPermiso: TipoPermiso;
+  descripcionPermiso: string;
+  fecAsignacion: string;
+}
+
+export type TipoPermiso = 1 | 2 | 3 | 4 | 5;
+
+export interface PermisoConfig {
+  tipo: TipoPermiso;
+  nombre: string;
+  descripcion: string;
+  icono: string;
+}
+
+export interface MatrizAccesosProps {
+  roles: RolResumen[];
+  modulos: ModuloResumen[];
+  accesos: AccesoCompleto[];
+  onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
+  onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
+  loading?: boolean;
+}
+
+export interface AccessManagementProps {
+  roles: RolResumen[];
+  modulos: ModuloResumen[];
+  accesos: AccesoCompleto[];
+  onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
+  onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
+  onBulkPermissionChange: (cdRol: string, permisos: TipoPermiso[]) => void;
+  loading?: boolean;
+}
+
+export interface PermisoCellProps {
+  rol: RolResumen;
+  modulo: ModuloResumen;
+  acceso?: AccesoCompleto;
+  tipoPermiso: TipoPermiso;
+  configPermiso: PermisoConfig;
+  onChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
+}
+
+export interface ModuloHabilitadoCellProps {
+  rol: RolResumen;
+  modulo: ModuloResumen;
+  acceso?: AccesoCompleto;
+  onChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
+}

@@ -1,0 +1,1 @@
+export { EnhancedModulesTable } from './EnhancedModulesTable';

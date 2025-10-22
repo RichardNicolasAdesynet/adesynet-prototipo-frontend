@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { AccessManagementProps } from '../../../../types/admin.types';
-import { MatrizAccesos } from './matrizAccesos';
+import { AccessManagementTable } from './AccessManagementTable';
+import { RoleDetailsModal } from './roleDetailsModal';
 import { ExportButton } from '../../../../components/shared/exportButton';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
@@ -13,6 +14,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
   loading = false
 }) => {
   const [exportLoading, setExportLoading] = useState<boolean>(false);
+  const [selectedRole, setSelectedRole] = useState<any>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
 
   const handleExport = async (formato: 'excel' | 'pdf') => {
     setExportLoading(true);
@@ -21,9 +24,23 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     setExportLoading(false);
   };
 
+  const handleRoleClick = (rol: any) => {
+    // Obtener todos los accesos para este rol
+    const accesosDelRol = accesos.filter(acceso => acceso.cdRol === rol.cdRol);
+    setSelectedRole({
+      ...rol,
+      accesos: accesosDelRol
+    });
+    setIsDetailsModalOpen(true);
+  };
+
   const handleBulkPermissions = () => {
-    // Aquí podrías abrir un modal para asignación masiva
     console.log('Abriendo modal para asignación masiva de permisos');
+  };
+
+  const closeDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setSelectedRole(null);
   };
 
   return (
@@ -31,7 +48,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
       <div className="section-header">
         <h2 className="section-title">Gestión de Accesos</h2>
         <p className="section-description">
-          Matriz de permisos: Asigna permisos específicos a cada rol por módulo
+          Vista agrupada por roles - Haz click en cualquier rol para gestionar sus permisos
         </p>
         <div className="header-actions">
           <button
@@ -52,38 +69,45 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         <div className="summary-stats">
           <div className="stat">
             <span className="stat-value">{roles.length}</span>
-            <span className="stat-label">Roles</span>
+            <span className="stat-label">Roles Activos</span>
           </div>
           <div className="stat">
             <span className="stat-value">{modulos.length}</span>
-            <span className="stat-label">Módulos</span>
+            <span className="stat-label">Módulos Disponibles</span>
           </div>
           <div className="stat">
-            <span className="stat-value">{accesos.length}</span>
-            <span className="stat-label">Accesos Configurados</span>
+            <span className="stat-value">
+              {accesos.filter(a => a.moduloHabilitado).length}
+            </span>
+            <span className="stat-label">Accesos Habilitados</span>
           </div>
         </div>
       </div>
 
-      <MatrizAccesos
+      <AccessManagementTable
         roles={roles}
-        modulos={modulos}
         accesos={accesos}
-        onPermisoChange={onPermisoChange}
-        onModuloHabilitadoChange={onModuloHabilitadoChange}
+        modulos={modulos}
+        onRoleClick={handleRoleClick}
         loading={loading}
       />
 
+      <RoleDetailsModal
+        role={selectedRole}
+        isOpen={isDetailsModalOpen}
+        modulos={modulos}
+        onPermisoChange={onPermisoChange}
+        onModuloHabilitadoChange={onModuloHabilitadoChange}
+        onClose={closeDetailsModal}
+      />
+
       <div className="access-notes">
-        <h4>Notas:</h4>
+        <h4>Instrucciones:</h4>
         <ul>
-          <li>✅ <strong>Habilitado:</strong> El rol tiene acceso al módulo</li>
-          <li>❌ <strong>No Habilitado:</strong> El rol no tiene acceso al módulo</li>
-          <li>👁️ <strong>Consultar:</strong> Solo puede ver información</li>
-          <li>➕ <strong>Ingresar:</strong> Puede crear nuevos registros</li>
-          <li>✏️ <strong>Modificar:</strong> Puede editar registros existentes</li>
-          <li>🗑️ <strong>Eliminar:</strong> Puede eliminar registros</li>
-          <li>⚡ <strong>Control Total:</strong> Todos los permisos anteriores</li>
+          <li>🎭 <strong>Haz click en cualquier rol</strong> para gestionar sus permisos detallados</li>
+          <li>📦 <strong>Módulos mostrados:</strong> Se muestran hasta 3 módulos principales</li>
+          <li>👥 <strong>Usuarios:</strong> Cantidad de usuarios asignados a cada rol</li>
+          <li>✅ <strong>Accesos:</strong> Módulos habilitados vs módulos disponibles</li>
         </ul>
       </div>
     </div>

@@ -1,0 +1,1 @@
+export { RoleDetailsModal } from './RoleDetailsModal';

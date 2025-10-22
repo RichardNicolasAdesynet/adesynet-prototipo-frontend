@@ -57,7 +57,7 @@ const simularLoginAPI = (credenciales: Credenciales): Promise<{ usuario: any; to
                         id: '1',
                         nombre: 'Administrador',
                         email: 'admin@soporte.com',
-                        rol: 'admin' as const,
+                        rol: 'administrador' as const,
                         departamento: 'TI'
                     },
                     token: 'token-simulado-123'

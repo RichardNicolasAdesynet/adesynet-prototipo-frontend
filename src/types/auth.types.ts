@@ -1,3 +1,5 @@
+export type RolUsuario = 'administrador' | 'tecnico' | 'desarrollador' | 'soporte' | 'usuario';
+
 export interface Credenciales {
     usuario: string;
     password: string;
@@ -7,8 +9,9 @@ export interface Usuario {
     id: string;
     nombre: string;
     email: string;
-    rol: 'admin' | 'soporte' | 'usuario';
+    rol: RolUsuario;  // ← CAMBIÓ de string a RolUsuario
     departamento: string;
+    permisos: string[];
 }
 
 export interface AuthState {

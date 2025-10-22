@@ -22,9 +22,9 @@ export const Login: React.FC<LoginProps> = ({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900 flex relative overflow-hidden">
             {/* Efectos de fondo animados */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-xl animate-bounce"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-xl animate-bounce delay-1000"></div>
 
@@ -40,7 +40,7 @@ export const Login: React.FC<LoginProps> = ({
                             className="w-48 h-auto mx-auto mb-4 drop-shadow-2xl"
                         />
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-white mb-2">ADES+ NET</div>
+                            <div className="text-2xl font-bold text-white mb-2">ADESY NET</div>
                             <div className="text-blue-200 text-sm font-light">
                                 EXCELENCIA EN SOLUCIONES FARMACÉUTICAS
                             </div>
@@ -48,7 +48,7 @@ export const Login: React.FC<LoginProps> = ({
                     </div>
                     
                     {/* Texto adicional */}
-                    <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                    <h3 className="text-3xl font-bold mb-4 bg-linear-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                         Sistema de Soporte TI
                     </h3>
                     <p className="text-blue-200 text-lg">Área de Tecnologías de la Información</p>
@@ -63,10 +63,10 @@ export const Login: React.FC<LoginProps> = ({
                         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 mb-6">
                             <img 
                                 src="../public/adesyLogo.png" // 📁 CAMBIA ESTA RUTA
-                                alt="ADES+ NET Logo"
+                                alt="ADESY NET Logo"
                                 className="w-32 h-auto mx-auto mb-3"
                             />
-                            <div className="text-white font-bold">ADES+ NET</div>
+                            <div className="text-white font-bold">ADESY NET</div>
                         </div>
                         <LoginHeader 
                             titulo="Sistema de Soporte TI"

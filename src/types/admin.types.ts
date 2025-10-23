@@ -37,6 +37,7 @@ export interface ModuloResumen {
 export interface DashboardHeaderProps {
   stats: DashboardStats;
   onRefresh?: () => void;
+  cargando: boolean;
 }
 
 export interface StatsCardProps {

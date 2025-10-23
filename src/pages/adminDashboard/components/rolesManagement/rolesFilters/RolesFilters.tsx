@@ -19,24 +19,49 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
   const hasActiveFilters = Object.keys(filters).length > 0;
 
   return (
-    <div className="roles-filters">
-      <div className="filters-header">
-        <h3 className="filters-title">Filtros</h3>
+    <div className="
+      bg-white/80 backdrop-blur-sm
+      border border-slate-200/60
+      rounded-2xl
+      p-6
+      shadow-lg
+    ">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+        <h3 className="
+          text-lg font-semibold
+          bg-gradient-to-r from-purple-600 to-indigo-600
+          bg-clip-text text-transparent
+        ">
+          Filtros de Búsqueda
+        </h3>
+        
         {hasActiveFilters && (
           <button 
             onClick={clearFilters}
-            className="clear-filters-button"
+            className="
+              px-4 py-2
+              text-sm text-slate-600
+              hover:text-purple-700 hover:bg-purple-50
+              rounded-lg
+              border border-slate-300
+              hover:border-purple-300
+              transition-all duration-200
+              flex items-center space-x-2
+            "
             type="button"
           >
-            Limpiar Filtros
+            <span>🗑️</span>
+            <span>Limpiar Filtros</span>
           </button>
         )}
       </div>
 
-      <div className="filters-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Búsqueda por texto */}
-        <div className="filter-group">
-          <label htmlFor="searchTerm" className="filter-label">
+        <div className="space-y-2">
+          <label htmlFor="searchTerm" className="
+            block text-sm font-medium text-slate-700
+          ">
             Buscar Rol
           </label>
           <input
@@ -45,13 +70,22 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
             placeholder="Nombre o descripción..."
             value={filters.searchTerm || ''}
             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-            className="filter-input"
+            className="
+              w-full px-4 py-2
+              border border-slate-300
+              rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
+              transition-all duration-200
+              placeholder-slate-400
+            "
           />
         </div>
 
         {/* Filtro por Estado */}
-        <div className="filter-group">
-          <label htmlFor="activo" className="filter-label">
+        <div className="space-y-2">
+          <label htmlFor="activo" className="
+            block text-sm font-medium text-slate-700
+          ">
             Estado
           </label>
           <select
@@ -61,7 +95,15 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
               const value = e.target.value;
               handleFilterChange('activo', value === '' ? undefined : value === 'true');
             }}
-            className="filter-select"
+            className="
+              w-full px-4 py-2
+              border border-slate-300
+              rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
+              transition-all duration-200
+              bg-white
+              cursor-pointer
+            "
           >
             <option value="">Todos</option>
             <option value="true">Activos</option>

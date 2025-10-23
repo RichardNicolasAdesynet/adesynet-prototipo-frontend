@@ -103,38 +103,86 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const isEditing = !!editingUsuario;
 
   return (
-    <div className="users-management">
-      <div className="section-header">
-        <h2 className="section-title">Gestión de Usuarios</h2>
-        <div className="header-actions">
+    <div className="space-y-6 animate-fade-in">
+      {/* Header Principal */}
+      <div className="
+        flex flex-col sm:flex-row
+        items-start sm:items-center
+        justify-between
+        gap-4
+        p-6
+        bg-gradient-to-r from-cyan-50/50 to-blue-50/30
+        rounded-2xl
+        border border-cyan-200/40
+      ">
+        <div className="flex-1 min-w-0">
+          <h2 className="
+            text-2xl sm:text-3xl
+            font-bold
+            bg-gradient-to-r from-cyan-700 to-blue-700
+            bg-clip-text text-transparent
+          ">
+            Gestión de Usuarios
+          </h2>
+          <p className="text-slate-600 mt-1">
+            Administra los usuarios del sistema de soporte TI
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
           <ExportButton 
             onExport={handleExport}
             loading={exportLoading}
           />
+          
           <button
             onClick={handleCreateUser}
-            className="create-button"
+            className="
+              px-6 py-3
+              bg-gradient-to-r from-cyan-500 to-blue-600
+              hover:from-cyan-600 hover:to-blue-700
+              text-white font-medium
+              rounded-xl
+              shadow-lg shadow-cyan-500/25
+              hover:shadow-xl hover:shadow-cyan-500/35
+              transition-all duration-300
+              transform hover:scale-105
+              flex items-center space-x-2
+              whitespace-nowrap
+            "
             type="button"
           >
-            + Crear Usuario
+            <span className="text-lg">+</span>
+            <span>Crear Usuario</span>
           </button>
         </div>
       </div>
 
+      {/* Filtros */}
       <UsersFilters
         roles={roles}
         filters={filters}
         onFiltersChange={handleFiltersChange}
       />
 
-      <div className="users-summary">
+      {/* Resumen */}
+      <div className="
+        px-4 py-3
+        bg-cyan-50/50
+        border border-cyan-200/40
+        rounded-xl
+        text-sm text-cyan-700
+      ">
         <p>
-          Mostrando {filteredUsuarios.length} de {usuarios.length} usuarios
-          {filters.searchTerm && ` para "${filters.searchTerm}"`}
+          Mostrando <span className="font-semibold">{filteredUsuarios.length}</span> de{' '}
+          <span className="font-semibold">{usuarios.length}</span> usuarios
+          {filters.searchTerm && (
+            <> para "<span className="font-semibold">{filters.searchTerm}</span>"</>
+          )}
         </p>
       </div>
 
-      {/* REEMPLAZAR UsersTable con EnhancedUsersTable */}
+      {/* Tabla */}
       <EnhancedUsersTable
         usuarios={filteredUsuarios}
         onEdit={handleEditUser}
@@ -142,6 +190,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
         loading={loading}
       />
 
+      {/* Modal de Formulario */}
       <UserForm
         usuario={editingUsuario}
         roles={roles}
@@ -153,4 +202,56 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       />
     </div>
   );
+
+  // return (
+  //   <div className="users-management">
+  //     <div className="section-header">
+  //       <h2 className="section-title">Gestión de Usuarios</h2>
+  //       <div className="header-actions">
+  //         <ExportButton 
+  //           onExport={handleExport}
+  //           loading={exportLoading}
+  //         />
+  //         <button
+  //           onClick={handleCreateUser}
+  //           className="create-button"
+  //           type="button"
+  //         >
+  //           + Crear Usuario
+  //         </button>
+  //       </div>
+  //     </div>
+
+  //     <UsersFilters
+  //       roles={roles}
+  //       filters={filters}
+  //       onFiltersChange={handleFiltersChange}
+  //     />
+
+  //     <div className="users-summary">
+  //       <p>
+  //         Mostrando {filteredUsuarios.length} de {usuarios.length} usuarios
+  //         {filters.searchTerm && ` para "${filters.searchTerm}"`}
+  //       </p>
+  //     </div>
+
+  //     {/* REEMPLANZADO UsersTable con EnhancedUsersTable */}
+  //     <EnhancedUsersTable
+  //       usuarios={filteredUsuarios}
+  //       onEdit={handleEditUser}
+  //       onToggleStatus={onUsuarioToggleStatus}
+  //       loading={loading}
+  //     />
+
+  //     <UserForm
+  //       usuario={editingUsuario}
+  //       roles={roles}
+  //       isOpen={isFormOpen}
+  //       isEditing={isEditing}
+  //       onSubmit={handleFormSubmit}
+  //       onCancel={handleFormCancel}
+  //       loading={formLoading}
+  //     />
+  //   </div>
+  // );
 };

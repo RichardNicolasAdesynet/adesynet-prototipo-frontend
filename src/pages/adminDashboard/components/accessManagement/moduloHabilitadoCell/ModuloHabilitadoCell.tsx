@@ -20,18 +20,35 @@ export const ModuloHabilitadoCell: React.FC<ModuloHabilitadoCellProps> = ({
   };
 
   return (
-    <td className="modulo-habilitado-cell">
+    <td className="p-2">
       <button
         onClick={handleToggle}
-        className={`habilitado-toggle ${moduloHabilitado ? 'active' : 'inactive'}`}
+        className={`
+          w-full
+          p-3
+          rounded-lg
+          border-2
+          transition-all duration-200
+          flex flex-col items-center justify-center
+          space-y-2
+          cursor-pointer
+          hover:scale-105
+          ${moduloHabilitado 
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100' 
+            : 'bg-rose-50 border-rose-300 text-rose-700 hover:bg-rose-100'
+          }
+        `}
         type="button"
         title={getTooltipText()}
       >
-        <span className="habilitado-icon">
+        <span className="text-xl">
           {moduloHabilitado ? '✅' : '❌'}
         </span>
-        <span className="habilitado-text">
+        <span className="text-xs font-medium text-center leading-tight">
           {moduloHabilitado ? 'Habilitado' : 'No Habilitado'}
+        </span>
+        <span className="text-xs opacity-70">
+          {moduloHabilitado ? 'Click para deshabilitar' : 'Click para habilitar'}
         </span>
       </button>
     </td>

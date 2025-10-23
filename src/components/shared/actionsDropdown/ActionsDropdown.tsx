@@ -11,7 +11,6 @@ export const ActionsDropdown = <T extends BaseEntity>({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -65,11 +64,12 @@ export const ActionsDropdown = <T extends BaseEntity>({
       {/* Menú desplegable */}
       {isOpen && (
         <div className="
-          absolute right-0 mt-2 w-56
+          fixed z-9999 
+          right-0 mt-2 w-56
           bg-white/95 backdrop-blur-xl
           border border-slate-200/60
           rounded-xl shadow-2xl shadow-slate-400/20
-          py-2 z-50
+          py-2
           animate-fade-in
         ">
           {/* Ver Detalles */}
@@ -177,57 +177,4 @@ export const ActionsDropdown = <T extends BaseEntity>({
       )}
     </div>
   );
-
-  // return (
-  //   <div className="actions-dropdown" ref={dropdownRef}>
-  //     <button
-  //       onClick={toggleDropdown}
-  //       className="dropdown-toggle"
-  //       type="button"
-  //       aria-label="Acciones"
-  //     >
-  //       ⋯
-  //     </button>
-      
-  //     {isOpen && (
-  //       <div className="dropdown-menu">
-  //         <button
-  //           onClick={handleViewDetails}
-  //           className="dropdown-item"
-  //           type="button"
-  //         >
-  //           👁️ Ver Detalles
-  //         </button>
-          
-  //         <button
-  //           onClick={handleEdit}
-  //           className="dropdown-item"
-  //           type="button"
-  //         >
-  //           ✏️ Editar
-  //         </button>
-          
-  //         <button
-  //           onClick={handleToggleStatus}
-  //           className="dropdown-item"
-  //           type="button"
-  //         >
-  //           {entidad.estaActivo ? '❌ Desactivar' : '✅ Activar'}
-  //         </button>
-
-  //         {/* Acciones personalizadas */}
-  //         {customActions.map((accion, index) => (
-  //           <button
-  //             key={index}
-  //             onClick={() => accion.onClick(entidad)}
-  //             className={`dropdown-item ${accion.peligroso ? 'danger' : ''}`}
-  //             type="button"
-  //           >
-  //             {accion.icono} {accion.label}
-  //           </button>
-  //         ))}
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 };

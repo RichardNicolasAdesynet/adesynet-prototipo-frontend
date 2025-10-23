@@ -28,21 +28,40 @@ export const PermisoCell: React.FC<PermisoCellProps> = ({
   };
 
   return (
-    <td className="permiso-cell">
+    <td className="p-2">
       <button
         onClick={handleToggle}
         disabled={!moduloHabilitado}
-        className={`permiso-toggle ${tienePermiso ? 'active' : 'inactive'} ${!moduloHabilitado ? 'disabled' : ''}`}
+        className={`
+          w-full
+          p-3
+          rounded-lg
+          border-2
+          transition-all duration-200
+          flex flex-col items-center justify-center
+          space-y-2
+          ${tienePermiso 
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100' 
+            : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+          }
+          ${!moduloHabilitado 
+            ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-100' 
+            : 'cursor-pointer hover:scale-105'
+          }
+        `}
         type="button"
         title={getTooltipText()}
       >
-        <span className="permiso-icon">
+        <span className="text-xl">
           {configPermiso.icono}
         </span>
-        <span className="permiso-name">
+        <span className="text-xs font-medium text-center leading-tight">
           {configPermiso.nombre}
         </span>
-        <span className="permiso-status">
+        <span className={`
+          text-xs
+          ${tienePermiso ? 'text-emerald-600' : 'text-slate-400'}
+        `}>
           {tienePermiso ? '✓' : '✗'}
         </span>
       </button>

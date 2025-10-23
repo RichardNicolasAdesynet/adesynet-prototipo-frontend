@@ -22,7 +22,6 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   // Filtrar módulos basado en los filtros
   const filteredModulos = useMemo(() => {
     return modulos.filter(modulo => {
-      // Filtro por término de búsqueda
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
         const matchesSearch = 
@@ -32,7 +31,6 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         if (!matchesSearch) return false;
       }
 
-      // Filtro por edición
       if (filters.flgEdicion !== undefined && modulo.flgEdicion !== filters.flgEdicion) {
         return false;
       }
@@ -65,7 +63,6 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
 
   const handleFormSubmit = async (formData: ModuloFormData) => {
     setFormLoading(true);
-    // Simular llamada a API
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log('Datos del formulario módulo:', formData);
     setFormLoading(false);
@@ -87,36 +84,85 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   const isEditing = !!editingModulo;
 
   return (
-    <div className="modules-management">
-      <div className="section-header">
-        <h2 className="section-title">Gestión de Módulos</h2>
-        <div className="header-actions">
+    <div className="space-y-6 animate-fade-in">
+      {/* Header Principal */}
+      <div className="
+        flex flex-col sm:flex-row
+        items-start sm:items-center
+        justify-between
+        gap-4
+        p-6
+        bg-gradient-to-r from-emerald-50/50 to-green-50/30
+        rounded-2xl
+        border border-emerald-200/40
+      ">
+        <div className="flex-1 min-w-0">
+          <h2 className="
+            text-2xl sm:text-3xl
+            font-bold
+            bg-gradient-to-r from-emerald-700 to-green-700
+            bg-clip-text text-transparent
+          ">
+            Gestión de Módulos
+          </h2>
+          <p className="text-slate-600 mt-1">
+            Administra los módulos y funcionalidades del sistema
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
           <ExportButton 
             onExport={handleExport}
             loading={exportLoading}
           />
+          
           <button
             onClick={handleCreateModule}
-            className="create-button"
+            className="
+              px-6 py-3
+              bg-gradient-to-r from-emerald-500 to-green-600
+              hover:from-emerald-600 hover:to-green-700
+              text-white font-medium
+              rounded-xl
+              shadow-lg shadow-emerald-500/25
+              hover:shadow-xl hover:shadow-emerald-500/35
+              transition-all duration-300
+              transform hover:scale-105
+              flex items-center space-x-2
+              whitespace-nowrap
+            "
             type="button"
           >
-            + Crear Módulo
+            <span className="text-lg">+</span>
+            <span>Crear Módulo</span>
           </button>
         </div>
       </div>
 
+      {/* Filtros */}
       <ModulesFilters
         filters={filters}
         onFiltersChange={handleFiltersChange}
       />
 
-      <div className="modules-summary">
+      {/* Resumen */}
+      <div className="
+        px-4 py-3
+        bg-emerald-50/50
+        border border-emerald-200/40
+        rounded-xl
+        text-sm text-emerald-700
+      ">
         <p>
-          Mostrando {filteredModulos.length} de {modulos.length} módulos
-          {filters.searchTerm && ` para "${filters.searchTerm}"`}
+          Mostrando <span className="font-semibold">{filteredModulos.length}</span> de{' '}
+          <span className="font-semibold">{modulos.length}</span> módulos
+          {filters.searchTerm && (
+            <> para "<span className="font-semibold">{filters.searchTerm}</span>"</>
+          )}
         </p>
       </div>
 
+      {/* Tabla */}
       <EnhancedModulesTable
         modulos={filteredModulos}
         onEdit={handleEditModule}
@@ -124,6 +170,7 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         loading={loading}
       />
 
+      {/* Modal de Formulario */}
       <ModuleForm
         modulo={editingModulo}
         isOpen={isFormOpen}

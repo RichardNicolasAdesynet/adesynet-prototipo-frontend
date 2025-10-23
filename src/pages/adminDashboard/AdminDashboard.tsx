@@ -105,7 +105,7 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-purple-50/10 flex">
       {/* Sidebar Fijo */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <Sidebar
           usuario={usuario}
           onNavegacion={manejarNavegacion}

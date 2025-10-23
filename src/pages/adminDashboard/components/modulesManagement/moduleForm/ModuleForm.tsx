@@ -72,20 +72,57 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="module-form-modal">
-        <div className="modal-header">
-          <h2>{isEditing ? 'Editar Módulo' : 'Crear Módulo'}</h2>
-          <button onClick={onCancel} className="close-button" type="button">
+    <div className="
+      fixed inset-0
+      bg-black/50
+      backdrop-blur-sm
+      flex items-center justify-center
+      p-4
+      z-50
+      animate-fade-in
+    ">
+      <div className="
+        bg-white
+        rounded-2xl
+        shadow-2xl
+        w-full max-w-2xl
+        max-h-[90vh]
+        overflow-hidden
+        animate-scale-in
+      ">
+        {/* Header del Modal */}
+        <div className="
+          bg-gradient-to-r from-emerald-500 to-green-600
+          px-6 py-4
+          flex items-center justify-between
+        ">
+          <h2 className="text-xl font-bold text-white">
+            {isEditing ? 'Editar Módulo' : 'Crear Módulo'}
+          </h2>
+          <button 
+            onClick={onCancel}
+            className="
+              w-8 h-8
+              flex items-center justify-center
+              text-white/80 hover:text-white
+              hover:bg-white/10
+              rounded-lg
+              transition-all duration-200
+            "
+            type="button"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="module-form">
-          <div className="form-grid">
+        {/* Formulario */}
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+          <div className="space-y-6">
             {/* Código de Módulo */}
-            <div className="form-group">
-              <label htmlFor="cdModulo" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="cdModulo" className="
+                block text-sm font-medium text-slate-700
+              ">
                 Código de Módulo *
               </label>
               <input
@@ -93,18 +130,35 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
                 type="text"
                 value={formData.cdModulo}
                 onChange={(e) => handleChange('cdModulo', e.target.value.toUpperCase())}
-                className={`form-input ${errors.cdModulo ? 'error' : ''}`}
+                className={`
+                  w-full px-4 py-3
+                  border rounded-xl
+                  focus:outline-none focus:ring-2 transition-all duration-200
+                  ${errors.cdModulo 
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                    : 'border-slate-300 focus:ring-emerald-500 focus:border-transparent'
+                  }
+                `}
                 maxLength={5}
                 disabled={isEditing}
                 placeholder="MOD01"
               />
-              {errors.cdModulo && <span className="error-message">{errors.cdModulo}</span>}
-              <div className="form-hint">5 caracteres (ej: MOD01)</div>
+              {errors.cdModulo && (
+                <p className="text-rose-600 text-sm flex items-center space-x-1">
+                  <span>⚠️</span>
+                  <span>{errors.cdModulo}</span>
+                </p>
+              )}
+              <p className="text-slate-500 text-sm">
+                5 caracteres (ej: MOD01)
+              </p>
             </div>
 
             {/* Descripción del Módulo */}
-            <div className="form-group full-width">
-              <label htmlFor="dsModulo" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="dsModulo" className="
+                block text-sm font-medium text-slate-700
+              ">
                 Descripción del Módulo *
               </label>
               <input
@@ -112,44 +166,102 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
                 type="text"
                 value={formData.dsModulo}
                 onChange={(e) => handleChange('dsModulo', e.target.value)}
-                className={`form-input ${errors.dsModulo ? 'error' : ''}`}
+                className={`
+                  w-full px-4 py-3
+                  border rounded-xl
+                  focus:outline-none focus:ring-2 transition-all duration-200
+                  ${errors.dsModulo 
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                    : 'border-slate-300 focus:ring-emerald-500 focus:border-transparent'
+                  }
+                `}
                 placeholder="Sistema de Seguridad"
               />
-              {errors.dsModulo && <span className="error-message">{errors.dsModulo}</span>}
+              {errors.dsModulo && (
+                <p className="text-rose-600 text-sm flex items-center space-x-1">
+                  <span>⚠️</span>
+                  <span>{errors.dsModulo}</span>
+                </p>
+              )}
             </div>
 
             {/* Permite Edición */}
-            <div className="form-group">
-              <label className="form-label checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formData.flgEdicion}
-                  onChange={(e) => handleChange('flgEdicion', e.target.checked)}
-                  className="form-checkbox"
-                />
-                Permite Edición
-              </label>
-              <div className="form-hint">
-                Si está desactivado, el módulo será de solo lectura
+            <div className="
+              flex items-start space-x-3 
+              p-4 bg-slate-50 rounded-xl border border-slate-200
+            ">
+              <input
+                type="checkbox"
+                id="flgEdicion"
+                checked={formData.flgEdicion}
+                onChange={(e) => handleChange('flgEdicion', e.target.checked)}
+                className="
+                  w-5 h-5 mt-1
+                  text-emerald-600
+                  border-slate-300 rounded
+                  focus:ring-emerald-500
+                  focus:ring-2
+                "
+              />
+              <div className="flex-1">
+                <label htmlFor="flgEdicion" className="
+                  block text-sm font-medium text-slate-700 cursor-pointer
+                ">
+                  Permite Edición
+                </label>
+                <p className="text-slate-500 text-sm mt-1">
+                  Si está desactivado, el módulo será de solo lectura para todos los usuarios
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="form-actions">
+          {/* Acciones del Formulario */}
+          <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-slate-200">
             <button
               type="button"
               onClick={onCancel}
-              className="cancel-button"
               disabled={loading}
+              className="
+                px-6 py-3
+                border border-slate-300
+                text-slate-700
+                rounded-xl
+                font-medium
+                hover:bg-slate-50
+                hover:border-slate-400
+                disabled:opacity-50 disabled:cursor-not-allowed
+                transition-all duration-200
+              "
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="submit-button"
               disabled={loading}
+              className="
+                px-6 py-3
+                bg-gradient-to-r from-emerald-500 to-green-600
+                hover:from-emerald-600 hover:to-green-700
+                disabled:from-emerald-400 disabled:to-green-500
+                text-white font-medium
+                rounded-xl
+                shadow-lg shadow-emerald-500/25
+                hover:shadow-xl hover:shadow-emerald-500/35
+                disabled:shadow-none
+                transition-all duration-300
+                transform hover:scale-105 disabled:scale-100
+                flex items-center space-x-2
+              "
             >
-              {loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear')}
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Guardando...</span>
+                </>
+              ) : (
+                <span>{isEditing ? 'Actualizar Módulo' : 'Crear Módulo'}</span>
+              )}
             </button>
           </div>
         </form>

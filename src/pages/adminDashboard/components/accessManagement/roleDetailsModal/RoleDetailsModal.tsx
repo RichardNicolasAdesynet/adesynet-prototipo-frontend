@@ -22,10 +22,8 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
   const [accesosLocales, setAccesosLocales] = useState<any[]>([]);
 
-  // Inicializar accesos locales cuando se abre el modal
   useEffect(() => {
     if (isOpen && role) {
-      // Crear una copia local de los accesos para editar
       const accesosIniciales = modulos.map(modulo => {
         const accesoExistente = role.accesos?.find((a: any) => a.cdModulo === modulo.cdModulo);
         
@@ -33,7 +31,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
           return { ...accesoExistente };
         }
         
-        // Crear acceso nuevo si no existe
         return {
           cdRol: role.cdRol,
           cdModulo: modulo.cdModulo,
@@ -48,13 +45,11 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   }, [isOpen, role, modulos]);
 
-  // Verificar si un módulo tiene un permiso específico
   const tienePermiso = (cdModulo: string, tipoPermiso: TipoPermiso) => {
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
     return acceso?.permisos?.some((permiso: any) => permiso.tipoPermiso === tipoPermiso) || false;
   };
 
-  // Verificar si un módulo está habilitado
   const moduloEstaHabilitado = (cdModulo: string) => {
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
     return acceso?.moduloHabilitado || false;
@@ -69,15 +64,13 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       const tieneElPermiso = acceso.permisos?.some((p: any) => p.tipoPermiso === tipoPermiso);
       
       if (tieneElPermiso) {
-        // Remover permiso
         acceso.permisos = acceso.permisos.filter((p: any) => p.tipoPermiso !== tipoPermiso);
       } else {
-        // Agregar permiso - CORREGIDO EL ERROR
         if (!acceso.permisos) acceso.permisos = [];
         acceso.permisos.push({
-          id: Date.now(), // ID temporal
+          id: Date.now(),
           tipoPermiso: tipoPermiso,
-          descripcionPermiso: permisosConfig[tipoPermiso].descripcion, // ✅ Ahora es type-safe
+          descripcionPermiso: permisosConfig[tipoPermiso].descripcion,
           fecAsignacion: new Date().toISOString()
         });
       }
@@ -86,7 +79,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       setAccesosLocales(nuevosAccesos);
       setCambiosPendientes(true);
       
-      // Llamar a la función padre
       onPermisoChange(role.cdRol, cdModulo, tipoPermiso, !tieneElPermiso);
     }
   };
@@ -101,7 +93,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       
       acceso.moduloHabilitado = nuevoEstado;
       
-      // Si se deshabilita el módulo, quitar todos los permisos
       if (!nuevoEstado) {
         acceso.permisos = [];
       }
@@ -110,7 +101,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       setAccesosLocales(nuevosAccesos);
       setCambiosPendientes(true);
       
-      // Llamar a la función padre
       onModuloHabilitadoChange(role.cdRol, cdModulo, nuevoEstado);
     }
   };
@@ -132,7 +122,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   };
 
-  // Función helper para contar usuarios
   const contarUsuariosDelRol = (cdRol: string) => {
     const usuariosPorRol: Record<string, number> = {
       'ROL01': 3,
@@ -147,109 +136,297 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   if (!isOpen || !role) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="role-details-modal">
-        <div className="modal-header">
-          <div className="modal-title">
-            <h2>🎭 {role.nombre}</h2>
-            <div className="role-subtitle">
-              <span className="role-code">{role.cdRol}</span>
-              <span className="users-count">👥 {contarUsuariosDelRol(role.cdRol)} usuarios</span>
+    <div className="
+      fixed inset-0
+      bg-black/50
+      backdrop-blur-sm
+      flex items-center justify-center
+      p-4
+      z-50
+      animate-fade-in
+    ">
+      <div className="
+        bg-white
+        rounded-2xl
+        shadow-2xl
+        w-full max-w-4xl
+        max-h-[90vh]
+        overflow-hidden
+        animate-scale-in
+      ">
+        {/* Header del Modal */}
+        <div className="
+          bg-gradient-to-r from-indigo-500 to-blue-600
+          px-6 py-4
+          flex items-center justify-between
+        ">
+          <div className="flex items-center space-x-3">
+            <div className="
+              w-10 h-10
+              bg-white/20
+              rounded-lg
+              flex items-center justify-center
+              text-white
+            ">
+              🎭
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">{role.nombre}</h2>
+              <div className="flex items-center space-x-4 text-white/90 text-sm">
+                <span className="bg-white/20 px-2 py-1 rounded">Código: {role.cdRol}</span>
+                <span className="flex items-center space-x-1">
+                  <span>👥</span>
+                  <span>{contarUsuariosDelRol(role.cdRol)} usuarios</span>
+                </span>
+              </div>
             </div>
           </div>
-          <button onClick={handleClose} className="close-button" type="button">
+          <button 
+            onClick={handleClose}
+            className="
+              w-8 h-8
+              flex items-center justify-center
+              text-white/80 hover:text-white
+              hover:bg-white/10
+              rounded-lg
+              transition-all duration-200
+            "
+            type="button"
+          >
             ×
           </button>
         </div>
 
-        <div className="modal-content">
-          <div className="modules-section">
-            <h3>📦 Módulos y Permisos</h3>
-            <div className="modules-list">
-              {modulos.map(modulo => {
-                const habilitado = moduloEstaHabilitado(modulo.cdModulo);
-                const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
-                
-                return (
-                  <div key={modulo.cdModulo} className="module-item">
-                    <div className="module-header">
-                      <label className="module-toggle">
+        {/* Contenido del Modal */}
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+          <div className="
+            mb-6 p-4
+            bg-indigo-50
+            border border-indigo-200
+            rounded-xl
+          ">
+            <h3 className="
+              font-semibold text-indigo-800
+              mb-2
+              flex items-center space-x-2
+            ">
+              <span>📦</span>
+              <span>Módulos y Permisos del Rol</span>
+            </h3>
+            <p className="text-indigo-600 text-sm">
+              Habilita módulos y asigna permisos específicos para este rol
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {modulos.map(modulo => {
+              const habilitado = moduloEstaHabilitado(modulo.cdModulo);
+              const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
+              
+              return (
+                <div key={modulo.cdModulo} className="
+                  border border-slate-200
+                  rounded-xl
+                  overflow-hidden
+                  transition-all duration-200
+                  hover:shadow-md
+                ">
+                  {/* Header del Módulo */}
+                  <div className={`
+                    px-4 py-3
+                    flex items-center justify-between
+                    transition-colors duration-200
+                    ${habilitado 
+                      ? 'bg-emerald-50 border-b border-emerald-200' 
+                      : 'bg-slate-50 border-b border-slate-200'
+                    }
+                  `}>
+                    <div className="flex items-center space-x-3">
+                      <label className="
+                        relative
+                        inline-flex
+                        items-center
+                        cursor-pointer
+                      ">
                         <input
                           type="checkbox"
                           checked={habilitado}
                           onChange={() => handleModuloToggle(modulo.cdModulo)}
-                          className="toggle-input"
+                          className="sr-only"
                         />
-                        <span className={`toggle-slider ${habilitado ? 'active' : ''}`}>
-                          {habilitado ? '✅' : '❌'}
-                        </span>
+                        <div className={`
+                          w-12 h-6
+                          rounded-full
+                          transition-colors duration-200
+                          flex items-center
+                          ${habilitado ? 'bg-emerald-500' : 'bg-slate-400'}
+                        `}>
+                          <div className={`
+                            bg-white
+                            w-4 h-4
+                            rounded-full
+                            shadow-lg
+                            transform transition-transform duration-200
+                            ${habilitado ? 'translate-x-7' : 'translate-x-1'}
+                          `}></div>
+                        </div>
                       </label>
-                      <div className="module-info">
-                        <div className="module-name">{modulo.dsModulo}</div>
-                        <div className="module-code">{modulo.cdModulo}</div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <div className="
+                          w-8 h-8
+                          bg-gradient-to-r from-indigo-500 to-blue-500
+                          rounded-lg
+                          flex items-center justify-center
+                          text-white text-sm
+                        ">
+                          {modulo.dsModulo.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-slate-800">{modulo.dsModulo}</div>
+                          <div className="text-sm text-slate-500">{modulo.cdModulo}</div>
+                        </div>
                       </div>
-                      <span className={`module-status ${habilitado ? 'enabled' : 'disabled'}`}>
-                        {habilitado ? 'Habilitado' : 'Deshabilitado'}
-                      </span>
                     </div>
                     
-                    {habilitado && (
-                      <div className="permissions-grid">
+                    <span className={`
+                      px-3 py-1
+                      rounded-full
+                      text-sm font-medium
+                      ${habilitado 
+                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                        : 'bg-slate-100 text-slate-700 border border-slate-200'
+                      }
+                    `}>
+                      {habilitado ? '✅ Habilitado' : '❌ Deshabilitado'}
+                    </span>
+                  </div>
+                  
+                  {/* Permisos del Módulo */}
+                  {habilitado && (
+                    <div className="p-4 bg-white">
+                      <h4 className="
+                        font-medium text-slate-700
+                        mb-3
+                        flex items-center space-x-2
+                      ">
+                        <span>🔐</span>
+                        <span>Permisos Disponibles</span>
+                      </h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {tiposPermisoDisponibles.map(tipoPermiso => {
                           const tieneElPermiso = tienePermiso(modulo.cdModulo, tipoPermiso);
+                          const configPermiso = permisosConfig[tipoPermiso];
                           
                           return (
-                            <label key={tipoPermiso} className="permission-item">
+                            <label key={tipoPermiso} className="
+                              flex items-center space-x-3
+                              p-3
+                              border rounded-lg
+                              cursor-pointer
+                              transition-all duration-200
+                              hover:shadow-md
+                              ${tieneElPermiso 
+                                ? 'bg-emerald-50 border-emerald-200' 
+                                : 'bg-white border-slate-200 hover:border-slate-300'
+                              }
+                            ">
                               <input
                                 type="checkbox"
                                 checked={tieneElPermiso}
                                 onChange={() => handlePermisoToggle(modulo.cdModulo, tipoPermiso)}
-                                className="permission-checkbox"
+                                className="
+                                  w-4 h-4
+                                  text-emerald-600
+                                  border-slate-300 rounded
+                                  focus:ring-emerald-500
+                                "
                               />
-                              <span className={`permission-toggle ${tieneElPermiso ? 'active' : ''}`}>
-                                <span className="permission-icon">
-                                  {permisosConfig[tipoPermiso].icono}
+                              <div className="flex-1 flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-lg">{configPermiso.icono}</span>
+                                  <span className="font-medium text-slate-700">
+                                    {configPermiso.nombre}
+                                  </span>
+                                </div>
+                                <span className={`
+                                  text-sm
+                                  ${tieneElPermiso ? 'text-emerald-600' : 'text-slate-400'}
+                                `}>
+                                  {tieneElPermiso ? '✓ Asignado' : '✗ No asignado'}
                                 </span>
-                                <span className="permission-name">
-                                  {permisosConfig[tipoPermiso].nombre}
-                                </span>
-                                <span className="permission-status">
-                                  {tieneElPermiso ? '✓' : '✗'}
-                                </span>
-                              </span>
+                              </div>
                             </label>
                           );
                         })}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        <div className="modal-footer">
-          <div className="footer-notes">
+        {/* Footer del Modal */}
+        <div className="
+          px-6 py-4
+          border-t border-slate-200
+          bg-slate-50
+          flex items-center justify-between
+        ">
+          <div className="flex items-center space-x-2">
             {cambiosPendientes && (
-              <span className="changes-warning">⚠️ Tienes cambios sin guardar</span>
+              <span className="
+                flex items-center space-x-2
+                text-amber-600 text-sm
+              ">
+                <span>⚠️</span>
+                <span>Tienes cambios sin guardar</span>
+              </span>
             )}
           </div>
-          <div className="footer-actions">
+          
+          <div className="flex space-x-3">
             <button
               onClick={handleClose}
-              className="cancel-button"
+              className="
+                px-6 py-2
+                border border-slate-300
+                text-slate-700
+                rounded-lg
+                font-medium
+                hover:bg-slate-50
+                hover:border-slate-400
+                transition-all duration-200
+              "
               type="button"
             >
               Cancelar
             </button>
             <button
               onClick={handleSave}
-              className="save-button"
               disabled={!cambiosPendientes}
+              className="
+                px-6 py-2
+                bg-gradient-to-r from-indigo-500 to-blue-600
+                hover:from-indigo-600 hover:to-blue-700
+                disabled:from-indigo-400 disabled:to-blue-500
+                text-white font-medium
+                rounded-lg
+                shadow-lg shadow-indigo-500/25
+                hover:shadow-xl hover:shadow-indigo-500/35
+                disabled:shadow-none
+                transition-all duration-300
+                transform hover:scale-105 disabled:scale-100
+                flex items-center space-x-2
+                disabled:cursor-not-allowed
+              "
               type="button"
             >
-              💾 Guardar Cambios
+              <span>💾</span>
+              <span>Guardar Cambios</span>
             </button>
           </div>
         </div>

@@ -3,13 +3,13 @@ import { useLogin } from '../../../hooks/auth/useLogin';
 import { LoginHeader } from './LoginHeader';
 import { LoginForm } from './LoginForm';
 import type { LoginProps } from './Login.types';
-import { useAuth } from '../../../hooks/auth/useAuth';
+
 
 // Login.tsx - VERSIÓN TECNOLÓGICO VIBRANTE
 export const Login: React.FC<LoginProps> = ({ 
     onLoginExitoso 
 }) => {
-    const { login: authLogin } = useAuth();
+    //const { login: authLogin } = useAuth();
     const { login, cargando, error } = useLogin();
 
     const manejarLogin = async (credenciales: any) => {

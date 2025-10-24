@@ -24,15 +24,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (!item.permisosRequeridos || item.permisosRequeridos.length === 0) {
       return true;
     }
-    
-    // Aquí luego integrarás con los permisos reales del usuario
-    // Por ahora, todos los usuarios admin tienen acceso
-    return usuario.rol === 'administrador';
+
+    // ✅ Usar los mismos roles que tienen acceso al admin
+    return ['administrador', 'gerente'].includes(usuario.rol);
   };
 
   const itemsFiltrados = sidebarItems.filter(tienePermisos);
 
-   return (
+  return (
     <aside className={`
       flex flex-col 
       bg-gradient-to-b from-slate-50 to-blue-50/80
@@ -58,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
         )}
-        
+
         {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
@@ -81,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-2">
           {itemsFiltrados.map((item, index) => (
-            <div 
+            <div
               key={item.id}
               className="transform transition-all duration-500"
               style={{
@@ -137,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   //           <h2>Sistema Soporte</h2>
   //         </div>
   //       )}
-        
+
   //       <button
   //         onClick={toggleSidebar}
   //         className="sidebar-toggle"

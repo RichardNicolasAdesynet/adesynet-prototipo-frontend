@@ -1,32 +1,34 @@
+// src/hooks/auth/useLogin.ts - REEMPLAZAR COMPLETAMENTE
 import { useState } from 'react';
-import type { Credenciales, LoginResponse } from '../../types/auth.types';
+import { useAuth } from './useAuth';
+import type { Credenciales, LoginResult } from '../../types/auth.types';
 import { validarLogin } from '../../utils/validation';
-
 
 export const useLogin = () => {
     const [cargando, setCargando] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const { login: authLogin } = useAuth(); // ← Usar el AuthContext real
 
-    const login = async (credenciales: Credenciales): Promise<LoginResponse> => {
+    const login = async (credenciales: Credenciales): Promise<LoginResult> => {
         setCargando(true);
         setError(null);
 
         try {
+
+            console.log('🔄 useLogin - Iniciando proceso...');
             // Validación del lado del cliente
             const erroresValidacion = validarLogin(credenciales);
             if (erroresValidacion) {
                 throw new Error(erroresValidacion);
             }
 
-            // Simulamos la llamada a la API (luego la reemplazarás)
-            const respuesta = await simularLoginAPI(credenciales);
-            
-            return {
-                exito: true,
-                usuario: respuesta.usuario,
-                token: respuesta.token
-            };
+            console.log('📞 useLogin - Llamando a authLogin...');
+            // ✅ REEMPLAZADO: Usar el servicio real de autenticación
+            const resultado = await authLogin(credenciales);
+            console.log('✅ useLogin - Resultado recibido:', resultado);
+            return resultado;
         } catch (err) {
+             console.error('❌ useLogin - Error:', err);
             const mensajeError = err instanceof Error ? err.message : 'Error de autenticación';
             setError(mensajeError);
             
@@ -47,24 +49,4 @@ export const useLogin = () => {
     };
 };
 
-// Simulación temporal (luego la reemplazas con tu API real)
-const simularLoginAPI = (credenciales: Credenciales): Promise<{ usuario: any; token: string }> => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (credenciales.usuario === 'admin' && credenciales.password === 'password') {
-                resolve({
-                    usuario: {
-                        id: '1',
-                        nombre: 'Administrador',
-                        email: 'admin@soporte.com',
-                        rol: 'administrador' as const,
-                        departamento: 'TI'
-                    },
-                    token: 'token-simulado-123'
-                });
-            } else {
-                reject(new Error('Credenciales inválidas'));
-            }
-        }, 1500);
-    });
-};
+// ✅ ELIMINADO: La función de simulación simularLoginAPI

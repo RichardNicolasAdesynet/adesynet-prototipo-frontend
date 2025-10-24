@@ -1,8 +1,8 @@
-export type RolUsuario = 'administrador' | 'tecnico' | 'desarrollador' | 'soporte' | 'usuario';
+export type RolUsuario = 'gerente' | 'administrador' | 'tecnico' | 'desarrollador' | 'soporte' | 'usuario';
 
 export interface Credenciales {
-    usuario: string;
-    password: string;
+  idUsuario: string;      // ← CAMBIAR de 'usuario' a 'idUsuario'
+  claveUsuario: string;   // ← CAMBIAR de 'password' a 'claveUsuario'
 }
 
 export interface Usuario {
@@ -21,14 +21,18 @@ export interface AuthState {
     cargando: boolean;
 }
 
-export interface AuthContextType extends AuthState {
-    login: (credenciales: Credenciales) => Promise<LoginResponse>;
-    logout: () => void;
+export interface LoginResult {
+  exito: boolean;
+  mensaje?: string;
+  usuario?: Usuario;
+  token?: string;
 }
 
-export interface LoginResponse {
-    exito: boolean;
-    mensaje?: string;
-    usuario?: Usuario;
-    token?: string;
+export interface AuthContextType {
+  usuario: Usuario | null;
+  token: string | null;
+  estaAutenticado: boolean;
+  cargando: boolean;
+  login: (credenciales: Credenciales) => Promise<LoginResult>; // ← ACTUALIZAR
+  logout: () => void;
 }

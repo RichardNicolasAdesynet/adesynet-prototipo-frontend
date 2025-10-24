@@ -16,7 +16,8 @@ export const useAuthRedirect = () => {
                 tecnico: '/dashboard',
                 desarrollador: '/dashboard',
                 soporte: '/dashboard',
-                usuario: '/incidencias'
+                usuario: '/incidencias',
+                gerente: '/admin'
             };
 
             const rutaDestino = rutasPorRol[usuario.rol];

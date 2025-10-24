@@ -8,8 +8,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     cargando 
 }) => {
     const [credenciales, setCredenciales] = React.useState<Credenciales>({
-        usuario: '',
-        password: ''
+        idUsuario: '',
+        claveUsuario: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,14 +35,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     Usuario
                 </label>
                 <input
-                    id="usuario"
-                    name="usuario"
+                    id="idUsuario"
+                    name="idUsuario"
                     type="text"
                     required
                     disabled={cargando}
                     className="mt-1 block w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent disabled:bg-white/5 disabled:cursor-not-allowed transition-all duration-300"
                     placeholder="tu.usuario"
-                    value={credenciales.usuario}
+                    value={credenciales.idUsuario}
                     onChange={handleChange}
                 />
             </div>
@@ -55,14 +55,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     Contraseña
                 </label>
                 <input
-                    id="password"
-                    name="password"
+                    id="claveUsuario"
+                    name="claveUsuario"
                     type="password"
                     required
                     disabled={cargando}
                     className="mt-1 block w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent disabled:bg-white/5 disabled:cursor-not-allowed transition-all duration-300"
                     placeholder="••••••••"
-                    value={credenciales.password}
+                    value={credenciales.claveUsuario}
                     onChange={handleChange}
                 />
             </div>

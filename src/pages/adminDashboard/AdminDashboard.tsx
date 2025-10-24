@@ -8,7 +8,7 @@ import { UsersManagement } from './components/usersManagement';
 import { RolesManagement } from './components/rolesManagement';
 import { ModulesManagement } from './components/modulesManagement';
 import { AccessManagement } from './components/accessManagement';
-import { mockDashboardStats, mockUsuarios, mockRolesCompletos, mockModulos, mockAccesos } from '../../services/mocks/adminMocks';
+import { mockDashboardStats, mockRolesCompletos, mockModulos, mockAccesos } from '../../services/mocks/adminMocks';
 import type { DashboardStats, UsuarioFilters } from '../../types/admin.types';
 
 export const AdminDashboard: React.FC = () => {
@@ -17,7 +17,6 @@ export const AdminDashboard: React.FC = () => {
   const location = useLocation();
 
   const [stats, setStats] = useState<DashboardStats>(mockDashboardStats);
-  const [usuarios, setUsuarios] = useState(mockUsuarios);
   const [cargando, setCargando] = useState<boolean>(false);
   const [usuariosLoading, setUsuariosLoading] = useState<boolean>(false);
   const [itemActivo, setItemActivo] = useState<string>('dashboard');
@@ -71,17 +70,18 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleUsuarioToggleStatus = async (cdUsuario: string, nuevoEstado: boolean) => {
-    setUsuariosLoading(true);
-    // Simular llamada a API
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // setUsuariosLoading(true);
+    // // Simular llamada a API
+    // await new Promise(resolve => setTimeout(resolve, 500));
 
-    setUsuarios(prev => prev.map(usuario =>
-      usuario.cdUsuario === cdUsuario
-        ? { ...usuario, estaActivo: nuevoEstado }
-        : usuario
-    ));
+    // setUsuarios(prev => prev.map(usuario =>
+    //   usuario.cdUsuario === cdUsuario
+    //     ? { ...usuario, estaActivo: nuevoEstado }
+    //     : usuario
+    // ));
 
-    setUsuariosLoading(false);
+    // setUsuariosLoading(false);
+    console.log(`Cambiando estado del usuario ${cdUsuario} a ${nuevoEstado}`);
   };
 
   const handleFiltersChange = (filters: UsuarioFilters) => {
@@ -139,7 +139,6 @@ export const AdminDashboard: React.FC = () => {
               {location.pathname === '/admin/usuarios' && (
                 <div className="animate-fade-in">
                   <UsersManagement
-                    usuarios={usuarios}
                     roles={mockRolesCompletos}
                     onUsuarioEdit={handleUsuarioEdit}
                     onUsuarioCreate={handleUsuarioCreate}

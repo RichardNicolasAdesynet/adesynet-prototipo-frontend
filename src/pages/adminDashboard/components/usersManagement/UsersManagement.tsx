@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { UsersManagementProps, UsuarioFilters, UsuarioFormData } from '../../../../types/admin.types';
 import { UsersFilters } from './usersFilters';
 import { EnhancedUsersTable } from './enhancedUsersTable';
 import { UserForm } from './userForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
+import { userService } from '../../../../services/api/userService';
 
 export const UsersManagement: React.FC<UsersManagementProps> = ({
-  usuarios,
   roles,
   onUsuarioEdit,
   onUsuarioCreate,
@@ -18,7 +18,36 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [editingUsuario, setEditingUsuario] = useState<UsuarioFormData | undefined>();
   const [formLoading, setFormLoading] = useState<boolean>(false);
-  const [exportLoading, setExportLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState<boolean>(false);
+
+  // ✅ NUEVO: Estado para usuarios reales
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuariosLoading, setUsuariosLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ NUEVO: Cargar usuarios al montar el componente
+  useEffect(() => {
+    cargarUsuarios();
+  }, []);
+
+  // ✅ NUEVO: Función para cargar usuarios desde API
+  const cargarUsuarios = async () => {
+    try {
+      setUsuariosLoading(true);
+      setError(null);
+      console.log('🔄 Cargando usuarios desde API...');
+
+      const usuariosReales = await userService.getUsuariosList();
+      console.log('✅ Usuarios cargados:', usuariosReales);
+
+      setUsuarios(usuariosReales);
+    } catch (err) {
+      console.error('❌ Error cargando usuarios:', err);
+      setError(err instanceof Error ? err.message : 'Error al cargar usuarios');
+    } finally {
+      setUsuariosLoading(false);
+    }
+  };
 
   // Filtrar usuarios basado en los filtros
   const filteredUsuarios = useMemo(() => {
@@ -26,12 +55,12 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       // Filtro por término de búsqueda
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
-        const matchesSearch = 
+        const matchesSearch =
           usuario.dsUsuario.toLowerCase().includes(searchLower) ||
           usuario.nombreCompleto.toLowerCase().includes(searchLower) ||
           (usuario.email && usuario.email.toLowerCase().includes(searchLower)) ||
           usuario.cdUsuario.toLowerCase().includes(searchLower);
-        
+
         if (!matchesSearch) return false;
       }
 
@@ -51,10 +80,15 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
 
   const handleExport = async (formato: 'excel' | 'pdf') => {
     setExportLoading(true);
-    // Simular exportación
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log(`Exportando ${usuarios.length} usuarios a ${formato}`);
-    setExportLoading(false);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`Exportando ${usuarios.length} usuarios a ${formato}`);
+      // Aquí integrarías la exportación real cuando esté disponible
+    } catch (err) {
+      console.error('Error en exportación:', err);
+    } finally {
+      setExportLoading(false);
+    }
   };
 
   const handleFiltersChange = (newFilters: UsuarioFilters) => {
@@ -69,6 +103,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   };
 
   const handleEditUser = (usuario: any) => {
+    // ✅ ACTUALIZADO: Usar datos reales del usuario
     const formData: UsuarioFormData = {
       cdUsuario: usuario.cdUsuario,
       dsUsuario: usuario.dsUsuario,
@@ -85,14 +120,77 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     onUsuarioEdit(usuario);
   };
 
+  // ✅ ACTUALIZADO: Manejar envío del formulario con API real
   const handleFormSubmit = async (formData: UsuarioFormData) => {
     setFormLoading(true);
-    // Simular llamada a API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Datos del formulario:', formData);
-    setFormLoading(false);
-    setIsFormOpen(false);
-    // Aquí luego llamarás a la API real
+    try {
+      console.log('🔄 Enviando datos del usuario:', formData);
+
+      if (formData.cdUsuario && editingUsuario) {
+        // Actualizar usuario existente
+        await userService.updateUsuario(formData.cdUsuario, {
+          dsUsuario: formData.dsUsuario,
+          nombre: formData.nombre,
+          apellidoP: formData.apellidoP,
+          apellidoM: formData.apellidoM || '',
+          dni: formData.dni,
+          email: formData.email,
+          cdRol: formData.cdRol
+        });
+        console.log('✅ Usuario actualizado exitosamente');
+      } else {
+        // Crear nuevo usuario
+        await userService.createUsuario({
+          dsUsuario: formData.dsUsuario,
+          claveUsuario: formData.claveUsuario || 'password123', // Contraseña temporal
+          nombre: formData.nombre,
+          apellidoP: formData.apellidoP,
+          apellidoM: formData.apellidoM || '',
+          dni: formData.dni,
+          email: formData.email,
+          cdRol: formData.cdRol
+        });
+        console.log('✅ Usuario creado exitosamente');
+      }
+
+      // Recargar la lista de usuarios
+      await cargarUsuarios();
+
+      setFormLoading(false);
+      setIsFormOpen(false);
+    } catch (err) {
+      console.error('❌ Error guardando usuario:', err);
+      setFormLoading(false);
+      // Aquí podrías mostrar un mensaje de error al usuario
+      alert(err instanceof Error ? err.message : 'Error al guardar usuario');
+    }
+  };
+
+  // ✅ ACTUALIZADO: Manejar cambio de estado con API real
+  const handleUsuarioToggleStatus = async (cdUsuario: string, nuevoEstado: boolean) => {
+    try {
+      setUsuariosLoading(true);
+      console.log(`🔄 Cambiando estado del usuario ${cdUsuario} a ${nuevoEstado}`);
+
+      if (nuevoEstado) {
+        // Activar/Desbloquear usuario
+        await userService.desbloquearUsuario(cdUsuario);
+      } else {
+        // Desactivar/Bloquear usuario  
+        await userService.bloquearUsuario(cdUsuario, "Desactivado por el administrador");
+      }
+
+      console.log('✅ Estado cambiado exitosamente');
+
+      // Recargar usuarios para reflejar el cambio
+      await cargarUsuarios();
+
+      onUsuarioToggleStatus(cdUsuario, nuevoEstado);
+    } catch (err) {
+      console.error('❌ Error cambiando estado:', err);
+      setUsuariosLoading(false);
+      alert(err instanceof Error ? err.message : 'Error al cambiar estado del usuario');
+    }
   };
 
   const handleFormCancel = () => {
@@ -130,11 +228,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <ExportButton 
+          <ExportButton
             onExport={handleExport}
             loading={exportLoading}
           />
-          
+
           <button
             onClick={handleCreateUser}
             className="
@@ -157,6 +255,16 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
           </button>
         </div>
       </div>
+
+      {/* ✅ NUEVO: Mostrar error si existe */}
+      {error && (
+        <div className="error-message">
+          ❌ Error: {error}
+          <button onClick={cargarUsuarios} className="retry-button">
+            Reintentar
+          </button>
+        </div>
+      )}
 
       {/* Filtros */}
       <UsersFilters
@@ -186,8 +294,8 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       <EnhancedUsersTable
         usuarios={filteredUsuarios}
         onEdit={handleEditUser}
-        onToggleStatus={onUsuarioToggleStatus}
-        loading={loading}
+        onToggleStatus={handleUsuarioToggleStatus}
+        loading={usuariosLoading || loading}
       />
 
       {/* Modal de Formulario */}

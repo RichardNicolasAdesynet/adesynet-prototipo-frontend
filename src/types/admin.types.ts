@@ -71,7 +71,7 @@ export interface UsuarioFilters {
 
 // Props para componentes de usuarios
 export interface UsersManagementProps {
-  usuarios: UsuarioResumen[];
+  //usuarios: UsuarioResumen[];
   roles: RolResumen[];
   onUsuarioEdit: (usuario: UsuarioResumen) => void;
   onUsuarioCreate: () => void;

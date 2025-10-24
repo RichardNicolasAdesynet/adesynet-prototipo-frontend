@@ -9,39 +9,39 @@ export const mockDashboardStats: DashboardStats = {
   ultimaActualizacion: new Date().toISOString()
 };
 
-export const mockUsuarios: UsuarioResumen[] = [
-  {
-    cdUsuario: 'USR05',
-    dsUsuario: 'Desarrollador backend',
-    nombreCompleto: 'David Nicolas',
-    cdRol: 'ROL02',
-    rolNombre: 'Gerente General',
-    estaActivo: true,
-    email: 'Rnicolas@empresa.com',
-    id: '',
-    nombre: ''
-  },
-  {
-    cdUsuario: 'USR01',
-    dsUsuario: 'Administrador Sistema',
-    nombreCompleto: 'Ana García',
-    cdRol: 'ROL03',
-    rolNombre: 'Administrador del Sistema',
-    estaActivo: true,
-    id: '',
-    nombre: ''
-  },
-  {
-    cdUsuario: 'USR02',
-    dsUsuario: 'Supervisor Area',
-    nombreCompleto: 'María López',
-    cdRol: 'ROL04',
-    rolNombre: 'Supervisor',
-    estaActivo: false,
-    id: '',
-    nombre: ''
-  }
-];
+// export const mockUsuarios: UsuarioResumen[] = [
+//   {
+//     cdUsuario: 'USR05',
+//     dsUsuario: 'Desarrollador backend',
+//     nombreCompleto: 'David Nicolas',
+//     cdRol: 'ROL02',
+//     rolNombre: 'Gerente General',
+//     estaActivo: true,
+//     email: 'Rnicolas@empresa.com',
+//     id: '',
+//     nombre: ''
+//   },
+//   {
+//     cdUsuario: 'USR01',
+//     dsUsuario: 'Administrador Sistema',
+//     nombreCompleto: 'Ana García',
+//     cdRol: 'ROL03',
+//     rolNombre: 'Administrador del Sistema',
+//     estaActivo: true,
+//     id: '',
+//     nombre: ''
+//   },
+//   {
+//     cdUsuario: 'USR02',
+//     dsUsuario: 'Supervisor Area',
+//     nombreCompleto: 'María López',
+//     cdRol: 'ROL04',
+//     rolNombre: 'Supervisor',
+//     estaActivo: false,
+//     id: '',
+//     nombre: ''
+//   }
+// ];
 
 export const mockRoles: RolResumen[] = [
   {

@@ -1,3 +1,4 @@
+// src/components/navigation/sidebar/sidebarItem/SidebarItem.types.ts
 import type { SidebarItem } from '../../../../types/navigation.types';
 
 export interface SidebarItemProps {

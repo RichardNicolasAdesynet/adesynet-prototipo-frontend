@@ -1,3 +1,4 @@
+// src/types/admin.types.ts
 export interface DashboardStats {
   totalUsuarios: number;
   totalRoles: number;

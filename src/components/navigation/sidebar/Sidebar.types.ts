@@ -1,3 +1,4 @@
+// src/components/navigation/sidebar/Sidebar.types.ts
 import type { Usuario } from '../../../types/auth.types';
 
 export interface SidebarProps {

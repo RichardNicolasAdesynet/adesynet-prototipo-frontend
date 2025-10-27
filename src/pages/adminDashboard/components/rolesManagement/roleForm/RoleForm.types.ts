@@ -1,3 +1,4 @@
+// src/pages/adminDashboard/components/rolesManagement/roleForm/RoleForm.types.ts
 import type { RolFormData } from '../../../../../types/admin.types';
 
 export interface RoleFormProps {

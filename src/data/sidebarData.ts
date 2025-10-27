@@ -1,3 +1,4 @@
+// src/data/sidebarData.ts 
 import type { SidebarItem } from '../types/navigation.types';
 
 export const sidebarItems: SidebarItem[] = [

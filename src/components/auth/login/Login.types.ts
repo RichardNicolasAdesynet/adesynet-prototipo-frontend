@@ -1,3 +1,4 @@
+// src/components/auth/login/Login.types.ts
 import type { Credenciales, Usuario } from "../../../types/auth.types";
 
 export interface LoginFormProps {

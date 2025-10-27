@@ -1,3 +1,4 @@
+// src/hooks/useAuthRedirect.ts
 import { useEffect } from 'react';
 import { useAuth } from './auth/useAuth';
 import type { RolUsuario } from '../types/auth.types';

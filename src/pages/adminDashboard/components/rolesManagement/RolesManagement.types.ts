@@ -1,3 +1,4 @@
+// src/pages/adminDashboard/components/rolesManagement/RolesManagement.types.ts
 import type { RolResumen, RolFilters } from '../../../../types/admin.types';
 
 export interface RolesManagementProps {

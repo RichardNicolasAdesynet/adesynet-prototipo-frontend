@@ -1,3 +1,4 @@
+// src/pages/adminDashboard/components/modulesManagement/modulesFilters/ModulesFilters.types.ts
 import type { ModuloFilters } from '../../../../../types/admin.types';
 
 export interface ModulesFiltersProps {

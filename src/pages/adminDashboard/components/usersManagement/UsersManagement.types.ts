@@ -1,3 +1,4 @@
+// src/pages/adminDashboard/components/usersManagement/UsersManagement.types.ts
 import type { UsuarioResumen, RolResumen, UsuarioFilters } from '../../../../types/admin.types';
 
 export interface UsersManagementProps {

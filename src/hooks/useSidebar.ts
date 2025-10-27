@@ -1,3 +1,4 @@
+// src/hooks/useSidebar.ts
 import { useState, useCallback } from 'react';
 import type { SidebarState } from '../types/navigation.types';
 

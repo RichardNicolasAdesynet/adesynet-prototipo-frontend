@@ -1,4 +1,4 @@
-// src/hooks/useAuth.ts - ACTUALIZAR
+// src/hooks/auth/useAuth.ts 
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import type { AuthContextType } from '../../types/auth.types';

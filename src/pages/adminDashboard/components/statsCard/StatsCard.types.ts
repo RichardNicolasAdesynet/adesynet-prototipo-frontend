@@ -1,3 +1,4 @@
+// src/pages/adminDashboard/components/statsCard/StatsCard.types.ts
 export interface StatsCardProps {
   titulo: string;
   valor: number | string;

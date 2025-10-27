@@ -1,3 +1,4 @@
+// src/data/accessManagementData.ts
 import type { PermisoConfig, TipoPermiso } from '../types/admin.types';
 
 export const permisosConfig: Record<TipoPermiso, PermisoConfig> = {

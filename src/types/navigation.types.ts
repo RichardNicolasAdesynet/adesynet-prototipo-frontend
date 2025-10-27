@@ -1,3 +1,5 @@
+// src/types/navigation.types.ts
+
 import type { Usuario } from './auth.types';
 
 export interface SidebarItem {

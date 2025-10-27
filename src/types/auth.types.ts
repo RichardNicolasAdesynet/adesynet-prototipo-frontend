@@ -1,3 +1,4 @@
+// src/types/auth.types.ts
 export type RolUsuario = 'gerente' | 'administrador' | 'tecnico' | 'desarrollador' | 'soporte' | 'usuario';
 
 export interface Credenciales {

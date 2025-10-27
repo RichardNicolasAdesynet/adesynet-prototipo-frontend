@@ -176,8 +176,9 @@ export const userService = {
     );
     
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al actualizar usuario');
+      throw new Error(response.message );
     }
+    
     
     return response.data;
   },

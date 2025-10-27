@@ -5,6 +5,7 @@ import { EnhancedUsersTable } from './enhancedUsersTable';
 import { UserForm } from './userForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
 import { userService } from '../../../../services/api/userService';
+import { useAlert } from '../../../../context/AlertContext';
 
 export const UsersManagement: React.FC<UsersManagementProps> = ({
   roles,
@@ -14,6 +15,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   onFiltersChange,
   loading = false
 }) => {
+  const { showAlert } = useAlert();
   const [filters, setFilters] = useState<UsuarioFilters>({});
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [editingUsuario, setEditingUsuario] = useState<UsuarioFormData | undefined>();
@@ -24,6 +26,10 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const testAlert = () => {
+    showAlert('success', '¡Prueba!', 'Esta es una alerta de prueba');
+  };
 
   // ✅ NUEVO: Cargar usuarios al montar el componente
   useEffect(() => {
@@ -38,12 +44,16 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       console.log('🔄 Cargando usuarios desde API...');
 
       const usuariosReales = await userService.getUsuariosList();
+      //
       console.log('✅ Usuarios cargados:', usuariosReales);
 
       setUsuarios(usuariosReales);
     } catch (err) {
       console.error('❌ Error cargando usuarios:', err);
-      setError(err instanceof Error ? err.message : 'Error al cargar usuarios');
+      const errorMsg = err instanceof Error ? err.message : 'Error al cargar usuarios';
+      setError(errorMsg);
+      showAlert('error', 'Error al cargar', errorMsg);
+
     } finally {
       setUsuariosLoading(false);
     }
@@ -137,6 +147,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
           email: formData.email,
           cdRol: formData.cdRol
         });
+        showAlert('success', 'Éxito', 'Usuario actualizado correctamente');
         console.log('✅ Usuario actualizado exitosamente');
       } else {
         // Crear nuevo usuario
@@ -151,6 +162,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
           cdRol: formData.cdRol
         });
         console.log('✅ Usuario creado exitosamente');
+        showAlert('success', 'Éxito', 'Usuario creado correctamente');
       }
 
       // Recargar la lista de usuarios
@@ -160,9 +172,15 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       setIsFormOpen(false);
     } catch (err) {
       console.error('❌ Error guardando usuario:', err);
-      setFormLoading(false);
       // Aquí podrías mostrar un mensaje de error al usuario
-      alert(err instanceof Error ? err.message : 'Error al guardar usuario');
+      // ✅ MEJORADO: Mostrar alerta en lugar de alert nativo
+      const errorMessage = err instanceof Error
+        ? err.message
+        : 'Error desconocido al guardar usuario';
+
+      showAlert('error', 'Error al guardar', errorMessage);
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -175,9 +193,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       if (nuevoEstado) {
         // Activar/Desbloquear usuario
         await userService.desbloquearUsuario(cdUsuario);
+        showAlert('success', 'Usuario activado', 'El usuario ha sido activado correctamente');
       } else {
         // Desactivar/Bloquear usuario  
         await userService.bloquearUsuario(cdUsuario, "Desactivado por el administrador");
+        showAlert('warning', 'Usuario desactivado', 'El usuario ha sido desactivado');
       }
 
       console.log('✅ Estado cambiado exitosamente');
@@ -188,8 +208,10 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       onUsuarioToggleStatus(cdUsuario, nuevoEstado);
     } catch (err) {
       console.error('❌ Error cambiando estado:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Error al cambiar estado';
+      showAlert('error', 'Error', errorMessage);
+    } finally {
       setUsuariosLoading(false);
-      alert(err instanceof Error ? err.message : 'Error al cambiar estado del usuario');
     }
   };
 
@@ -213,6 +235,20 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
         rounded-2xl
         border border-cyan-200/40
       ">
+
+        {/* ✅ BOTÓN DE PRUEBA TEMPORAL */}
+        <button onClick={testAlert} style={{
+          background: '#007bff',
+          color: 'white',
+          padding: '10px',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginBottom: '20px'
+        }}>
+          🔔 Probar Alerta
+        </button>
+
         <div className="flex-1 min-w-0">
           <h2 className="
             text-2xl sm:text-3xl

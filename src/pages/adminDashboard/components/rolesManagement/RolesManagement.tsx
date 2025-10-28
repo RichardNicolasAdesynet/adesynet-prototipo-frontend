@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { rolesService } from '../../../../services/api/rolesService';
 import { useAlert } from '../../../../context/AlertContext';
 import type { RolesManagementProps } from './RolesManagement.types';
 import { RolesFilters } from './rolesFilters';
 import { EnhancedRolesTable } from './enhancedRolesTable';
+import type { RolResumen } from '../../../../types/admin.types';
 
 export const RolesManagement: React.FC<RolesManagementProps> = ({
   onRolEdit,
@@ -10,29 +12,19 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
   onFiltersChange,
   loading = false
 }) => {
-  const [roles, setRoles] = useState<any[]>([]);
+  const [roles, setRoles] = useState<RolResumen[]>([]);
   const [filters, setFilters] = useState({});
   const { showAlert } = useAlert();
 
-  // ✅ SOLO estructura principal - subcomponentes existen
+  // ✅ ACTUALIZADO: Usar servicio real
   useEffect(() => {
     cargarRoles();
   }, [filters]);
 
   const cargarRoles = async () => {
     try {
-      // Simulación temporal - se conectará con servicio real
-      const rolesSimulados = [
-        {
-          cdRol: 'ROL01',
-          nombre: 'Administrador',
-          descripcion: 'Acceso completo al sistema',
-          activo: true,
-          cantidadUsuarios: 3,
-          cantidadAccesos: 5
-        }
-      ];
-      setRoles(rolesSimulados);
+      const rolesData = await rolesService.getRolesList(filters);
+      setRoles(rolesData);
     } catch (error) {
       console.error('Error cargando roles:', error);
       showAlert('error', 'Error', 'No se pudieron cargar los roles');
@@ -41,17 +33,26 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
 
   const manejarToggleStatus = async (cdRol: string, nuevoEstado: boolean) => {
     try {
-      // Lógica temporal
-      console.log(`Cambiando estado del rol ${cdRol} a ${nuevoEstado}`);
-      showAlert('success', 'Éxito', 'Estado del rol actualizado');
+      // ✅ ACTUALIZADO: Usar servicio real para actualizar
+      await rolesService.updateRol(cdRol, {
+        nombre: '', // Se obtendrá del rol existente
+        descripcion: '', // Se obtendrá del rol existente  
+        activo: nuevoEstado
+      });
       
-      setRoles(prev => prev.map(rol => 
-        rol.cdRol === cdRol ? { ...rol, activo: nuevoEstado } : rol
-      ));
+      showAlert('success', 'Éxito', 'Estado del rol actualizado correctamente');
+      
+      // Recargar la lista
+      cargarRoles();
     } catch (error) {
       console.error('Error cambiando estado:', error);
       showAlert('error', 'Error', 'No se pudo cambiar el estado del rol');
     }
+  };
+
+  const manejarFiltrosChange = (nuevosFiltros: any) => {
+    setFilters(nuevosFiltros);
+    onFiltersChange(nuevosFiltros);
   };
 
   return (
@@ -63,13 +64,9 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         </button>
       </div>
 
-      {/* ✅ Los subcomponentes específicos ya existen */}
       <RolesFilters 
         filters={filters}
-        onFiltersChange={(nuevosFiltros) => {
-          setFilters(nuevosFiltros);
-          onFiltersChange(nuevosFiltros);
-        }}
+        onFiltersChange={manejarFiltrosChange}
       />
 
       <EnhancedRolesTable

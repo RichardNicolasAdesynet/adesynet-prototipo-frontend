@@ -1,17 +1,120 @@
-import React, { useState } from 'react';
-import type { AccessManagementProps } from '../../../../types/admin.types';
+import React, { useEffect, useState } from 'react';
+import { accesosService } from '../../../../services/api/accesosService';
+import type { AccesoCompleto, AccessManagementProps, TipoPermiso } from '../../../../types/admin.types';
 import { AccessManagementTable } from './AccessManagementTable';
 import { RoleDetailsModal } from './roleDetailsModal';
 import { ExportButton } from '../../../../components/shared/exportButton';
+import { useAlert } from '../../../../context/AlertContext';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
   roles,
   modulos,
-  accesos,
   onPermisoChange,
   onModuloHabilitadoChange,
   loading = false
 }) => {
+  const [accesos, setAccesos] = useState<AccesoCompleto[]>([]);
+  const { showAlert } = useAlert();
+
+  // ✅ ACTUALIZADO: Cargar accesos reales
+  useEffect(() => {
+    cargarAccesos();
+  }, []);
+
+  const cargarAccesos = async () => {
+    try {
+      const accesosData = await accesosService.getAllAccesos();
+      setAccesos(accesosData.data);
+    } catch (error) {
+      console.error('Error cargando accesos:', error);
+      showAlert('error', 'Error', 'No se pudieron cargar los accesos');
+    }
+  };
+
+  const manejarPermisoChange = async (
+    cdRol: string, 
+    cdModulo: string, 
+    tipoPermiso: TipoPermiso, 
+    asignado: boolean
+  ) => {
+    try {
+      // ✅ ACTUALIZADO: Lógica real para cambiar permisos
+      const accesoExistente = accesos.find(
+        a => a.cdRol === cdRol && a.cdModulo === cdModulo
+      );
+
+      let nuevosPermisos: TipoPermiso[] = [];
+      
+      if (accesoExistente) {
+        // Obtener permisos actuales del acceso existente
+        // Esto necesitaría ajustarse según la estructura real de permisos
+        nuevosPermisos = asignado 
+          ? [...(accesoExistente.permisos?.map(p => p.tipoPermiso) || []), tipoPermiso]
+          : (accesoExistente.permisos?.map(p => p.tipoPermiso) || []).filter(p => p !== tipoPermiso);
+          
+        await accesosService.updateAcceso(cdRol, cdModulo, {
+          moduloHabilitado: accesoExistente.moduloHabilitado,
+          permisos: nuevosPermisos
+        });
+      } else {
+        // Crear nuevo acceso
+        nuevosPermisos = [tipoPermiso];
+        await accesosService.createAcceso({
+          cdRol,
+          cdModulo,
+          moduloHabilitado: true,
+          permisos: nuevosPermisos
+        });
+      }
+
+      showAlert('success', 'Éxito', 'Permiso actualizado correctamente');
+      
+      // Recargar accesos
+      cargarAccesos();
+      onPermisoChange(cdRol, cdModulo, tipoPermiso, asignado);
+    } catch (error) {
+      console.error('Error cambiando permiso:', error);
+      showAlert('error', 'Error', 'No se pudo actualizar el permiso');
+    }
+  };
+
+  const manejarModuloHabilitadoChange = async (
+    cdRol: string, 
+    cdModulo: string, 
+    habilitado: boolean
+  ) => {
+    try {
+      // ✅ ACTUALIZADO: Lógica real para habilitar/deshabilitar módulo
+      const accesoExistente = accesos.find(
+        a => a.cdRol === cdRol && a.cdModulo === cdModulo
+      );
+
+      if (accesoExistente) {
+        await accesosService.updateAcceso(cdRol, cdModulo, {
+          moduloHabilitado: habilitado,
+          permisos: accesoExistente.permisos?.map(p => p.tipoPermiso) || []
+        });
+      } else {
+        await accesosService.createAcceso({
+          cdRol,
+          cdModulo,
+          moduloHabilitado: habilitado,
+          permisos: []
+        });
+      }
+
+      showAlert('success', 'Éxito', 'Módulo actualizado correctamente');
+      
+      // Recargar accesos
+      cargarAccesos();
+      onModuloHabilitadoChange(cdRol, cdModulo, habilitado);
+    } catch (error) {
+      console.error('Error cambiando estado del módulo:', error);
+      showAlert('error', 'Error', 'No se pudo actualizar el módulo');
+    }
+  };
+
+
   const [exportLoading, setExportLoading] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
@@ -89,8 +192,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
             <span className="text-lg">🎯</span>
             <span>Asignación Masiva</span>
           </button>
-          
-          <ExportButton 
+
+          <ExportButton
             onExport={handleExport}
             loading={exportLoading}
           />
@@ -120,7 +223,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           <div className="text-2xl font-bold text-indigo-700">{roles.length}</div>
           <div className="text-sm text-slate-600">Roles Activos</div>
         </div>
-        
+
         <div className="text-center">
           <div className="
             w-12 h-12
@@ -134,7 +237,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           <div className="text-2xl font-bold text-emerald-700">{modulos.length}</div>
           <div className="text-sm text-slate-600">Módulos Disponibles</div>
         </div>
-        
+
         <div className="text-center">
           <div className="
             w-12 h-12

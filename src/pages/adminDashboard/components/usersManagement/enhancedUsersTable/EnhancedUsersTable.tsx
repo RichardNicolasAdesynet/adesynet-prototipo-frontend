@@ -26,17 +26,12 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
     // Aquí luego implementarás el modal de detalles
   };
 
-  // const handleExport = (formato: 'excel' | 'pdf') => {
-  //   console.log(`Exportando a ${formato}`);
-  //   // Aquí luego implementarás la exportación real
-  // };
-
   // Convertir UsuarioResumen a BaseEntity manteniendo todas las propiedades
   const convertirUsuarioABaseEntity = (usuario: any) => ({
     ...usuario,
     id: usuario.cdUsuario,
     nombre: usuario.nombreCompleto,
-    estaActivo: usuario.estaActivo
+    estaActivo: usuario.estaActivoLaboralmente // ✅ Campo correcto
   });
 
   if (loading) {
@@ -121,7 +116,7 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
           </thead>
           <tbody className="bg-white divide-y divide-slate-200/60">
             {usuariosPaginados.map(usuario => (
-              <tr 
+              <tr
                 key={usuario.cdUsuario}
                 className="
                   hover:bg-cyan-50/30
@@ -155,13 +150,18 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
                     rounded-full
                     text-sm font-medium
                     border
-                    ${usuario.estaActivoLaboralmente 
-                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+                    ${usuario.estaActivoLaboralmente
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                       : 'bg-rose-100 text-rose-700 border-rose-200'
                     }
                   `}>
                     <span className={`w-2 h-2 rounded-full mr-2 ${usuario.estaActivoLaboralmente ? 'bg-emerald-400' : 'bg-rose-400'}`}></span>
                     {usuario.estaActivoLaboralmente ? 'Activo' : 'Inactivo'}
+                    {usuario.flgBloqueado && (
+                      <span className="ml-2 px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full border border-amber-200">
+                        Bloqueado
+                      </span>
+                    )}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -191,59 +191,4 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="enhanced-users-table">
-  //     <div className="table-container">
-  //       <table className="users-table">
-  //         <thead className="table-header">
-  //           <tr>
-  //             <th>USUARIO</th>
-  //             <th>ROL</th>
-  //             <th>ESTADO</th>
-  //             <th>ACCIONES</th>
-  //           </tr>
-  //         </thead>
-  //         <tbody className="table-body">
-  //           {usuariosPaginados.map(usuario => (
-  //             <tr key={usuario.cdUsuario} className="table-row">
-  //               <td className="user-cell">
-  //                 <UserAvatar
-  //                   nombre={usuario.nombreCompleto}
-  //                   email={usuario.email}
-  //                   size="sm"
-  //                 />
-  //               </td>
-  //               <td className="role-cell">
-  //                 <span className="role-badge">{usuario.rolNombre}</span>
-  //               </td>
-  //               <td className="status-cell">
-  //                 <span className={`status-badge ${usuario.estaActivo ? 'active' : 'inactive'}`}>
-  //                   {usuario.estaActivo ? 'Activo' : 'Inactivo'}
-  //                 </span>
-  //               </td>
-  //               <td className="actions-cell">
-  //                 <ActionsDropdown
-  //                   entidad={convertirUsuarioABaseEntity(usuario)}
-  //                   onEdit={onEdit}
-  //                   onToggleStatus={onToggleStatus}
-  //                   onViewDetails={handleViewDetails}
-  //                 />
-  //               </td>
-  //             </tr>
-  //           ))}
-  //         </tbody>
-  //       </table>
-  //     </div>
-
-  //     <TablePagination
-  //       paginaActual={paginaActual}
-  //       totalPaginas={totalPaginas}
-  //       totalRegistros={totalRegistros}
-  //       registrosPorPagina={registrosPorPagina}
-  //       onPaginaChange={setPaginaActual}
-  //       onRegistrosPorPaginaChange={setRegistrosPorPagina}
-  //     />
-  //   </div>
-  // );
 };

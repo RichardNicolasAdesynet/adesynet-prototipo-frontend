@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import type { UserFormProps, UsuarioFormData } from '../../../../../types/admin.types';
 
+interface UserFormState {
+  cdUsuario: string;
+  dsUsuario: string;
+  nombre: string;
+  apellidoP: string;
+  apellidoM?: string;
+  dni: string;
+  email: string;
+  cdRol: string;
+  estaActivo: boolean; // Para el formulario interno
+  claveUsuario?: string;
+}
+
 export const UserForm: React.FC<UserFormProps> = ({
   usuario,
   roles,
@@ -10,7 +23,7 @@ export const UserForm: React.FC<UserFormProps> = ({
   onCancel,
   loading = false
 }) => {
-  const [formData, setFormData] = useState<UsuarioFormData>({
+  const [formData, setFormData] = useState<UserFormState>({
     cdUsuario: '',
     dsUsuario: '',
     nombre: '',
@@ -25,23 +38,39 @@ export const UserForm: React.FC<UserFormProps> = ({
 
   const [errors, setErrors] = useState<Partial<UsuarioFormData>>({});
 
+  // ✅ CORREGIDO: Siempre retornar JSX válido
+  if (!isOpen) {
+    return null; // ✅ Retornar null explícitamente en lugar de no retornar nada
+  }
+
   // Reset form when usuario prop changes
   useEffect(() => {
     if (usuario) {
-      setFormData(usuario);
-    } else {
       setFormData({
-        cdUsuario: '',
-        dsUsuario: '',
-        nombre: '',
-        apellidoP: '',
+        cdUsuario: usuario.cdUsuario,
+        dsUsuario: usuario.dsUsuario,
+        nombre: usuario.nombreCompleto.split(' ')[0] || '', // Extraer nombre
+        apellidoP: usuario.nombreCompleto.split(' ')[1] || '', // Extraer apellido
         apellidoM: '',
-        dni: '',
-        email: '',
-        cdRol: 'ROL05',
-        estaActivo: true,
+        dni: usuario.dni || '',
+        email: usuario.email || '',
+        cdRol: usuario.cdRol,
+        estaActivo: usuario.estaActivoLaboralmente,
         claveUsuario: ''
       });
+    } else {
+      setFormData({
+      cdUsuario: '',
+      dsUsuario: '',
+      nombre: '',
+      apellidoP: '',
+      apellidoM: '',
+      dni: '',
+      email: '',
+      cdRol: 'ROL05',
+      estaActivo: true,
+      claveUsuario: ''
+    });
     }
     setErrors({});
   }, [usuario, isOpen]);
@@ -81,12 +110,37 @@ export const UserForm: React.FC<UserFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      onSubmit(formData);
-    }
-  };
+  // ✅ CORREGIR: Envío de datos para crear usuario
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (validateForm()) {
+    // Mapear datos al formato que espera la API
+    const datosParaAPI = {
+      dsUsuario: formData.dsUsuario,
+      claveUsuario: formData.claveUsuario,
+      nombre: formData.nombre,
+      apellidoP: formData.apellidoP,
+      apellidoM: formData.apellidoM,
+      dni: formData.dni,
+      email: formData.email,
+      cdRol: formData.cdRol,
+      // Campos opcionales con valores por defecto
+      estadoCivil: "",
+      sexo: "",
+      direcc: "",
+      cdDepartamento: "",
+      cdProvincia: "",
+      cdDistrito: "",
+      cdZona: "",
+      telef1: "",
+      telef2: "",
+      cdArea: "",
+      cdCargo: "",
+      flgCambiarClave: true
+    };
+    
+    onSubmit(datosParaAPI as any); // Convertir al tipo esperado
+  }
 
   const handleChange = (field: keyof UsuarioFormData, value: any) => {
     setFormData(prev => ({
@@ -125,14 +179,14 @@ export const UserForm: React.FC<UserFormProps> = ({
       ">
         {/* Header del Modal */}
         <div className="
-          bg-gradient-to-r from-cyan-500 to-blue-600
+          bg-linear-to-r from-cyan-500 to-blue-600
           px-6 py-4
           flex items-center justify-between
         ">
           <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Editar Usuario' : 'Crear Usuario'}
           </h2>
-          <button 
+          <button
             onClick={onCancel}
             className="
               w-8 h-8
@@ -167,8 +221,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdUsuario 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.cdUsuario
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -200,8 +254,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.dsUsuario 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.dsUsuario
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -231,8 +285,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.nombre 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.nombre
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -262,8 +316,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.apellidoP 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.apellidoP
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -315,8 +369,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.dni 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.dni
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -347,8 +401,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.email 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.email
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -407,8 +461,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                     w-full px-4 py-3
                     border rounded-xl
                     focus:outline-none focus:ring-2 transition-all duration-200
-                    ${errors.claveUsuario 
-                      ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                    ${errors.claveUsuario
+                      ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                       : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                     }
                   `}
@@ -469,7 +523,7 @@ export const UserForm: React.FC<UserFormProps> = ({
               disabled={loading}
               className="
                 px-6 py-3
-                bg-gradient-to-r from-cyan-500 to-blue-600
+                bg-linear-to-r from-cyan-500 to-blue-600
                 hover:from-cyan-600 hover:to-blue-700
                 disabled:from-cyan-400 disabled:to-blue-500
                 text-white font-medium
@@ -496,195 +550,5 @@ export const UserForm: React.FC<UserFormProps> = ({
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="modal-overlay">
-  //     <div className="user-form-modal">
-  //       <div className="modal-header">
-  //         <h2>{isEditing ? 'Editar Usuario' : 'Crear Usuario'}</h2>
-  //         <button onClick={onCancel} className="close-button" type="button">
-  //           ×
-  //         </button>
-  //       </div>
-
-  //       <form onSubmit={handleSubmit} className="user-form">
-  //         <div className="form-grid">
-  //           {/* Código de Usuario */}
-  //           <div className="form-group">
-  //             <label htmlFor="cdUsuario" className="form-label">
-  //               Código de Usuario *
-  //             </label>
-  //             <input
-  //               id="cdUsuario"
-  //               type="text"
-  //               value={formData.cdUsuario}
-  //               onChange={(e) => handleChange('cdUsuario', e.target.value.toUpperCase())}
-  //               className={`form-input ${errors.cdUsuario ? 'error' : ''}`}
-  //               maxLength={5}
-  //               disabled={isEditing}
-  //             />
-  //             {errors.cdUsuario && <span className="error-message">{errors.cdUsuario}</span>}
-  //           </div>
-
-  //           {/* Descripción del Usuario */}
-  //           <div className="form-group">
-  //             <label htmlFor="dsUsuario" className="form-label">
-  //               Descripción del Usuario *
-  //             </label>
-  //             <input
-  //               id="dsUsuario"
-  //               type="text"
-  //               value={formData.dsUsuario}
-  //               onChange={(e) => handleChange('dsUsuario', e.target.value)}
-  //               className={`form-input ${errors.dsUsuario ? 'error' : ''}`}
-  //             />
-  //             {errors.dsUsuario && <span className="error-message">{errors.dsUsuario}</span>}
-  //           </div>
-
-  //           {/* Nombre */}
-  //           <div className="form-group">
-  //             <label htmlFor="nombre" className="form-label">
-  //               Nombre *
-  //             </label>
-  //             <input
-  //               id="nombre"
-  //               type="text"
-  //               value={formData.nombre}
-  //               onChange={(e) => handleChange('nombre', e.target.value)}
-  //               className={`form-input ${errors.nombre ? 'error' : ''}`}
-  //             />
-  //             {errors.nombre && <span className="error-message">{errors.nombre}</span>}
-  //           </div>
-
-  //           {/* Apellido Paterno */}
-  //           <div className="form-group">
-  //             <label htmlFor="apellidoP" className="form-label">
-  //               Apellido Paterno *
-  //             </label>
-  //             <input
-  //               id="apellidoP"
-  //               type="text"
-  //               value={formData.apellidoP}
-  //               onChange={(e) => handleChange('apellidoP', e.target.value)}
-  //               className={`form-input ${errors.apellidoP ? 'error' : ''}`}
-  //             />
-  //             {errors.apellidoP && <span className="error-message">{errors.apellidoP}</span>}
-  //           </div>
-
-  //           {/* Apellido Materno */}
-  //           <div className="form-group">
-  //             <label htmlFor="apellidoM" className="form-label">
-  //               Apellido Materno
-  //             </label>
-  //             <input
-  //               id="apellidoM"
-  //               type="text"
-  //               value={formData.apellidoM}
-  //               onChange={(e) => handleChange('apellidoM', e.target.value)}
-  //               className="form-input"
-  //             />
-  //           </div>
-
-  //           {/* DNI */}
-  //           <div className="form-group">
-  //             <label htmlFor="dni" className="form-label">
-  //               DNI *
-  //             </label>
-  //             <input
-  //               id="dni"
-  //               type="text"
-  //               value={formData.dni}
-  //               onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
-  //               className={`form-input ${errors.dni ? 'error' : ''}`}
-  //               maxLength={8}
-  //             />
-  //             {errors.dni && <span className="error-message">{errors.dni}</span>}
-  //           </div>
-
-  //           {/* Email */}
-  //           <div className="form-group">
-  //             <label htmlFor="email" className="form-label">
-  //               Email *
-  //             </label>
-  //             <input
-  //               id="email"
-  //               type="email"
-  //               value={formData.email}
-  //               onChange={(e) => handleChange('email', e.target.value)}
-  //               className={`form-input ${errors.email ? 'error' : ''}`}
-  //             />
-  //             {errors.email && <span className="error-message">{errors.email}</span>}
-  //           </div>
-
-  //           {/* Rol */}
-  //           <div className="form-group">
-  //             <label htmlFor="cdRol" className="form-label">
-  //               Rol *
-  //             </label>
-  //             <select
-  //               id="cdRol"
-  //               value={formData.cdRol}
-  //               onChange={(e) => handleChange('cdRol', e.target.value)}
-  //               className="form-select"
-  //             >
-  //               {roles.map(rol => (
-  //                 <option key={rol.cdRol} value={rol.cdRol}>
-  //                   {rol.nombre}
-  //                 </option>
-  //               ))}
-  //             </select>
-  //           </div>
-
-  //           {/* Contraseña (solo para nuevo usuario) */}
-  //           {!isEditing && (
-  //             <div className="form-group">
-  //               <label htmlFor="claveUsuario" className="form-label">
-  //                 Contraseña *
-  //               </label>
-  //               <input
-  //                 id="claveUsuario"
-  //                 type="password"
-  //                 value={formData.claveUsuario}
-  //                 onChange={(e) => handleChange('claveUsuario', e.target.value)}
-  //                 className={`form-input ${errors.claveUsuario ? 'error' : ''}`}
-  //               />
-  //               {errors.claveUsuario && <span className="error-message">{errors.claveUsuario}</span>}
-  //             </div>
-  //           )}
-
-  //           {/* Estado */}
-  //           <div className="form-group">
-  //             <label className="form-label checkbox-label">
-  //               <input
-  //                 type="checkbox"
-  //                 checked={formData.estaActivo}
-  //                 onChange={(e) => handleChange('estaActivo', e.target.checked)}
-  //                 className="form-checkbox"
-  //               />
-  //               Usuario Activo
-  //             </label>
-  //           </div>
-  //         </div>
-
-  //         <div className="form-actions">
-  //           <button
-  //             type="button"
-  //             onClick={onCancel}
-  //             className="cancel-button"
-  //             disabled={loading}
-  //           >
-  //             Cancelar
-  //           </button>
-  //           <button
-  //             type="submit"
-  //             className="submit-button"
-  //             disabled={loading}
-  //           >
-  //             {loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear')}
-  //           </button>
-  //         </div>
-  //       </form>
-  //     </div>
-  //   </div>
-  // );
+  }
 };

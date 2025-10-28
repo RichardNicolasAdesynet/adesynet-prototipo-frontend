@@ -159,7 +159,7 @@ export interface UsersManagementProps {
 }
 
 export interface UserFormProps {
-  usuario?: UsuarioFormData;
+  usuario?: UsuarioResumen;
   roles: RolResumen[];
   isOpen: boolean;
   isEditing: boolean;

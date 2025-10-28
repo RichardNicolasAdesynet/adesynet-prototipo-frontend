@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { modulosService } from '../../../../services/api/modulosService';
 import { useAlert } from '../../../../context/AlertContext';
 import type { ModulesManagementProps } from './ModulesManagement.types';
 import { ModulesFilters } from './modulesFilters';
 import { EnhancedModulesTable } from './enhancedModulesTable';
+import type { ModuloResumen } from '../../../../types/admin.types';
 
 export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   onModuloEdit,
@@ -10,28 +12,19 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   onFiltersChange,
   loading = false
 }) => {
-  const [modulos, setModulos] = useState<any[]>([]);
+  const [modulos, setModulos] = useState<ModuloResumen[]>([]);
   const [filters, setFilters] = useState({});
   const { showAlert } = useAlert();
 
-  // ✅ SOLO estructura principal
+  // ✅ ACTUALIZADO: Usar servicio real
   useEffect(() => {
     cargarModulos();
   }, [filters]);
 
   const cargarModulos = async () => {
     try {
-      // Simulación temporal
-      const modulosSimulados = [
-        {
-          cdModulo: 'MOD01',
-          dsModulo: 'Gestión de Usuarios',
-          flgEdicion: true,
-          cantidadAccesos: 3,
-          cantidadRolesConAcceso: 2
-        }
-      ];
-      setModulos(modulosSimulados);
+      const modulosData = await modulosService.getModulosList(filters);
+      setModulos(modulosData);
     } catch (error) {
       console.error('Error cargando módulos:', error);
       showAlert('error', 'Error', 'No se pudieron cargar los módulos');
@@ -40,16 +33,28 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
 
   const manejarToggleEdicion = async (cdModulo: string, nuevoEstado: boolean) => {
     try {
-      console.log(`Cambiando edición del módulo ${cdModulo} a ${nuevoEstado}`);
-      showAlert('success', 'Éxito', 'Estado de edición actualizado');
+      // ✅ ACTUALIZADO: Usar servicio real para actualizar
+      // Primero obtener el módulo actual para preservar otros datos
+      const moduloActual = await modulosService.getModulo(cdModulo);
       
-      setModulos(prev => prev.map(modulo => 
-        modulo.cdModulo === cdModulo ? { ...modulo, flgEdicion: nuevoEstado } : modulo
-      ));
+      await modulosService.updateModulo(cdModulo, {
+        dsModulo: moduloActual.dsModulo,
+        flgEdicion: nuevoEstado
+      });
+      
+      showAlert('success', 'Éxito', 'Estado de edición actualizado correctamente');
+      
+      // Recargar la lista
+      cargarModulos();
     } catch (error) {
       console.error('Error cambiando estado:', error);
       showAlert('error', 'Error', 'No se pudo cambiar el estado de edición');
     }
+  };
+
+  const manejarFiltrosChange = (nuevosFiltros: any) => {
+    setFilters(nuevosFiltros);
+    onFiltersChange(nuevosFiltros);
   };
 
   return (
@@ -61,13 +66,9 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         </button>
       </div>
 
-      {/* ✅ Subcomponentes modulares existentes */}
       <ModulesFilters 
         filters={filters}
-        onFiltersChange={(nuevosFiltros) => {
-          setFilters(nuevosFiltros);
-          onFiltersChange(nuevosFiltros);
-        }}
+        onFiltersChange={manejarFiltrosChange}
       />
 
       <EnhancedModulesTable

@@ -20,7 +20,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
           transition-all duration-300 ease-out
           group relative overflow-hidden
           ${estaActivo 
-            ? 'bg-gradient-to-r from-cyan-500/15 to-purple-500/15 text-cyan-700 shadow-lg shadow-cyan-500/10 border border-cyan-200/50' 
+            ? 'bg-linear-to-r from-cyan-500/15 to-purple-500/15 text-cyan-700 shadow-lg shadow-cyan-500/10 border border-cyan-200/50' 
             : 'text-slate-600 hover:text-slate-800 hover:bg-white/80 border border-transparent hover:border-cyan-200/30'
           }
           ${estaColapsado ? 'justify-center' : ''}
@@ -31,14 +31,14 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
       >
         {/* Efecto de fondo animado */}
         <div className={`
-          absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 
+          absolute inset-0 bg-linear-to-r from-cyan-500/10 to-purple-500/10 
           transition-all duration-500
           ${estaActivo ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
         `}></div>
         
         {/* Indicador activo */}
         {estaActivo && (
-          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-cyan-400 to-purple-500 rounded-r-full shadow-lg shadow-cyan-400/50"></div>
+          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-linear-to-b from-cyan-400 to-purple-500 rounded-r-full shadow-lg shadow-cyan-400/50"></div>
         )}
 
         {/* Icono */}

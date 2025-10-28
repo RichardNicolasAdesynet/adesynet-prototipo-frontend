@@ -139,7 +139,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
                 font-medium
                 transition-all duration-200
                 ${pagina === paginaActual
-                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25 transform scale-105'
+                  ? 'bg-linear-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25 transform scale-105'
                   : 'text-slate-600 hover:text-purple-700 hover:bg-white hover:shadow-md'
                 }
               `}

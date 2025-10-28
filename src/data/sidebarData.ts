@@ -15,7 +15,8 @@ export const sidebarItems: SidebarItem[] = [
     icono: '👥',
     ruta: '/admin/usuarios',
     modulo: 'MOD01',
-    permisosRequeridos: ['MOD01:Consultar']
+    // ✅ CORREGIDO: Usar permisos reales de la API
+    permisosRequeridos: ['MOD01:CONSULTAR', 'USUARIOS:CONSULTAR']
   },
   {
     id: 'roles',
@@ -23,7 +24,7 @@ export const sidebarItems: SidebarItem[] = [
     icono: '🎭',
     ruta: '/admin/roles', 
     modulo: 'MOD02',
-    permisosRequeridos: ['MOD02:Consultar']
+    permisosRequeridos: ['MOD02:CONSULTAR', 'ROLES:CONSULTAR']
   },
   {
     id: 'modulos',
@@ -31,7 +32,7 @@ export const sidebarItems: SidebarItem[] = [
     icono: '📦',
     ruta: '/admin/modulos',
     modulo: 'MOD03',
-    permisosRequeridos: ['MOD03:Consultar']
+    permisosRequeridos: ['MOD03:CONSULTAR', 'MODULOS:CONSULTAR']
   },
   {
     id: 'accesos',
@@ -39,6 +40,6 @@ export const sidebarItems: SidebarItem[] = [
     icono: '⚙️',
     ruta: '/admin/accesos',
     modulo: 'MOD04',
-    permisosRequeridos: ['MOD04:Consultar']
+    permisosRequeridos: ['MOD04:CONSULTAR', 'ACCESOS:CONSULTAR']
   }
 ];

@@ -6,20 +6,22 @@ export interface Credenciales {
   claveUsuario: string;   // ← CAMBIAR de 'password' a 'claveUsuario'
 }
 
+// USUARIO CORREGIDO - coincide con respuesta real de login
 export interface Usuario {
-    id: string;
-    nombre: string;
-    email: string;
-    rol: RolUsuario;  // ← CAMBIÓ de string a RolUsuario
-    departamento: string;
-    permisos: string[];
+  idUsuario: string;           // ← CORREGIDO: de 'id' a 'idUsuario'
+  nombreCompleto: string;      // ← CORREGIDO: de 'nombre' a 'nombreCompleto'
+  email: string;
+  idRol: string;               // ← CORREGIDO: de 'rol' a 'idRol'
+  rolNombre: string;           // ← NUEVO: agregado
+  permisos: string[];
+  // ❌ ELIMINADO: 'departamento' (no existe en API)
 }
 
 export interface AuthState {
-    usuario: Usuario | null;
-    token: string | null;
-    estaAutenticado: boolean;
-    cargando: boolean;
+  usuario: Usuario | null;
+  token: string | null;
+  estaAutenticado: boolean;
+  cargando: boolean;
 }
 
 export interface LoginResult {
@@ -34,6 +36,6 @@ export interface AuthContextType {
   token: string | null;
   estaAutenticado: boolean;
   cargando: boolean;
-  login: (credenciales: Credenciales) => Promise<LoginResult>; // ← ACTUALIZAR
+  login: (credenciales: Credenciales) => Promise<LoginResult>;
   logout: () => void;
 }

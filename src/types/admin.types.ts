@@ -8,32 +8,110 @@ export interface DashboardStats {
   ultimaActualizacion: string;
 }
 
-export interface UsuarioResumen extends BaseEntity {
+// USUARIO RESUMEN CORREGIDO
+export interface UsuarioResumen {
   cdUsuario: string;
   dsUsuario: string;
   nombreCompleto: string;
+  email?: string;
+  dni?: string;
   cdRol: string;
   rolNombre: string;
-  estaActivo: boolean;
-  email?: string;
+  estaActivoLaboralmente: boolean;  // ← CORREGIDO: de 'estaActivo'
+  flgBloqueado: boolean;            // ← NUEVO: agregado
+  fecCre?: string;                  // ← NUEVO: agregado
 }
 
-export interface RolResumen extends BaseEntity {
+// ROL RESUMEN CORREGIDO
+export interface RolResumen {
   cdRol: string;
   nombre: string;
   descripcion: string;
   activo: boolean;
-  cantidadUsuarios: number;
+  cantidadUsuarios: number;         // ← NUEVO: agregado
+  cantidadAccesos: number;          // ← NUEVO: agregado
+  fecmod?: string;                  // ← NUEVO: agregado
 }
 
+// MÓDULO RESUMEN CORREGIDO
 export interface ModuloResumen {
   cdModulo: string;
   dsModulo: string;
   flgEdicion: boolean;
-  cantidadAccesos: number;
-  cantidadRolesConAcceso: number;
+  cantidadAccesos: number;          // ← NUEVO: agregado
+  cantidadRolesConAcceso: number;   // ← NUEVO: agregado
+  fecmod?: string;                  // ← NUEVO: agregado
 }
 
+// USUARIO DETALLADO (para GetUsuario)
+export interface UsuarioDetallado {
+  cdUsuario: string;
+  dsUsuario: string;
+  nombre: string;
+  apellidoP: string;
+  apellidoM: string;
+  nombreCompleto: string;
+  dni: string;
+  email: string;
+  estadoCivil: string;
+  sexo: string;
+  fecNacimiento: string;
+  direcc: string;
+  cdDepartamento: string;
+  cdProvincia: string;
+  cdDistrito: string;
+  cdZona: string;
+  telef1: string;
+  telef2: string;
+  cdRol: string;
+  rolNombre: string;
+  cdArea: string;
+  cdCargo: string;
+  sueldo: number;
+  fecIngreso: string;
+  fecCese: string | null;
+  estaActivoLaboralmente: boolean;
+  flgBloqueado: boolean;
+  flgCambiarClave: boolean;
+  fecModClave: string;
+  cdUsuCre: string;
+  fecCre: string;
+}
+
+// ACCESO COMPLETO CORREGIDO
+export interface AccesoCompleto {
+  cdRol: string;
+  rolNombre: string;
+  cdModulo: string;
+  moduloNombre: string;
+  moduloHabilitado: boolean;
+  fecCreacion: string;
+  fecModificacion?: string;
+  cantidadPermisos: number;
+  permisosNombres: string[];
+  permisos?: Permiso[];             // ← Para detalles específicos
+}
+
+export interface Permiso {
+  id: number;
+  tipoPermiso: TipoPermiso;
+  descripcionPermiso: string;
+  fecAsignacion: string;
+  esPermisoEscritura?: boolean;     // ← Para GetAllPermisos
+  esPermisoLectura?: boolean;       // ← Para GetAllPermisos
+}
+
+export type TipoPermiso = 1 | 2 | 3 | 4 | 5;
+
+export interface PermisoConfig {
+  tipo: TipoPermiso;
+  nombre: string;
+  descripcion: string;
+  icono: string;
+}
+
+// MANTENIENDO LAS INTERFACES DE PROPS EXISTENTES (se corregirán en FASE 3)
+//*----------------------------------------------------------------------*
 // Props para los componentes
 export interface DashboardHeaderProps {
   stats: DashboardStats;
@@ -60,7 +138,7 @@ export interface UsuarioFormData {
   dni: string;
   email: string;
   cdRol: string;
-  estaActivo: boolean;
+  estaActivo: boolean; // ← Se mantiene por compatibilidad con componentes
   claveUsuario?: string;
 }
 
@@ -72,7 +150,6 @@ export interface UsuarioFilters {
 
 // Props para componentes de usuarios
 export interface UsersManagementProps {
-  //usuarios: UsuarioResumen[];
   roles: RolResumen[];
   onUsuarioEdit: (usuario: UsuarioResumen) => void;
   onUsuarioCreate: () => void;
@@ -237,32 +314,11 @@ export interface ModulesFiltersProps {
 }
 
 
-// Tipos para la matriz de accesos
-export interface AccesoCompleto {
-  cdRol: string;
-  rolNombre: string;
-  cdModulo: string;
-  moduloNombre: string;
-  moduloHabilitado: boolean;
-  permisos: Permiso[];
-  fecCreacion: string;
-  fecModificacion: string;
-}
-
 export interface Permiso {
   id: number;
   tipoPermiso: TipoPermiso;
   descripcionPermiso: string;
   fecAsignacion: string;
-}
-
-export type TipoPermiso = 1 | 2 | 3 | 4 | 5;
-
-export interface PermisoConfig {
-  tipo: TipoPermiso;
-  nombre: string;
-  descripcion: string;
-  icono: string;
 }
 
 export interface MatrizAccesosProps {

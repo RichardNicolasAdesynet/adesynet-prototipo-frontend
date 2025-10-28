@@ -1,10 +1,8 @@
-// src/context/AuthContext.tsx - ACTUALIZAR
+// src/context/AuthContext.tsx 
 import React, { createContext, useState, useEffect, type ReactNode } from 'react';
 import { authService } from '../services/api/authService';
 import { apiClient } from '../services/api/apiClient';
 import type { AuthContextType, Credenciales, LoginResult, Usuario } from '../types/auth.types';
-
-
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -25,7 +23,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('🔄 AuthContext - Estado actualizado:', authState);
   }, [authState]);
 
-
   // Cargar datos de autenticación al iniciar
   useEffect(() => {
     const initializeAuth = async () => {
@@ -41,12 +38,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           apiClient.setToken(storedToken);
 
+          // ✅ CORREGIDO: Usar la nueva estructura de Usuario
           const usuario: Usuario = {
-            id: storedUserInfo.idUsuario,
-            nombre: storedUserInfo.nombreCompleto.split(' ')[0] || storedUserInfo.nombreCompleto,
+            idUsuario: storedUserInfo.idUsuario,
+            nombreCompleto: storedUserInfo.nombreCompleto,
             email: storedUserInfo.email,
-            rol: mapRolToInternal(storedUserInfo.idRol),
-            departamento: 'TI',
+            idRol: storedUserInfo.idRol,
+            rolNombre: storedUserInfo.rolNombre,
             permisos: storedUserInfo.permisos || []
           };
 
@@ -72,26 +70,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
-  // Mapear roles de API a roles internos
-  const mapRolToInternal = (idRol: string): any => {
-    const roleMap: Record<string, string> = {
-      'ROL01': 'desarrollador',
-      'ROL02': 'gerente', //administrador
-      'ROL03': 'administrador',//supervisor
-      'ROL04': 'supervisor',
-      'ROL05': 'tecnico'
-    };
-    return roleMap[idRol] || 'usuario';
-  };
-
-  // CORREGIDO: Función login con tipos compatibles
+  // ✅ CORREGIDO: Función login con nueva estructura
   const login = async (credenciales: Credenciales): Promise<LoginResult> => {
     try {
-
       console.log('🔐 Iniciando login con:', credenciales);
       setAuthState(prev => ({ ...prev, cargando: true }));
 
-      // Convertir Credenciales a LoginRequest (son compatibles ahora)
       const loginData = await authService.login({
         idUsuario: credenciales.idUsuario,
         claveUsuario: credenciales.claveUsuario
@@ -99,12 +83,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('✅ Login exitoso, datos recibidos:', loginData);
 
+      // ✅ CORREGIDO: Usar nueva estructura de Usuario
       const usuario: Usuario = {
-        id: loginData.idUsuario,
-        nombre: loginData.nombreCompleto.split(' ')[0] || loginData.nombreCompleto,
+        idUsuario: loginData.idUsuario,
+        nombreCompleto: loginData.nombreCompleto,
         email: loginData.email,
-        rol: mapRolToInternal(loginData.idRol),
-        departamento: 'TI',
+        idRol: loginData.idRol,
+        rolNombre: loginData.rolNombre,
         permisos: loginData.permisos || []
       };
 

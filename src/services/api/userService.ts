@@ -1,43 +1,8 @@
 // src/services/api/userService.ts
-import { apiClient } from './apiClient';
-import { API_CONFIG } from '../../config/api';
-import type { ApiResponse, PaginatedResponse } from '../../types/api.types';
-import type { UsuarioResumen, UsuarioFormData } from '../../types/admin.types';
-
-// Interface para respuesta detallada de usuario
-interface UsuarioDetallado {
-  cdUsuario: string;
-  dsUsuario: string;
-  nombre: string;
-  apellidoP: string;
-  apellidoM: string;
-  nombreCompleto: string;
-  dni: string;
-  email: string;
-  estadoCivil: string;
-  sexo: string;
-  fecNacimiento: string;
-  direcc: string;
-  cdDepartamento: string;
-  cdProvincia: string;
-  cdDistrito: string;
-  cdZona: string;
-  telef1: string;
-  telef2: string;
-  cdRol: string;
-  rolNombre: string;
-  cdArea: string;
-  cdCargo: string;
-  sueldo: number;
-  fecIngreso: string;
-  fecCese: string | null;
-  estaActivoLaboralmente: boolean;
-  flgBloqueado: boolean;
-  flgCambiarClave: boolean;
-  fecModClave: string;
-  cdUsuCre: string;
-  fecCre: string;
-}
+import { apiClient } from "./apiClient";
+import { API_CONFIG } from "../../config/api";
+import type { ApiResponse, PaginatedResponse } from "../../types/api.types";
+import type {  UsuarioResumen,  UsuarioDetallado,  UsuarioFormData,} from "../../types/admin.types";
 
 // Interface para cambio de clave
 interface CambioClaveRequest {
@@ -48,21 +13,24 @@ interface CambioClaveRequest {
 }
 
 export const userService = {
-  // GET: Lista simple de usuarios (con filtros)
-  async getUsuariosList(filters?: { CdRol?: string; Activo?: boolean }): Promise<UsuarioResumen[]> {
+  // ✅ ACTUALIZADO: Tipos corregidos
+  async getUsuariosList(filters?: {
+    CdRol?: string;
+    Activo?: boolean;
+  }): Promise<UsuarioResumen[]> {
     const response = await apiClient.get<UsuarioResumen[]>(
       `${API_CONFIG.ENDPOINTS.USUARIOS}/GetUsuariosList`,
       filters
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al obtener usuarios');
+      throw new Error(response.message || "Error al obtener usuarios");
     }
-    
+
     return response.data;
   },
 
-  // GET: Lista paginada de usuarios (para tablas)
+  // ✅ ACTUALIZADO: Tipos corregidos
   async getAllUsuarios(params?: {
     PageRequest_page?: number;
     PageRequest_rows?: number;
@@ -79,24 +47,26 @@ export const userService = {
       `${API_CONFIG.ENDPOINTS.USUARIOS}/GetAllUsuarios`,
       params
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al obtener usuarios paginados');
+      throw new Error(
+        response.message || "Error al obtener usuarios paginados"
+      );
     }
-    
+
     return response.data;
   },
 
-  // GET: Usuario específico por ID
+  // ✅ ACTUALIZADO: Tipo de retorno corregido
   async getUsuario(idUsuario: string): Promise<UsuarioDetallado> {
     const response = await apiClient.get<UsuarioDetallado>(
       `${API_CONFIG.ENDPOINTS.USUARIOS}/GetUsuario/${idUsuario}`
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al obtener usuario');
+      throw new Error(response.message || "Error al obtener usuario");
     }
-    
+
     return response.data;
   },
 
@@ -133,53 +103,55 @@ export const userService = {
       `${API_CONFIG.ENDPOINTS.USUARIOS}/SaveUsuario`,
       usuarioData
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al crear usuario');
+      throw new Error(response.message || "Error al crear usuario");
     }
-    
+
     return response.data;
   },
 
   // PUT: Actualizar usuario existente
-  async updateUsuario(idUsuario: string, usuarioData: {
-    dsUsuario: string;
-    nombre: string;
-    apellidoP: string;
-    apellidoM?: string;
-    dni: string;
-    email: string;
-    cdRol: string;
-    // Campos opcionales
-    estadoCivil?: string;
-    sexo?: string;
-    fecNacimiento?: string;
-    direcc?: string;
-    cdDepartamento?: string;
-    cdProvincia?: string;
-    cdDistrito?: string;
-    cdZona?: string;
-    telef1?: string;
-    telef2?: string;
-    cdArea?: string;
-    cdCargo?: string;
-    diaDescanso?: string;
-    monSueldo?: string;
-    sueldo?: number;
-    fecIngreso?: string;
-    fecCese?: string;
-    obs?: string;
-  }): Promise<any> {
+  async updateUsuario(
+    idUsuario: string,
+    usuarioData: {
+      dsUsuario: string;
+      nombre: string;
+      apellidoP: string;
+      apellidoM?: string;
+      dni: string;
+      email: string;
+      cdRol: string;
+      // Campos opcionales
+      estadoCivil?: string;
+      sexo?: string;
+      fecNacimiento?: string;
+      direcc?: string;
+      cdDepartamento?: string;
+      cdProvincia?: string;
+      cdDistrito?: string;
+      cdZona?: string;
+      telef1?: string;
+      telef2?: string;
+      cdArea?: string;
+      cdCargo?: string;
+      diaDescanso?: string;
+      monSueldo?: string;
+      sueldo?: number;
+      fecIngreso?: string;
+      fecCese?: string;
+      obs?: string;
+    }
+  ): Promise<any> {
     const response = await apiClient.put<any>(
       `${API_CONFIG.ENDPOINTS.USUARIOS}/UpdateUsuario/${idUsuario}`,
       usuarioData
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message );
+      throw new Error(response.message);
     }
-    
-    
+
     return response.data;
   },
 
@@ -189,11 +161,11 @@ export const userService = {
       `${API_CONFIG.ENDPOINTS.USUARIOS}/${idUsuario}/Bloquear`,
       motivo || "Bloqueado por el administrador"
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al bloquear usuario');
+      throw new Error(response.message || "Error al bloquear usuario");
     }
-    
+
     return response.data;
   },
 
@@ -202,11 +174,11 @@ export const userService = {
     const response = await apiClient.post<any>(
       `${API_CONFIG.ENDPOINTS.USUARIOS}/${idUsuario}/Desbloquear`
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al desbloquear usuario');
+      throw new Error(response.message || "Error al desbloquear usuario");
     }
-    
+
     return response.data;
   },
 
@@ -216,11 +188,11 @@ export const userService = {
       `${API_CONFIG.ENDPOINTS.USUARIOS}/CambiarClave`,
       cambioClaveData
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al cambiar contraseña');
+      throw new Error(response.message || "Error al cambiar contraseña");
     }
-    
+
     return response.data;
   },
 
@@ -229,11 +201,11 @@ export const userService = {
     const response = await apiClient.delete<any>(
       `${API_CONFIG.ENDPOINTS.USUARIOS}/DeleteUsuario/${idUsuario}`
     );
-    
+
     if (!response.isSuccess) {
-      throw new Error(response.message || 'Error al eliminar usuario');
+      throw new Error(response.message || "Error al eliminar usuario");
     }
-    
+
     return response.data;
-  }
+  },
 };

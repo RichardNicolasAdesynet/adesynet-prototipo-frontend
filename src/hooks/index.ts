@@ -1,2 +1,2 @@
 export { useSidebar } from './useSidebar';
-export { useAuthRedirect } from './useAuthRedirect'
+export { useAuthRedirect } from './auth/useAuthRedirect'

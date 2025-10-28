@@ -6,9 +6,12 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
   onFiltersChange
 }) => {
   const handleFilterChange = (key: keyof RolFilters, value: any) => {
+    // Mapear nombres internos a nombres de API si es necesario
+    const apiKey = key === 'activo' ? 'Activo' : key;
+
     onFiltersChange({
       ...filters,
-      [key]: value
+      [apiKey]: value
     });
   };
 
@@ -16,7 +19,10 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
     onFiltersChange({});
   };
 
-  const hasActiveFilters = Object.keys(filters).length > 0;
+  // ✅ CORREGIDO: Verificación correcta de filtros activos
+  const hasActiveFilters = Object.keys(filters).filter(key =>
+    filters[key as keyof RolFilters] !== undefined
+  ).length > 0;
 
   return (
     <div className="
@@ -29,14 +35,14 @@ export const RolesFilters: React.FC<RolesFiltersProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <h3 className="
           text-lg font-semibold
-          bg-gradient-to-r from-purple-600 to-indigo-600
+          bg-linear-to-r from-purple-600 to-indigo-600
           bg-clip-text text-transparent
         ">
           Filtros de Búsqueda
         </h3>
-        
+
         {hasActiveFilters && (
-          <button 
+          <button
             onClick={clearFilters}
             className="
               px-4 py-2

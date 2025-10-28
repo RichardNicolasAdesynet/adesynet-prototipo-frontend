@@ -33,6 +33,11 @@ export const RoleForm: React.FC<RoleFormProps> = ({
     setErrors({});
   }, [rol, isOpen]);
 
+  // ✅ CORREGIDO: Retornar null explícitamente
+  if (!isOpen) {
+    return null;
+  }
+
   const validateForm = (): boolean => {
     const newErrors: Partial<RolFormData> = {};
 
@@ -98,14 +103,14 @@ export const RoleForm: React.FC<RoleFormProps> = ({
       ">
         {/* Header del Modal */}
         <div className="
-          bg-gradient-to-r from-purple-500 to-indigo-600
+          bg-linear-to-r from-purple-500 to-indigo-600
           px-6 py-4
           flex items-center justify-between
         ">
           <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Editar Rol' : 'Crear Rol'}
           </h2>
-          <button 
+          <button
             onClick={onCancel}
             className="
               w-8 h-8
@@ -140,8 +145,8 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdRol 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.cdRol
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
                   }
                 `}
@@ -176,8 +181,8 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.nombre 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.nombre
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
                   }
                 `}
@@ -207,8 +212,8 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
                   resize-none
-                  ${errors.descripcion 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.descripcion
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
                   }
                 `}
@@ -269,7 +274,7 @@ export const RoleForm: React.FC<RoleFormProps> = ({
               disabled={loading}
               className="
                 px-6 py-3
-                bg-gradient-to-r from-purple-500 to-indigo-600
+                bg-linear-to-r from-purple-500 to-indigo-600
                 hover:from-purple-600 hover:to-indigo-700
                 disabled:from-purple-400 disabled:to-indigo-500
                 text-white font-medium

@@ -69,7 +69,10 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  // ✅ CORREGIDO: Retornar null explícitamente
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="

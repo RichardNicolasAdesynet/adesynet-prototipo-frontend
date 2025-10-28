@@ -29,7 +29,7 @@ export interface ModuloFormData {
 
 export const modulosService = {
   // GET: Lista simple de módulos
-  async getModulosList(filters?: { Activo?: boolean }): Promise<ModuloResumen[]> {
+  async getModulosList(filters?: { Editables?: boolean }): Promise<ModuloResumen[]> {
     const response = await apiClient.get<ModuloResumen[]>(
       `${API_CONFIG.ENDPOINTS.MODULOS}/GetModulosList`,
       filters

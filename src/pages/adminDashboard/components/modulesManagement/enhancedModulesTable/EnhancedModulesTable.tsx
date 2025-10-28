@@ -26,7 +26,7 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
     ...modulo,
     id: modulo.cdModulo,
     nombre: modulo.dsModulo,
-    estaActivo: modulo.flgEdicion
+    estaActivo: modulo.flgEdicion // ✅ Usar flgEdicion como estado activo
   });
 
   const handleToggleStatus = (id: string, nuevoEstado: boolean) => {
@@ -144,7 +144,7 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
           </thead>
           <tbody className="bg-white divide-y divide-slate-200/60">
             {modulosPaginados.map(modulo => (
-              <tr 
+              <tr
                 key={modulo.cdModulo}
                 className="
                   hover:bg-emerald-50/30
@@ -186,8 +186,8 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
                     rounded-full
                     text-sm font-medium
                     border
-                    ${modulo.flgEdicion 
-                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+                    ${modulo.flgEdicion
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                       : 'bg-slate-100 text-slate-700 border-slate-200'
                     }
                   `}>

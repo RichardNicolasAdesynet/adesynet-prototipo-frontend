@@ -6,11 +6,11 @@ export const ModulesFilters: React.FC<ModulesFiltersProps> = ({
   onFiltersChange
 }) => {
   const handleFilterChange = (key: keyof ModuloFilters, value: any) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value
-    });
-  };
+  onFiltersChange({
+    ...filters,
+    [key]: value
+  });
+};
 
   const clearFilters = () => {
     onFiltersChange({});

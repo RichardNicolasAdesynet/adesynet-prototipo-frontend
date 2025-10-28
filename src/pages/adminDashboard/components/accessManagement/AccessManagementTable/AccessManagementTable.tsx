@@ -91,7 +91,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="
-            bg-gradient-to-r from-indigo-50 to-blue-50
+            bg-linear-to-r from-indigo-50 to-blue-50
             border-b border-indigo-200/40
           ">
             <tr>
@@ -162,7 +162,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                     <div className="flex items-center space-x-3">
                       <div className="
                         w-10 h-10
-                        bg-gradient-to-r from-indigo-500 to-blue-500
+                        bg-linear-to-r from-indigo-500 to-blue-500
                         rounded-lg
                         flex items-center justify-center
                         text-white
@@ -227,7 +227,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                         <div 
                           className="
                             h-2
-                            bg-gradient-to-r from-indigo-500 to-blue-500
+                            bg-linear-to-r from-indigo-500 to-blue-500
                             rounded-full
                             transition-all duration-500
                           "

@@ -84,7 +84,7 @@ export const EnhancedRolesTable: React.FC<RolesTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="
-            bg-gradient-to-r from-purple-50 to-indigo-50
+            bg-linear-to-r from-purple-50 to-indigo-50
             border-b border-purple-200/40
           ">
             <tr>
@@ -157,7 +157,7 @@ export const EnhancedRolesTable: React.FC<RolesTableProps> = ({
                   <div className="flex items-center space-x-3">
                     <div className="
                       w-8 h-8
-                      bg-gradient-to-r from-purple-500 to-indigo-500
+                      bg-linear-to-r from-purple-500 to-indigo-500
                       rounded-lg
                       flex items-center justify-center
                       text-white text-sm

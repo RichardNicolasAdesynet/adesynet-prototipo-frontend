@@ -2,7 +2,6 @@ import React from 'react';
 import { SidebarItem } from './sidebarItem/SidebarItem';
 import { sidebarItems } from '../../../data/sidebarData';
 import type { SidebarProps } from './Sidebar.types';
-import type { Usuario } from '../../../types/auth.types';
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
   usuario, 

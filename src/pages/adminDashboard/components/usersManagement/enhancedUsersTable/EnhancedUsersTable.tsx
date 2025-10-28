@@ -155,13 +155,13 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
                     rounded-full
                     text-sm font-medium
                     border
-                    ${usuario.estaActivo 
+                    ${usuario.estaActivoLaboralmente 
                       ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
                       : 'bg-rose-100 text-rose-700 border-rose-200'
                     }
                   `}>
-                    <span className={`w-2 h-2 rounded-full mr-2 ${usuario.estaActivo ? 'bg-emerald-400' : 'bg-rose-400'}`}></span>
-                    {usuario.estaActivo ? 'Activo' : 'Inactivo'}
+                    <span className={`w-2 h-2 rounded-full mr-2 ${usuario.estaActivoLaboralmente ? 'bg-emerald-400' : 'bg-rose-400'}`}></span>
+                    {usuario.estaActivoLaboralmente ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

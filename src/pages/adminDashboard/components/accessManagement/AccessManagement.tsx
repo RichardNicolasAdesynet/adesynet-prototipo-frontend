@@ -10,7 +10,6 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
   accesos,
   onPermisoChange,
   onModuloHabilitadoChange,
-  onBulkPermissionChange,
   loading = false
 }) => {
   const [exportLoading, setExportLoading] = useState<boolean>(false);
@@ -51,7 +50,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         justify-between
         gap-4
         p-6
-        bg-gradient-to-r from-indigo-50/50 to-blue-50/30
+        bg-linear-to-r from-indigo-50/50 to-blue-50/30
         rounded-2xl
         border border-indigo-200/40
       ">
@@ -59,7 +58,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           <h2 className="
             text-2xl sm:text-3xl
             font-bold
-            bg-gradient-to-r from-indigo-700 to-blue-700
+            bg-linear-to-r from-indigo-700 to-blue-700
             bg-clip-text text-transparent
           ">
             Gestión de Accesos
@@ -74,7 +73,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
             onClick={handleBulkPermissions}
             className="
               px-6 py-3
-              bg-gradient-to-r from-indigo-500 to-purple-600
+              bg-linear-to-r from-indigo-500 to-purple-600
               hover:from-indigo-600 hover:to-purple-700
               text-white font-medium
               rounded-xl

@@ -4,8 +4,6 @@ import { useAuth } from '../../../hooks/auth/useAuth';
 import { useAuthRedirect } from '../../../hooks/auth/useAuthRedirect';
 import type { LoginProps } from './Login.types';
 import type { Credenciales } from '../../../types/auth.types';
-import { LoginHeader } from './LoginHeader';
-import { LoginForm } from './LoginForm';
 
 
 // Login.tsx - VERSIÓN TECNOLÓGICO VIBRANTE

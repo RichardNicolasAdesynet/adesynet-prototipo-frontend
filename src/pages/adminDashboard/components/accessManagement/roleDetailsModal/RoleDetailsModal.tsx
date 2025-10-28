@@ -156,7 +156,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       ">
         {/* Header del Modal */}
         <div className="
-          bg-gradient-to-r from-indigo-500 to-blue-600
+          bg-linear-to-r from-indigo-500 to-blue-600
           px-6 py-4
           flex items-center justify-between
         ">
@@ -221,7 +221,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
           <div className="space-y-4">
             {modulos.map(modulo => {
               const habilitado = moduloEstaHabilitado(modulo.cdModulo);
-              const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
+              //const accesoEncontrado = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
               
               return (
                 <div key={modulo.cdModulo} className="
@@ -275,7 +275,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
                       <div className="flex items-center space-x-3">
                         <div className="
                           w-8 h-8
-                          bg-gradient-to-r from-indigo-500 to-blue-500
+                          bg-linear-to-r from-indigo-500 to-blue-500
                           rounded-lg
                           flex items-center justify-center
                           text-white text-sm
@@ -410,7 +410,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
               disabled={!cambiosPendientes}
               className="
                 px-6 py-2
-                bg-gradient-to-r from-indigo-500 to-blue-600
+                bg-linear-to-r from-indigo-500 to-blue-600
                 hover:from-indigo-600 hover:to-blue-700
                 disabled:from-indigo-400 disabled:to-blue-500
                 text-white font-medium

@@ -94,7 +94,7 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="
-            bg-gradient-to-r from-emerald-50 to-green-50
+            bg-linear-to-r from-emerald-50 to-green-50
             border-b border-emerald-200/40
           ">
             <tr>
@@ -167,7 +167,7 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
                   <div className="flex items-center space-x-3">
                     <div className="
                       w-8 h-8
-                      bg-gradient-to-r from-emerald-500 to-green-500
+                      bg-linear-to-r from-emerald-500 to-green-500
                       rounded-lg
                       flex items-center justify-center
                       text-white text-sm

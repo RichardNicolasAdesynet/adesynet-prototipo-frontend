@@ -1,8 +1,8 @@
 // src/services/api/userService.ts
 import { apiClient } from "./apiClient";
 import { API_CONFIG } from "../../config/api";
-import type { ApiResponse, PaginatedResponse } from "../../types/api.types";
-import type {  UsuarioResumen,  UsuarioDetallado,  UsuarioFormData,} from "../../types/admin.types";
+import type { PaginatedResponse } from "../../types/api.types";
+import type {  UsuarioResumen,  UsuarioDetallado, } from "../../types/admin.types";
 
 // Interface para cambio de clave
 interface CambioClaveRequest {

@@ -29,7 +29,7 @@ export const ModulesFilters: React.FC<ModulesFiltersProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <h3 className="
           text-lg font-semibold
-          bg-gradient-to-r from-emerald-600 to-green-600
+          bg-linear-to-r from-emerald-600 to-green-600
           bg-clip-text text-transparent
         ">
           Filtros de Búsqueda

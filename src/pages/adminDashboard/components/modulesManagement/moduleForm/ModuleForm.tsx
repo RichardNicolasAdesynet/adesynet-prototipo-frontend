@@ -95,7 +95,7 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
       ">
         {/* Header del Modal */}
         <div className="
-          bg-gradient-to-r from-emerald-500 to-green-600
+          bg-linear-to-r from-emerald-500 to-green-600
           px-6 py-4
           flex items-center justify-between
         ">
@@ -244,7 +244,7 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
               disabled={loading}
               className="
                 px-6 py-3
-                bg-gradient-to-r from-emerald-500 to-green-600
+                bg-linear-to-r from-emerald-500 to-green-600
                 hover:from-emerald-600 hover:to-green-700
                 disabled:from-emerald-400 disabled:to-green-500
                 text-white font-medium

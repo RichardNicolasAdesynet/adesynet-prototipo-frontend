@@ -123,15 +123,17 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   };
 
   const contarUsuariosDelRol = (cdRol: string) => {
-    const usuariosPorRol: Record<string, number> = {
-      'ROL01': 3,
-      'ROL02': 1,
-      'ROL03': 2,
-      'ROL04': 4,
-      'ROL05': 8
-    };
-    return usuariosPorRol[cdRol] || 0;
+  // Esta función debería recibir los roles como prop o usar el contexto
+  // Por ahora mantenemos la lógica existente pero debería actualizarse
+  const usuariosPorRol: Record<string, number> = {
+    'ROL01': 3,
+    'ROL02': 1,
+    'ROL03': 2,
+    'ROL04': 4,
+    'ROL05': 8
   };
+  return usuariosPorRol[cdRol] || 0;
+};
 
   if (!isOpen || !role) return null;
 

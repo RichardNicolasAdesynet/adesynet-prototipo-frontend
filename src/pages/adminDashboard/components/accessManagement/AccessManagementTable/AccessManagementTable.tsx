@@ -22,20 +22,14 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
   };
 
   const contarModulosHabilitados = (cdRol: string) => {
-    return accesos.filter(acceso => 
+    return accesos.filter(acceso =>
       acceso.cdRol === cdRol && acceso.moduloHabilitado
     ).length;
   };
 
   const contarUsuariosDelRol = (cdRol: string) => {
-    const usuariosPorRol: Record<string, number> = {
-      'ROL01': 3,
-      'ROL02': 1,
-      'ROL03': 2,
-      'ROL04': 4,
-      'ROL05': 8
-    };
-    return usuariosPorRol[cdRol] || 0;
+    const rol = roles.find(r => r.cdRol === cdRol);
+    return rol?.cantidadUsuarios || 0;
   };
 
   const formatearModulos = (modulosList: string[]) => {
@@ -144,12 +138,12 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
               const modulosDelRol = obtenerModulosDelRol(rol.cdRol);
               const modulosHabilitados = contarModulosHabilitados(rol.cdRol);
               const totalUsuarios = contarUsuariosDelRol(rol.cdRol);
-              const porcentajeAcceso = modulos.length > 0 
-                ? Math.round((modulosHabilitados / modulos.length) * 100) 
+              const porcentajeAcceso = modulos.length > 0
+                ? Math.round((modulosHabilitados / modulos.length) * 100)
                 : 0;
 
               return (
-                <tr 
+                <tr
                   key={rol.cdRol}
                   className="
                     hover:bg-indigo-50/30
@@ -175,7 +169,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       </div>
                     </div>
                   </td>
-                  
+
                   <td className="px-6 py-4">
                     <div className="max-w-xs">
                       {modulosDelRol.length > 0 ? (
@@ -192,7 +186,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       )}
                     </div>
                   </td>
-                  
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
                       <div className="
@@ -209,7 +203,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       </div>
                     </div>
                   </td>
-                  
+
                   <td className="px-6 py-4">
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
@@ -224,7 +218,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                         rounded-full
                         h-2
                       ">
-                        <div 
+                        <div
                           className="
                             h-2
                             bg-linear-to-r from-indigo-500 to-blue-500
@@ -239,7 +233,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       </div>
                     </div>
                   </td>
-                  
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`
                       inline-flex items-center
@@ -247,8 +241,8 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       rounded-full
                       text-sm font-medium
                       border
-                      ${rol.activo 
-                        ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+                      ${rol.activo
+                        ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                         : 'bg-rose-100 text-rose-700 border-rose-200'
                       }
                     `}>
@@ -256,7 +250,7 @@ export const AccessManagementTable: React.FC<AccessManagementTableProps> = ({
                       {rol.activo ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
-                  
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={(e) => {

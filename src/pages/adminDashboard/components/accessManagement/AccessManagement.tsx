@@ -14,9 +14,12 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
   loading = false
 }) => {
   const [accesos, setAccesos] = useState<AccesoCompleto[]>([]);
+  const [exportLoading, setExportLoading] = useState<boolean>(false);
+  const [selectedRole, setSelectedRole] = useState<any>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const { showAlert } = useAlert();
 
-  // ✅ ACTUALIZADO: Cargar accesos reales
+  // ✅ CORREGIDO: Cargar accesos reales
   useEffect(() => {
     cargarAccesos();
   }, []);
@@ -31,6 +34,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     }
   };
 
+  // ✅ CORREGIDO: Función mejorada para cambiar permisos
   const manejarPermisoChange = async (
     cdRol: string, 
     cdModulo: string, 
@@ -38,7 +42,6 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     asignado: boolean
   ) => {
     try {
-      // ✅ ACTUALIZADO: Lógica real para cambiar permisos
       const accesoExistente = accesos.find(
         a => a.cdRol === cdRol && a.cdModulo === cdModulo
       );
@@ -47,7 +50,6 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
       
       if (accesoExistente) {
         // Obtener permisos actuales del acceso existente
-        // Esto necesitaría ajustarse según la estructura real de permisos
         nuevosPermisos = asignado 
           ? [...(accesoExistente.permisos?.map(p => p.tipoPermiso) || []), tipoPermiso]
           : (accesoExistente.permisos?.map(p => p.tipoPermiso) || []).filter(p => p !== tipoPermiso);
@@ -78,13 +80,13 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     }
   };
 
+  // ✅ CORREGIDO: Función para habilitar/deshabilitar módulo
   const manejarModuloHabilitadoChange = async (
     cdRol: string, 
     cdModulo: string, 
     habilitado: boolean
   ) => {
     try {
-      // ✅ ACTUALIZADO: Lógica real para habilitar/deshabilitar módulo
       const accesoExistente = accesos.find(
         a => a.cdRol === cdRol && a.cdModulo === cdModulo
       );
@@ -114,10 +116,11 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     }
   };
 
-
-  const [exportLoading, setExportLoading] = useState<boolean>(false);
-  const [selectedRole, setSelectedRole] = useState<any>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+  // ✅ CORREGIDO: Función para contar usuarios real (usando datos de roles)
+  const contarUsuariosDelRol = (cdRol: string) => {
+    const rol = roles.find(r => r.cdRol === cdRol);
+    return rol?.cantidadUsuarios || 0;
+  };
 
   const handleExport = async (formato: 'excel' | 'pdf') => {
     setExportLoading(true);
@@ -269,8 +272,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         role={selectedRole}
         isOpen={isDetailsModalOpen}
         modulos={modulos}
-        onPermisoChange={onPermisoChange}
-        onModuloHabilitadoChange={onModuloHabilitadoChange}
+        onPermisoChange={manejarPermisoChange}
+        onModuloHabilitadoChange={manejarModuloHabilitadoChange}
         onClose={closeDetailsModal}
       />
 

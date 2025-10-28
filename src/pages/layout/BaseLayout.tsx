@@ -59,22 +59,4 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
             </main>
         </div>
     );
-    
-    // return (
-    //     <div>
-    //         <header>
-    //             <div>
-    //                 <h1>Sistema de Soporte TI</h1>
-    //                 <div>
-    //                     <span>Bienvenido, {usuario.nombre}</span>
-    //                     <span>Rol: {usuario.rol}</span>
-    //                     <button onClick={onLogout}>Cerrar Sesión</button>
-    //                 </div>
-    //             </div>
-    //         </header>
-    //         <main>
-    //             {children}
-    //         </main>
-    //     </div>
-    // );
 };

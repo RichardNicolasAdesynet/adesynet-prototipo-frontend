@@ -60,6 +60,21 @@ export interface RolDetallado {
   }>;
 }
 
+export interface ModuloDetallado {
+  cdModulo: string;
+  dsModulo: string;
+  flgEdicion: boolean;
+  fecmod?: string;
+  cantidadAccesos: number;
+  cantidadRolesConAcceso: number;
+  accesos?: Array<{
+    cdRol: string;
+    rolNombre: string;
+    moduloHabilitado: boolean;
+    cantidadPermisos: number;
+  }>;
+}
+
 /************RESUME ENTITY************* */
 export interface UsuarioResumen extends BaseEntity {
   cdUsuario: string;
@@ -87,7 +102,7 @@ export interface ModuloResumen {
   cantidadRolesConAcceso: number;
 }
 // Tipos para la matriz de accesos
-export interface AccesoCompleto {
+export interface AccesoResume {
   cdRol: string;
   rolNombre: string;
   cdModulo: string;
@@ -267,7 +282,7 @@ export interface ModulesFiltersProps {
 export interface MatrizAccesosProps {
   roles: RolResumen[];
   modulos: ModuloResumen[];
-  accesos: AccesoCompleto[];
+  accesos: AccesoResume[];
   onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
   onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
   loading?: boolean;
@@ -276,7 +291,7 @@ export interface MatrizAccesosProps {
 export interface PermisoCellProps {
   rol: RolResumen;
   modulo: ModuloResumen;
-  acceso?: AccesoCompleto;
+  acceso?: AccesoResume;
   tipoPermiso: TipoPermiso;
   configPermiso: PermisoConfig;
   onChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
@@ -285,7 +300,7 @@ export interface PermisoCellProps {
 export interface ModuloHabilitadoCellProps {
   rol: RolResumen;
   modulo: ModuloResumen;
-  acceso?: AccesoCompleto;
+  acceso?: AccesoResume;
   onChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
 }
 
@@ -318,6 +333,18 @@ export interface ModuloFormData {
   cdModulo: string;
   dsModulo: string;
   flgEdicion: boolean;
+}
+
+export interface AccesoFormData {
+  cdRol: string;
+  cdModulo: string;
+  modulosHabilitados: boolean;
+  permisos: TipoPermiso[]
+}
+//  LA LOS CAMPOS AL CREAR Y MODIFICAR SON DIFERENTES
+export interface AccesoFromDataUpdate{
+  modulosHabilitados: boolean;
+  permisos: TipoPermiso[]
 }
 
 /************************************** */

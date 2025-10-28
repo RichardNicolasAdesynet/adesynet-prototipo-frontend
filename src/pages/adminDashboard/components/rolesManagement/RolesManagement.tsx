@@ -1,35 +1,63 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { RolFilters, RolFormData } from '../../../../types/admin.types';
 import { RolesFilters } from './rolesFilters';
 import { EnhancedRolesTable } from './enhancedRolesTable';
 import { RoleForm } from './roleForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
 import type { RolesManagementProps } from './RolesManagement.types';
+import { useAlert } from '../../../../context/AlertContext';
+import { rolesService } from '../../../../services/api/rolesServices';
 
 export const RolesManagement: React.FC<RolesManagementProps> = ({
-  roles,
   onRolEdit,
   onRolCreate,
   onRolToggleStatus,
   onFiltersChange,
   loading = false
 }) => {
+  const { showAlert } = useAlert();
   const [filters, setFilters] = useState<RolFilters>({});
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [editingRol, setEditingRol] = useState<RolFormData | undefined>();
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
 
+  //Obtener roles de la api
+  const [roles, setRoles] = useState<any[]>([]);
+  const [rolesLoading, setRolesLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    cargarRoles();
+  }, []);
+
+  const cargarRoles = async () => {
+    try {
+      setRolesLoading(true);
+      setError(null);
+
+      const rolesReales = await rolesService.getRolesList();
+
+      setRoles(rolesReales);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar los roles';
+      setError(errorMessage);
+      showAlert('error', 'Error al cargar roles', errorMessage);
+    } finally {
+      setRolesLoading(false);
+    }
+
+  }
   // Filtrar roles basado en los filtros
   const filteredRoles = useMemo(() => {
     return roles.filter(rol => {
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
-        const matchesSearch = 
+        const matchesSearch =
           rol.nombre.toLowerCase().includes(searchLower) ||
           rol.descripcion.toLowerCase().includes(searchLower) ||
           rol.cdRol.toLowerCase().includes(searchLower);
-        
+
         if (!matchesSearch) return false;
       }
 
@@ -64,13 +92,55 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     onRolEdit(rol);
   };
 
+  //enviar data a la api en base a form update | create 
   const handleFormSubmit = async (formData: RolFormData) => {
     setFormLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Datos del formulario rol:', formData);
-    setFormLoading(false);
-    setIsFormOpen(false);
+    try {
+      if (formData.cdRol && editingRol) {
+        await rolesService.updateRol(formData.cdRol, {
+          nombre: formData.nombre,
+          descripcion: formData.descripcion,
+        });
+        showAlert('success', 'Éxito', 'Rol actualizado correctamente');
+      } else {
+        //crea nuevo rol
+        await rolesService.createRol({
+          nombre: formData.nombre,
+          descripcion: formData.descripcion,
+          activo: true
+        });
+        showAlert('success', 'Éxito', 'Rol creado correctamente');
+      }
+      await cargarRoles();
+      setFormLoading(false);
+      setIsFormOpen(false);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
+      showAlert('error', 'Error al guardar', errorMessage);
+    } finally {
+      setFormLoading(false);
+    }
   };
+
+  const handleRolToggleStatus = async (cdRol: string, nuevoEstado: boolean) => {
+    try {
+      setRolesLoading(true);
+      if(nuevoEstado){
+        await rolesService.updateRol(cdRol,{activo: nuevoEstado});
+        showAlert('success','Rol activado', 'El rol ha sido activado correctamente');
+      }else{
+        await rolesService.updateRol(cdRol,{activo: nuevoEstado});
+        showAlert('success','Rol activado', 'El rol ha sido activado correctamente');
+      }
+      await cargarRoles();
+      onRolToggleStatus(cdRol,nuevoEstado);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message: 'Error al cambiar de estado al rol';
+      showAlert('error', 'Error', errorMessage);
+    } finally {
+      setRolesLoading(false);
+    }
+  }
 
   const handleFormCancel = () => {
     setIsFormOpen(false);
@@ -114,11 +184,11 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <ExportButton 
+          <ExportButton
             onExport={handleExport}
             loading={exportLoading}
           />
-          
+
           <button
             onClick={handleCreateRole}
             className="
@@ -169,7 +239,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
       <EnhancedRolesTable
         roles={filteredRoles}
         onEdit={handleEditRole}
-        onToggleStatus={onRolToggleStatus}
+        onToggleStatus={handleRolToggleStatus}
         loading={loading}
       />
 
@@ -185,3 +255,4 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     </div>
   );
 };
+

@@ -55,6 +55,7 @@ export const AppRouter: React.FC = () => {
                         : <Navigate to="/dashboard" replace />
                 }
             />
+            
 
             <Route
                 path="/dashboard"

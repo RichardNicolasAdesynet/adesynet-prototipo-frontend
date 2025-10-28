@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { AccessManagementProps } from '../../../../types/admin.types';
 import { AccessManagementTable } from './AccessManagementTable';
 import { RoleDetailsModal } from './roleDetailsModal';
 import { ExportButton } from '../../../../components/shared/exportButton';
+import type { AccessManagementProps } from './AccessManagement.types';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
   roles,

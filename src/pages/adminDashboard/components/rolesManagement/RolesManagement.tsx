@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import type { RolesManagementProps, RolFilters, RolFormData } from '../../../../types/admin.types';
+import type { RolFilters, RolFormData } from '../../../../types/admin.types';
 import { RolesFilters } from './rolesFilters';
 import { EnhancedRolesTable } from './enhancedRolesTable';
 import { RoleForm } from './roleForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
+import type { RolesManagementProps } from './RolesManagement.types';
 
 export const RolesManagement: React.FC<RolesManagementProps> = ({
   roles,

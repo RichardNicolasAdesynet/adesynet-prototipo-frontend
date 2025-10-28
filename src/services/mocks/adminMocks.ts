@@ -147,18 +147,18 @@ export const mockRolesCompletos: RolResumen[] = [
   }
 ];
 
-export const mockUsuarioFormData: UsuarioFormData = {
-  cdUsuario: '',
-  dsUsuario: '',
-  nombre: '',
-  apellidoP: '',
-  apellidoM: '',
-  dni: '',
-  email: '',
-  cdRol: 'ROL05', // Técnico Soporte por defecto
-  estaActivo: true,
-  claveUsuario: ''
-};
+// export const mockUsuarioFormData: UsuarioFormData = {
+//   cdUsuario: '',
+//   dsUsuario: '',
+//   nombre: '',
+//   apellidoP: '',
+//   apellidoM: '',
+//   dni: '',
+//   email: '',
+//   cdRol: 'ROL05', // Técnico Soporte por defecto
+//   estaActivo: true,
+//   claveUsuario: ''
+// };
 
 export const mockAccesos: AccesoCompleto[] = [
   {

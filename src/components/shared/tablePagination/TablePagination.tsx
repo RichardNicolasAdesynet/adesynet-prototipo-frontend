@@ -85,9 +85,9 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
               hover:border-purple-300
             "
           >
+            <option value={5}>5 por página</option>
             <option value={10}>10 por página</option>
             <option value={25}>25 por página</option>
-            <option value={50}>50 por página</option>
             <option value={100}>100 por página</option>
           </select>
           
@@ -196,56 +196,4 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="table-pagination">
-  //     <div className="pagination-info">
-  //       Mostrando {inicioRegistro} a {finRegistro} de {totalRegistros} registros
-  //     </div>
-      
-  //     <div className="pagination-controls">
-  //       <select
-  //         value={registrosPorPagina}
-  //         onChange={(e) => onRegistrosPorPaginaChange(Number(e.target.value))}
-  //         className="records-per-page"
-  //       >
-  //         <option value={10}>10</option>
-  //         <option value={25}>25</option>
-  //         <option value={50}>50</option>
-  //         <option value={100}>100</option>
-  //       </select>
-
-  //       <div className="pagination-buttons">
-  //         <button
-  //           onClick={() => onPaginaChange(paginaActual - 1)}
-  //           disabled={paginaActual === 1}
-  //           className="pagination-button"
-  //           type="button"
-  //         >
-  //           ‹
-  //         </button>
-
-  //         {getPaginas().map(pagina => (
-  //           <button
-  //             key={pagina}
-  //             onClick={() => onPaginaChange(pagina)}
-  //             className={`pagination-button ${pagina === paginaActual ? 'active' : ''}`}
-  //             type="button"
-  //           >
-  //             {pagina}
-  //           </button>
-  //         ))}
-
-  //         <button
-  //           onClick={() => onPaginaChange(paginaActual + 1)}
-  //           disabled={paginaActual === totalPaginas}
-  //           className="pagination-button"
-  //           type="button"
-  //         >
-  //           ›
-  //         </button>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 };

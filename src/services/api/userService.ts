@@ -1,43 +1,8 @@
 // src/services/api/userService.ts
 import { apiClient } from './apiClient';
 import { API_CONFIG } from '../../config/api';
-import type { ApiResponse, PaginatedResponse } from '../../types/api.types';
-import type { UsuarioResumen, UsuarioFormData } from '../../types/admin.types';
-
-// Interface para respuesta detallada de usuario
-interface UsuarioDetallado {
-  cdUsuario: string;
-  dsUsuario: string;
-  nombre: string;
-  apellidoP: string;
-  apellidoM: string;
-  nombreCompleto: string;
-  dni: string;
-  email: string;
-  estadoCivil: string;
-  sexo: string;
-  fecNacimiento: string;
-  direcc: string;
-  cdDepartamento: string;
-  cdProvincia: string;
-  cdDistrito: string;
-  cdZona: string;
-  telef1: string;
-  telef2: string;
-  cdRol: string;
-  rolNombre: string;
-  cdArea: string;
-  cdCargo: string;
-  sueldo: number;
-  fecIngreso: string;
-  fecCese: string | null;
-  estaActivoLaboralmente: boolean;
-  flgBloqueado: boolean;
-  flgCambiarClave: boolean;
-  fecModClave: string;
-  cdUsuCre: string;
-  fecCre: string;
-}
+import type { PaginatedResponse } from '../../types/api.types';
+import type { UsuarioDetallado, UsuarioResumen } from '../../types/admin.types';
 
 // Interface para cambio de clave
 interface CambioClaveRequest {

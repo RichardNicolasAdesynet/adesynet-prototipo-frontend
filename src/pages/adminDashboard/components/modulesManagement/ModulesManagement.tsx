@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import type { ModulesManagementProps, ModuloFilters, ModuloFormData } from '../../../../types/admin.types';
+import type {ModuloFilters, ModuloFormData } from '../../../../types/admin.types';
 import { ModulesFilters } from './modulesFilters';
 import { EnhancedModulesTable } from './enhancedModulesTable';
 import { ModuleForm } from './moduleForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
+import type { ModulesManagementProps } from './ModulesManagement.types';
 
 export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   modulos,

@@ -43,11 +43,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       setUsuariosLoading(true);
       setError(null);
       console.log('🔄 Cargando usuarios desde API...');
-
+      //obtengo los usuarios  
       const usuariosReales = await userService.getUsuariosList();
-      //
       console.log('✅ Usuarios cargados:', usuariosReales);
 
+      //los setteo en set usuarios para despues tratar con toda esa data de usuarios
       setUsuarios(usuariosReales);
     } catch (err) {
       console.error('❌ Error cargando usuarios:', err);
@@ -347,56 +347,4 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       />
     </div>
   );
-
-  // return (
-  //   <div className="users-management">
-  //     <div className="section-header">
-  //       <h2 className="section-title">Gestión de Usuarios</h2>
-  //       <div className="header-actions">
-  //         <ExportButton 
-  //           onExport={handleExport}
-  //           loading={exportLoading}
-  //         />
-  //         <button
-  //           onClick={handleCreateUser}
-  //           className="create-button"
-  //           type="button"
-  //         >
-  //           + Crear Usuario
-  //         </button>
-  //       </div>
-  //     </div>
-
-  //     <UsersFilters
-  //       roles={roles}
-  //       filters={filters}
-  //       onFiltersChange={handleFiltersChange}
-  //     />
-
-  //     <div className="users-summary">
-  //       <p>
-  //         Mostrando {filteredUsuarios.length} de {usuarios.length} usuarios
-  //         {filters.searchTerm && ` para "${filters.searchTerm}"`}
-  //       </p>
-  //     </div>
-
-  //     {/* REEMPLANZADO UsersTable con EnhancedUsersTable */}
-  //     <EnhancedUsersTable
-  //       usuarios={filteredUsuarios}
-  //       onEdit={handleEditUser}
-  //       onToggleStatus={onUsuarioToggleStatus}
-  //       loading={loading}
-  //     />
-
-  //     <UserForm
-  //       usuario={editingUsuario}
-  //       roles={roles}
-  //       isOpen={isFormOpen}
-  //       isEditing={isEditing}
-  //       onSubmit={handleFormSubmit}
-  //       onCancel={handleFormCancel}
-  //       loading={formLoading}
-  //     />
-  //   </div>
-  // );
 };

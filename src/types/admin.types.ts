@@ -8,6 +8,8 @@ export interface DashboardStats {
   ultimaActualizacion: string;
 }
 
+/************RESUME ENTITY************* */
+
 export interface UsuarioResumen extends BaseEntity {
   cdUsuario: string;
   dsUsuario: string;
@@ -34,6 +36,9 @@ export interface ModuloResumen {
   cantidadRolesConAcceso: number;
 }
 
+/********************************** */
+
+
 // Props para los componentes
 export interface DashboardHeaderProps {
   stats: DashboardStats;
@@ -50,35 +55,11 @@ export interface StatsCardProps {
   tipo?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
 }
 
-// Tipos para formularios de usuario
-export interface UsuarioFormData {
-  cdUsuario: string;
-  dsUsuario: string;
-  nombre: string;
-  apellidoP: string;
-  apellidoM?: string;
-  dni: string;
-  email: string;
-  cdRol: string;
-  estaActivo: boolean;
-  claveUsuario?: string;
-}
-
+// Props para componentes de usuarios
 export interface UsuarioFilters {
   cdRol?: string;
   estaActivo?: boolean;
   searchTerm?: string;
-}
-
-// Props para componentes de usuarios
-export interface UsersManagementProps {
-  //usuarios: UsuarioResumen[];
-  roles: RolResumen[];
-  onUsuarioEdit: (usuario: UsuarioResumen) => void;
-  onUsuarioCreate: () => void;
-  onUsuarioToggleStatus: (cdUsuario: string, nuevoEstado: boolean) => void;
-  onFiltersChange: (filters: UsuarioFilters) => void;
-  loading?: boolean;
 }
 
 export interface UserFormProps {
@@ -90,14 +71,6 @@ export interface UserFormProps {
   onCancel: () => void;
   loading?: boolean;
 }
-
-export interface UsersTableProps {
-  usuarios: UsuarioResumen[];
-  onEdit: (usuario: UsuarioResumen) => void;
-  onToggleStatus: (cdUsuario: string, nuevoEstado: boolean) => void;
-  loading?: boolean;
-}
-
 export interface UsersFiltersProps {
   roles: RolResumen[];
   filters: UsuarioFilters;
@@ -148,13 +121,7 @@ export interface UserTableRowProps {
 }
 
 
-// Tipos para formularios de roles
-export interface RolFormData {
-  cdRol: string;
-  nombre: string;
-  descripcion: string;
-  activo: boolean;
-}
+
 
 export interface RolFilters {
   activo?: boolean;
@@ -193,12 +160,6 @@ export interface RolesFiltersProps {
 }
 
 
-// Tipos para formularios de módulos
-export interface ModuloFormData {
-  cdModulo: string;
-  dsModulo: string;
-  flgEdicion: boolean;
-}
 
 export interface ModuloFilters {
   flgEdicion?: boolean;
@@ -299,3 +260,36 @@ export interface ModuloHabilitadoCellProps {
   acceso?: AccesoCompleto;
   onChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
 }
+
+//---*--------DATOS PARA FORMS-----------------//
+
+// Tipos para formularios de usuario
+export interface UsuarioFormData {
+  cdUsuario: string;
+  dsUsuario: string;
+  nombre: string;
+  apellidoP: string;
+  apellidoM?: string;
+  dni: string;
+  email: string;
+  cdRol: string;
+  estaActivo: boolean;
+  claveUsuario?: string;
+}
+
+// Tipos para formularios de roles
+export interface RolFormData {
+  cdRol: string;
+  nombre: string;
+  descripcion: string;
+  activo: boolean;
+}
+
+// Tipos para formularios de módulos
+export interface ModuloFormData {
+  cdModulo: string;
+  dsModulo: string;
+  flgEdicion: boolean;
+}
+
+/************************************** */

@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/auth/useAuth';
 import { Login } from '../components/auth';
-
 import { AdminDashboard } from '../pages/adminDashboard/AdminDashboard';
 import { TecnicoDashboard } from '../pages/tecnicoDashboard/TecnicoDashboard';
 
@@ -22,6 +21,14 @@ export const AppRouter: React.FC = () => {
         return <div>Cargando...</div>;
     }
 
+    const esAdminOGerente = () => {
+        return usuario && ['administrador', 'gerente'].includes(usuario.rol);
+    }
+
+    const esTecnicoOUsuario =() =>{
+        return usuario && ['tecnico', 'desarrollador', 'soporte', 'supervisor'].includes(usuario.rol);
+    }
+
     return (
         <Routes>
             {/* Ruta pública */}
@@ -33,7 +40,7 @@ export const AppRouter: React.FC = () => {
             <Route
                 path="/admin"
                 element={
-                    estaAutenticado && ['administrador', 'gerente'].includes(usuario?.rol || '')
+                    estaAutenticado && esAdminOGerente()
                         ? <AdminDashboard />
                         : <Navigate to="/dashboard" replace />
                 }
@@ -43,7 +50,7 @@ export const AppRouter: React.FC = () => {
             <Route
                 path='/admin/*'
                 element={
-                    estaAutenticado && ['administrador', 'gerente'].includes(usuario?.rol || '')
+                    estaAutenticado && esAdminOGerente()
                         ? <AdminDashboard />
                         : <Navigate to="/dashboard" replace />
                 }
@@ -52,7 +59,7 @@ export const AppRouter: React.FC = () => {
             <Route
                 path="/dashboard"
                 element={
-                    estaAutenticado && ['tecnico', 'desarrollador', 'soporte', 'supervisor'].includes(usuario?.rol || '')
+                    estaAutenticado && esTecnicoOUsuario()
                         ? <TecnicoDashboard />
                         : <Navigate to="/admin/*" replace />
                 }
@@ -63,22 +70,17 @@ export const AppRouter: React.FC = () => {
                 path="/"
                 element={
                     estaAutenticado
-                        ? (['administrador', 'gerente'].includes(usuario?.rol || '')
+                        ? (esAdminOGerente()
                             ? <Navigate to="/admin" replace />
                             : <Navigate to="/dashboard" replace />)
                         : <Navigate to="/login" replace />
                 }
             />
 
-            {/* <Route
-                path="/"
-                element={<Navigate to="/admin" replace />}
-            /> */}
-
             {/* Ruta de fallback para URLs no encontradas */}
             <Route
                 path="*"
-                element={<Navigate to="/admin" replace />}
+                element={<Navigate to="/" replace />}
             />
         </Routes>
     );

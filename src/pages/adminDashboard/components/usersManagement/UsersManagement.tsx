@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import type { UsersManagementProps, UsuarioFilters, UsuarioFormData } from '../../../../types/admin.types';
+import type { UsuarioFilters, UsuarioFormData } from '../../../../types/admin.types';
 import { UsersFilters } from './usersFilters';
 import { EnhancedUsersTable } from './enhancedUsersTable';
 import { UserForm } from './userForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
 import { userService } from '../../../../services/api/userService';
 import { useAlert } from '../../../../context/AlertContext';
+import type { UsersManagementProps } from './UsersManagement.types';
 
 export const UsersManagement: React.FC<UsersManagementProps> = ({
   roles,

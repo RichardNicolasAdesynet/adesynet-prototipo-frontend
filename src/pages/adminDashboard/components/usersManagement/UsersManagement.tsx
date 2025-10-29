@@ -7,9 +7,9 @@ import { ExportButton } from '../../../../components/shared/exportButton';
 import { userService } from '../../../../services/api/userService';
 import { useAlert } from '../../../../context/AlertContext';
 import type { UsersManagementProps } from './UsersManagement.types';
+import { rolesService } from '../../../../services/api/rolesServices';
 
 export const UsersManagement: React.FC<UsersManagementProps> = ({
-  roles,
   onUsuarioEdit,
   onUsuarioCreate,
   onUsuarioToggleStatus,
@@ -27,6 +27,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [rolesUsuario, setRolesUsuario] = useState<any[]>([]);
 
   const testAlert = () => {
     showAlert('success', '¡Prueba!', 'Esta es una alerta de prueba');
@@ -45,6 +46,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       console.log('🔄 Cargando usuarios desde API...');
       //obtengo los usuarios  
       const usuariosReales = await userService.getUsuariosList();
+      cargarRolUsuario();
       console.log('✅ Usuarios cargados:', usuariosReales);
 
       //los setteo en set usuarios para despues tratar con toda esa data de usuarios
@@ -59,6 +61,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       setUsuariosLoading(false);
     }
   };
+
+  const cargarRolUsuario = async () =>{
+    const rolesUsuarioReales = await rolesService.getRolesList();
+    setRolesUsuario(rolesUsuarioReales);
+  }
 
   // Filtrar usuarios basado en los filtros
   const filteredUsuarios = useMemo(() => {
@@ -306,7 +313,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
 
       {/* Filtros */}
       <UsersFilters
-        roles={roles}
+        roles={rolesUsuario}
         filters={filters}
         onFiltersChange={handleFiltersChange}
       />
@@ -339,7 +346,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       {/* Modal de Formulario */}
       <UserForm
         usuario={editingUsuario}
-        roles={roles}
+        roles={rolesUsuario}
         isOpen={isFormOpen}
         isEditing={isEditing}
         onSubmit={handleFormSubmit}

@@ -139,7 +139,6 @@ export const AdminDashboard: React.FC = () => {
               {location.pathname === '/admin/usuarios' && (
                 <div className="animate-fade-in">
                   <UsersManagement
-                    roles={mockRolesCompletos}
                     onUsuarioEdit={handleUsuarioEdit}
                     onUsuarioCreate={handleUsuarioCreate}
                     onUsuarioToggleStatus={handleUsuarioToggleStatus}
@@ -152,7 +151,6 @@ export const AdminDashboard: React.FC = () => {
               {location.pathname === '/admin/roles' && (
                 <div className="animate-fade-in">
                   <RolesManagement
-                    roles={mockRolesCompletos}
                     onRolEdit={(rol) => console.log('Editando rol:', rol)}
                     onRolCreate={() => console.log('Creando nuevo rol')}
                     onRolToggleStatus={async (cdRol, nuevoEstado) => {

@@ -18,7 +18,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     apellidoM: '',
     dni: '',
     email: '',
-    cdRol: 'ROL05',
+    cdRol: '',
     estaActivo: true,
     claveUsuario: ''
   });
@@ -29,6 +29,7 @@ export const UserForm: React.FC<UserFormProps> = ({
   useEffect(() => {
     if (usuario) {
       setFormData(usuario);
+      console.log('Current formData.estaActivo:', formData.estaActivo);
     } else {
       setFormData({
         cdUsuario: '',
@@ -38,14 +39,14 @@ export const UserForm: React.FC<UserFormProps> = ({
         apellidoM: '',
         dni: '',
         email: '',
-        cdRol: 'ROL05',
+        cdRol: '',
         estaActivo: true,
         claveUsuario: ''
       });
     }
     setErrors({});
   }, [usuario, isOpen]);
-
+  
   const validateForm = (): boolean => {
     const newErrors: Partial<UsuarioFormData> = {};
 
@@ -132,7 +133,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Editar Usuario' : 'Crear Usuario'}
           </h2>
-          <button 
+          <button
             onClick={onCancel}
             className="
               w-8 h-8
@@ -167,8 +168,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdUsuario 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.cdUsuario
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -200,8 +201,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.dsUsuario 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.dsUsuario
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -231,8 +232,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.nombre 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.nombre
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -262,8 +263,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.apellidoP 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.apellidoP
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -315,8 +316,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.dni 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.dni
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -347,8 +348,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.email 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                  ${errors.email
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                     : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                   }
                 `}
@@ -407,8 +408,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                     w-full px-4 py-3
                     border rounded-xl
                     focus:outline-none focus:ring-2 transition-all duration-200
-                    ${errors.claveUsuario 
-                      ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
+                    ${errors.claveUsuario
+                      ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
                       : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
                     }
                   `}

@@ -83,7 +83,7 @@ export const rolesService = {
     activo? : boolean;
   }): Promise<any> {
     const response = await apiClient.put<any>(
-      `${API_CONFIG.ENDPOINTS.ROLES}/UpdateRol/${idRol}`,
+      `${API_CONFIG.ENDPOINTS.ROLES}/Update/${idRol}`,
       rolData
     );
     

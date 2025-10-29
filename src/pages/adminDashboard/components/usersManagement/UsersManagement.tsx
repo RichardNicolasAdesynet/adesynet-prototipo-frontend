@@ -113,19 +113,20 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     onUsuarioCreate();
   };
 
-  const handleEditUser = (usuario: any) => {
-    // ✅ ACTUALIZADO: Usar datos reales del usuario
+  const handleEditUser = async (usuario: any) => {
+    const {cdUsuario,dsUsuario,nombre,apellidoP,apellidoM,dni,email,cdRol,estaActivoLaboralmente} = await userService.getUsuario(usuario.cdUsuario);
     const formData: UsuarioFormData = {
-      cdUsuario: usuario.cdUsuario,
-      dsUsuario: usuario.dsUsuario,
-      nombre: usuario.nombreCompleto.split(' ')[0] || '',
-      apellidoP: usuario.nombreCompleto.split(' ')[1] || '',
-      apellidoM: usuario.nombreCompleto.split(' ')[2] || '',
-      dni: usuario.dni || '',
-      email: usuario.email || '',
-      cdRol: usuario.cdRol,
-      estaActivo: usuario.estaActivo
+      cdUsuario: cdUsuario,
+      dsUsuario: dsUsuario,
+      nombre: nombre,
+      apellidoP: apellidoP,
+      apellidoM: apellidoM,
+      dni: dni,
+      email: email,
+      cdRol: cdRol,
+      estaActivo: estaActivoLaboralmente
     };
+    console.log('cargando formData.estaActivo asignado desde usuario:', formData.estaActivo);
     setEditingUsuario(formData);
     setIsFormOpen(true);
     onUsuarioEdit(usuario);

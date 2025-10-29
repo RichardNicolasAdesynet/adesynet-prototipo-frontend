@@ -80,12 +80,13 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     onRolCreate();
   };
 
-  const handleEditRole = (rol: any) => {
+  const handleEditRole = async (rol: any) => {
+    const {cdRol, nombre,descripcion,activo} = await rolesService.getRol(rol.cdRol);
     const formData: RolFormData = {
-      cdRol: rol.cdRol,
-      nombre: rol.nombre,
-      descripcion: rol.descripcion,
-      activo: rol.activo
+      cdRol: cdRol,
+      nombre: nombre,
+      descripcion: descripcion,
+      activo: activo
     };
     setEditingRol(formData);
     setIsFormOpen(true);
@@ -125,17 +126,19 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
   const handleRolToggleStatus = async (cdRol: string, nuevoEstado: boolean) => {
     try {
       setRolesLoading(true);
-      if(nuevoEstado){
-        await rolesService.updateRol(cdRol,{activo: nuevoEstado});
-        showAlert('success','Rol activado', 'El rol ha sido activado correctamente');
-      }else{
-        await rolesService.updateRol(cdRol,{activo: nuevoEstado});
-        showAlert('success','Rol activado', 'El rol ha sido activado correctamente');
+      const getRol = await rolesService.getRol(cdRol);
+      const {nombre, descripcion } = getRol;
+      if (nuevoEstado) {
+        await rolesService.updateRol(cdRol, {nombre: nombre,descripcion : descripcion, activo: nuevoEstado });
+        showAlert('success', 'Rol activado', 'El rol ha sido activado correctamente');
+      } else {
+        await rolesService.updateRol(cdRol, {nombre: nombre,descripcion : descripcion, activo: nuevoEstado });
+        showAlert('warning', 'Rol activado', 'El rol ha sido desactivado correctamente');
       }
       await cargarRoles();
-      onRolToggleStatus(cdRol,nuevoEstado);
+      onRolToggleStatus(cdRol, nuevoEstado);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message: 'Error al cambiar de estado al rol';
+      const errorMessage = error instanceof Error ? error.message : 'Error al cambiar de estado al rol';
       showAlert('error', 'Error', errorMessage);
     } finally {
       setRolesLoading(false);
@@ -212,6 +215,16 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         </div>
       </div>
 
+      {/* ✅ NUEVO: Mostrar error si existe */}
+      {error && (
+        <div className="error-message">
+          ❌ Error: {error}
+          <button onClick={cargarRoles} className="retry-button">
+            Reintentar
+          </button>
+        </div>
+      )}
+
       {/* Filtros */}
       <RolesFilters
         filters={filters}
@@ -240,7 +253,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         roles={filteredRoles}
         onEdit={handleEditRole}
         onToggleStatus={handleRolToggleStatus}
-        loading={loading}
+        loading={rolesLoading || loading}
       />
 
       {/* Modal de Formulario */}

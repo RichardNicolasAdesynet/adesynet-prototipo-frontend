@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, type ReactNode } from 'react
 import { authService } from '../services/api/authService';
 import { apiClient } from '../services/api/apiClient';
 import type { AuthContextType, Credenciales, LoginResult, Usuario } from '../types/auth.types';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -13,6 +14,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const navigate = useNavigate();
   const [authState, setAuthState] = useState({
     usuario: null as Usuario | null,
     token: null as string | null,
@@ -143,6 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       estaAutenticado: false,
       cargando: false,
     });
+    navigate('/login', {replace: true});
   };
 
   const value: AuthContextType = {

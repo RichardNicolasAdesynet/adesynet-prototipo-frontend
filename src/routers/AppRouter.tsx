@@ -29,21 +29,19 @@ export const AppRouter: React.FC = () => {
         return usuario && ['tecnico', 'desarrollador', 'soporte', 'supervisor'].includes(usuario.rol);
     }
 
+    const getDefaultRoute = () => {
+        if (!estaAutenticado) return '/login';
+        if (esAdminOGerente()) return '/admin';
+        if (esTecnicoOUsuario()) return '/dashboard';
+        return '/login'; // Fallback
+    }
+
     return (
         <Routes>
             {/* Ruta pública */}
             <Route
                 path="/login"
-                element={!estaAutenticado ? <Login /> : <Navigate to="/dashboard" replace />}
-            />
-
-            <Route
-                path="/admin"
-                element={
-                    estaAutenticado && esAdminOGerente()
-                        ? <AdminDashboard />
-                        : <Navigate to="/dashboard" replace />
-                }
+                element={!estaAutenticado ? <Login /> : <Navigate to={getDefaultRoute()} replace />}
             />
 
             {/* Rutas protegidas por rol */}
@@ -52,7 +50,7 @@ export const AppRouter: React.FC = () => {
                 element={
                     estaAutenticado && esAdminOGerente()
                         ? <AdminDashboard />
-                        : <Navigate to="/dashboard" replace />
+                        : <Navigate to="/login" replace />
                 }
             />
             
@@ -62,26 +60,21 @@ export const AppRouter: React.FC = () => {
                 element={
                     estaAutenticado && esTecnicoOUsuario()
                         ? <TecnicoDashboard />
-                        : <Navigate to="/admin/*" replace />
+                        : <Navigate to="/login" replace />
                 }
             />
 
             {/* ✅ CORREGIDO: Ruta por defecto SIN bucle */}
             <Route
                 path="/"
-                element={
-                    estaAutenticado
-                        ? (esAdminOGerente()
-                            ? <Navigate to="/admin" replace />
-                            : <Navigate to="/dashboard" replace />)
-                        : <Navigate to="/login" replace />
+                element={<Navigate to={getDefaultRoute()} replace />
                 }
             />
 
             {/* Ruta de fallback para URLs no encontradas */}
             <Route
                 path="*"
-                element={<Navigate to="/" replace />}
+                element={<Navigate to={getDefaultRoute()} replace />}
             />
         </Routes>
     );

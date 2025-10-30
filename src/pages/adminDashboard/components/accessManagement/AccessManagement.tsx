@@ -1,21 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AccessManagementTable } from './AccessManagementTable';
 import { RoleDetailsModal } from './roleDetailsModal';
 import { ExportButton } from '../../../../components/shared/exportButton';
 import type { AccessManagementProps } from './AccessManagement.types';
+import { rolesService } from '../../../../services/api/rolesServices';
+import { useAlert } from '../../../../context/AlertContext';
+import { modulosService } from '../../../../services/api/modulosService';
+import { accesosService } from '../../../../services/api/accesosService';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
-  roles,
-  modulos,
-  accesos,
   onPermisoChange,
   onModuloHabilitadoChange,
   onBulkPermissionChange,
   loading = false
 }) => {
+  const { showAlert } = useAlert();
   const [exportLoading, setExportLoading] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+
+  const [roles, setRoles] = useState<any[]>([]);
+  const [modulos, setModulos] = useState<any[]>([]);
+  const [accesos, setAccesos] = useState<any[]>([]);
+  const [accesosLoading, setAccesosLoading] = useState<boolean>(true);
+
+  useEffect(()=>{
+    cargarAccesos();
+    cargarModulos();
+    cargarRoles();
+  }, [])
+
+
+  const cargarRoles = async () => {
+    try {
+      const rolesPagiandosReales = await rolesService.getAllRoles();
+      const rolesReales: any[] = rolesPagiandosReales.data;
+      setRoles(rolesReales);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error al cargar roles';
+      showAlert('error', 'Error al cargar', errorMsg);
+    }
+  }
+
+  const cargarModulos = async () => {
+    try {
+      const modulosPaginadosReales = await modulosService.getAllModulos();
+      const modulosReales: any[] = modulosPaginadosReales.data;
+      setModulos(modulosReales);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error al cargar modulos';
+      showAlert('error', 'Error al cargar', errorMsg);
+    }
+  }
+
+  const cargarAccesos = async () => {
+    try {
+      setAccesosLoading(true);
+      const accesosPaginadoReales = await accesosService.getAllAccesos();
+      const accesosReales: any[] = accesosPaginadoReales.data;
+      console.log(accesosReales);
+      setAccesos(accesosReales);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error al cargar accesos';
+      showAlert('error', 'Error al cargar', errorMsg);
+    }finally{
+      setAccesosLoading(false);
+    }
+  }
 
   const handleExport = async (formato: 'excel' | 'pdf') => {
     setExportLoading(true);
@@ -90,8 +141,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
             <span className="text-lg">🎯</span>
             <span>Asignación Masiva</span>
           </button>
-          
-          <ExportButton 
+
+          <ExportButton
             onExport={handleExport}
             loading={exportLoading}
           />
@@ -121,7 +172,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           <div className="text-2xl font-bold text-indigo-700">{roles.length}</div>
           <div className="text-sm text-slate-600">Roles Activos</div>
         </div>
-        
+
         <div className="text-center">
           <div className="
             w-12 h-12
@@ -135,7 +186,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           <div className="text-2xl font-bold text-emerald-700">{modulos.length}</div>
           <div className="text-sm text-slate-600">Módulos Disponibles</div>
         </div>
-        
+
         <div className="text-center">
           <div className="
             w-12 h-12
@@ -159,7 +210,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         accesos={accesos}
         modulos={modulos}
         onRoleClick={handleRoleClick}
-        loading={loading}
+        loading={accesosLoading ||loading}
       />
 
       {/* Modal de Detalles del Rol */}

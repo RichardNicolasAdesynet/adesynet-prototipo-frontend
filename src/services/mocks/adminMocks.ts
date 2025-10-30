@@ -1,4 +1,4 @@
-import type { DashboardStats, UsuarioResumen, RolResumen, ModuloResumen, UsuarioFormData, AccesoCompleto } from '../../types/admin.types';
+import type { DashboardStats, UsuarioResumen, RolResumen, ModuloResumen, UsuarioFormData, AccesoResume } from '../../types/admin.types';
 
 export const mockDashboardStats: DashboardStats = {
   totalUsuarios: 45,
@@ -160,7 +160,7 @@ export const mockRolesCompletos: RolResumen[] = [
 //   claveUsuario: ''
 // };
 
-export const mockAccesos: AccesoCompleto[] = [
+export const mockAccesos: AccesoResume[] = [
   {
     cdRol: 'ROL03',
     rolNombre: 'Administrador del Sistema',

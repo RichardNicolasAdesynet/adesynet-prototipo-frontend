@@ -8,7 +8,7 @@ import { UsersManagement } from './components/usersManagement';
 import { RolesManagement } from './components/rolesManagement';
 import { ModulesManagement } from './components/modulesManagement';
 import { AccessManagement } from './components/accessManagement';
-import { mockDashboardStats, mockRolesCompletos, mockModulos, mockAccesos } from '../../services/mocks/adminMocks';
+import { mockDashboardStats } from '../../services/mocks/adminMocks';
 import type { DashboardStats } from '../../types/admin.types';
 
 export const AdminDashboard: React.FC = () => {
@@ -130,9 +130,6 @@ export const AdminDashboard: React.FC = () => {
               {location.pathname === '/admin/accesos' && (
                 <div className="animate-fade-in">
                   <AccessManagement
-                    roles={mockRolesCompletos}
-                    modulos={mockModulos}
-                    accesos={mockAccesos}
                     onPermisoChange={async (cdRol, cdModulo, tipoPermiso, asignado) => {
                       console.log(`Permiso ${tipoPermiso} ${asignado ? 'asignado' : 'removido'} para rol ${cdRol} en módulo ${cdModulo}`);
                     }}

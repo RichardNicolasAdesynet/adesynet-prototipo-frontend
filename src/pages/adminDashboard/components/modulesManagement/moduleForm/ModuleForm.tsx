@@ -99,7 +99,7 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
           <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Editar Módulo' : 'Crear Módulo'}
           </h2>
-          <button 
+          <button
             onClick={onCancel}
             className="
               w-8 h-8
@@ -119,40 +119,30 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
           <div className="space-y-6">
             {/* Código de Módulo */}
-            <div className="space-y-2">
-              <label htmlFor="cdModulo" className="
+            {isEditing && (
+              <div className="space-y-2">
+                <label className="
                 block text-sm font-medium text-slate-700
-              ">
-                Código de Módulo *
-              </label>
-              <input
-                id="cdModulo"
-                type="text"
-                value={formData.cdModulo}
-                onChange={(e) => handleChange('cdModulo', e.target.value.toUpperCase())}
-                className={`
-                  w-full px-4 py-3
-                  border rounded-xl
-                  focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdModulo 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
-                    : 'border-slate-300 focus:ring-emerald-500 focus:border-transparent'
-                  }
-                `}
-                maxLength={5}
-                disabled={isEditing}
-                placeholder="MOD01"
-              />
-              {errors.cdModulo && (
-                <p className="text-rose-600 text-sm flex items-center space-x-1">
-                  <span>⚠️</span>
-                  <span>{errors.cdModulo}</span>
+                ">
+                  Código de Módulo
+                </label>
+                <div className="w-full px-4 py-3 
+                bg-slate-50 border border-slate-300 rounded-xl
+                text-slate-700 font-mono
+                ">
+                  {formData.cdModulo}
+                </div>
+                <p className="text-slate-500 text-sm">
+                  Identificador único del módulo
                 </p>
-              )}
-              <p className="text-slate-500 text-sm">
-                5 caracteres (ej: MOD01)
-              </p>
-            </div>
+                {errors.cdModulo && (
+                  <p className="text-rose-600 text-sm flex items-center space-x-1">
+                    <span>⚠️</span>
+                    <span>{errors.cdModulo}</span>
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Descripción del Módulo */}
             <div className="space-y-2">
@@ -170,12 +160,14 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.dsModulo 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
-                    : 'border-slate-300 focus:ring-emerald-500 focus:border-transparent'
+                  ${errors.dsModulo
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
+                    : `border-slate-300 focus:ring-emerald-500 focus:border-transparent
+                        ${formData.dsModulo ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
+
                   }
                 `}
-                placeholder="Sistema de Seguridad"
+                placeholder="ejm. Sistema de Seguridad"
               />
               {errors.dsModulo && (
                 <p className="text-rose-600 text-sm flex items-center space-x-1">

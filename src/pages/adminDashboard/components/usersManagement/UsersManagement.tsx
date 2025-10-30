@@ -10,10 +10,6 @@ import type { UsersManagementProps } from './UsersManagement.types';
 import { rolesService } from '../../../../services/api/rolesServices';
 
 export const UsersManagement: React.FC<UsersManagementProps> = ({
-  onUsuarioEdit,
-  onUsuarioCreate,
-  onUsuarioToggleStatus,
-  onFiltersChange,
   loading = false
 }) => {
   const { showAlert } = useAlert();
@@ -111,13 +107,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
 
   const handleFiltersChange = (newFilters: UsuarioFilters) => {
     setFilters(newFilters);
-    onFiltersChange(newFilters);
   };
 
   const handleCreateUser = () => {
     setEditingUsuario(undefined);
     setIsFormOpen(true);
-    onUsuarioCreate();
   };
 
   const handleEditUser = async (usuario: any) => {
@@ -136,7 +130,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     console.log('cargando formData.estaActivo asignado desde usuario:', formData.estaActivo);
     setEditingUsuario(formData);
     setIsFormOpen(true);
-    onUsuarioEdit(usuario);
   };
 
   // ✅ ACTUALIZADO: Manejar envío del formulario con API real
@@ -214,7 +207,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       // Recargar usuarios para reflejar el cambio
       await cargarUsuarios();
 
-      onUsuarioToggleStatus(cdUsuario, nuevoEstado);
     } catch (err) {
       console.error('❌ Error cambiando estado:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error al cambiar estado';

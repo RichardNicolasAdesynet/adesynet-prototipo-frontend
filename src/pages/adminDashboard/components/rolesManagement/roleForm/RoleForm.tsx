@@ -105,7 +105,7 @@ export const RoleForm: React.FC<RoleFormProps> = ({
           <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Editar Rol' : 'Crear Rol'}
           </h2>
-          <button 
+          <button
             onClick={onCancel}
             className="
               w-8 h-8
@@ -125,40 +125,30 @@ export const RoleForm: React.FC<RoleFormProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
           <div className="space-y-6">
             {/* Código de Rol */}
-            <div className="space-y-2">
-              <label htmlFor="cdRol" className="
+            {isEditing && (
+              <div className="space-y-2">
+                <label className="
                 block text-sm font-medium text-slate-700
               ">
-                Código de Rol *
-              </label>
-              <input
-                id="cdRol"
-                type="text"
-                value={formData.cdRol}
-                onChange={(e) => handleChange('cdRol', e.target.value.toUpperCase())}
-                className={`
-                  w-full px-4 py-3
-                  border rounded-xl
-                  focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdRol 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
-                    : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
-                  }
-                `}
-                maxLength={5}
-                disabled={isEditing}
-                placeholder="ROL01"
-              />
-              {errors.cdRol && (
-                <p className="text-rose-600 text-sm flex items-center space-x-1">
-                  <span>⚠️</span>
-                  <span>{errors.cdRol}</span>
+                  Código de Rol
+                </label>
+                <div className="w-full px-4 py-3 
+                bg-slate-50 border border-slate-300 rounded-xl
+                text-slate-700 font-mono
+                ">
+                  {formData.cdRol}
+                </div>
+                <p className="text-slate-500 text-sm">
+                  Identificador único del rol
                 </p>
-              )}
-              <p className="text-slate-500 text-sm">
-                5 caracteres (ej: ROL01)
-              </p>
-            </div>
+                {errors.cdRol && (
+                  <p className="text-rose-600 text-sm flex items-center space-x-1">
+                    <span>⚠️</span>
+                    <span>{errors.cdRol}</span>
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Nombre del Rol */}
             <div className="space-y-2">
@@ -176,9 +166,10 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                   w-full px-4 py-3
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.nombre 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
-                    : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
+                  ${errors.nombre
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
+                    : `border-slate-300 focus:ring-purple-500 focus:border-transparent
+                        ${formData.nombre ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 placeholder="Administrador del Sistema"
@@ -207,9 +198,10 @@ export const RoleForm: React.FC<RoleFormProps> = ({
                   border rounded-xl
                   focus:outline-none focus:ring-2 transition-all duration-200
                   resize-none
-                  ${errors.descripcion 
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50' 
-                    : 'border-slate-300 focus:ring-purple-500 focus:border-transparent'
+                  ${errors.descripcion
+                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
+                    : `border-slate-300 focus:ring-purple-500 focus:border-transparent
+                        ${formData.descripcion ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 rows={4}

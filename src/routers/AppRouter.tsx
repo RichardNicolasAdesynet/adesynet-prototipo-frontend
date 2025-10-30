@@ -18,7 +18,16 @@ export const AppRouter: React.FC = () => {
             : '/login'
     });
     if (cargando) {
-        return <div>Cargando...</div>;
+        return (
+            <>
+                <div className="fixed inset-0 bg-black/80 text-white flex flex-col justify-center items-center z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mb-4"></div>
+                    <div className="text-white text-xl font-semibold animate-pulse"> Cargando...</div>
+                    <div className="text-gray-300 text-sm mt-2">Por favor espere</div>
+                </div>
+            </>
+        );
+        console.log({cargando});
     }
 
     const esAdminOGerente = () => {

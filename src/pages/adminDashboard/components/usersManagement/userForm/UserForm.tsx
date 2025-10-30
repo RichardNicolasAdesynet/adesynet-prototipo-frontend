@@ -203,7 +203,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   focus:outline-none focus:ring-2 transition-all duration-200
                   ${errors.dsUsuario
                     ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                    : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                          ${formData.dsUsuario ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 placeholder="Descripción del usuario"
@@ -234,7 +235,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   focus:outline-none focus:ring-2 transition-all duration-200
                   ${errors.nombre
                     ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                    : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                          ${formData.nombre ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 placeholder="Nombre del usuario"
@@ -265,7 +267,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   focus:outline-none focus:ring-2 transition-all duration-200
                   ${errors.apellidoP
                     ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                    : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                        ${formData.apellidoP ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 placeholder="Apellido paterno"
@@ -290,12 +293,12 @@ export const UserForm: React.FC<UserFormProps> = ({
                 type="text"
                 value={formData.apellidoM}
                 onChange={(e) => handleChange('apellidoM', e.target.value)}
-                className="
+                className={`
                   w-full px-4 py-3
                   border border-slate-300 rounded-xl
                   focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                  transition-all duration-200
-                "
+                  transition-all duration-200 ${formData.apellidoM ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}
+                `}
                 placeholder="Apellido materno (opcional)"
               />
             </div>
@@ -318,7 +321,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   focus:outline-none focus:ring-2 transition-all duration-200
                   ${errors.dni
                     ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                    : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                        ${formData.dni ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 maxLength={8}
@@ -350,7 +354,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                   focus:outline-none focus:ring-2 transition-all duration-200
                   ${errors.email
                     ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                    : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                        ${formData.email ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                   }
                 `}
                 placeholder="usuario@empresa.com"
@@ -410,7 +415,8 @@ export const UserForm: React.FC<UserFormProps> = ({
                     focus:outline-none focus:ring-2 transition-all duration-200
                     ${errors.claveUsuario
                       ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                      : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
+                      : `border-slate-300 focus:ring-cyan-500 focus:border-transparent
+                          ${formData.claveUsuario ? 'text-slate-900 bg-white' : 'text-slate-500 bg-slate-50'}`
                     }
                   `}
                   placeholder="Ingrese la contraseña"

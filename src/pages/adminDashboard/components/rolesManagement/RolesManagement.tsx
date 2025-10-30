@@ -9,10 +9,6 @@ import { useAlert } from '../../../../context/AlertContext';
 import { rolesService } from '../../../../services/api/rolesServices';
 
 export const RolesManagement: React.FC<RolesManagementProps> = ({
-  onRolEdit,
-  onRolCreate,
-  onRolToggleStatus,
-  onFiltersChange,
   loading = false
 }) => {
   const { showAlert } = useAlert();
@@ -71,13 +67,11 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
 
   const handleFiltersChange = (newFilters: RolFilters) => {
     setFilters(newFilters);
-    onFiltersChange(newFilters);
   };
 
   const handleCreateRole = () => {
     setEditingRol(undefined);
     setIsFormOpen(true);
-    onRolCreate();
   };
 
   const handleEditRole = async (rol: any) => {
@@ -90,7 +84,6 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     };
     setEditingRol(formData);
     setIsFormOpen(true);
-    onRolEdit(rol);
   };
 
   //enviar data a la api en base a form update | create 
@@ -133,10 +126,9 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         showAlert('success', 'Rol activado', 'El rol ha sido activado correctamente');
       } else {
         await rolesService.updateRol(cdRol, {nombre: nombre,descripcion : descripcion, activo: nuevoEstado });
-        showAlert('warning', 'Rol activado', 'El rol ha sido desactivado correctamente');
+        showAlert('warning', 'Rol desactivado', 'El rol ha sido desactivado correctamente');
       }
       await cargarRoles();
-      onRolToggleStatus(cdRol, nuevoEstado);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al cambiar de estado al rol';
       showAlert('error', 'Error', errorMessage);

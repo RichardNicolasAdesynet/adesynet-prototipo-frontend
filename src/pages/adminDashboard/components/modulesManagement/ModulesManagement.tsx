@@ -1,34 +1,58 @@
-import React, { useState, useMemo } from 'react';
-import type {ModuloFilters, ModuloFormData } from '../../../../types/admin.types';
+import React, { useState, useMemo, useEffect } from 'react';
+import type { ModuloFilters, ModuloFormData } from '../../../../types/admin.types';
 import { ModulesFilters } from './modulesFilters';
 import { EnhancedModulesTable } from './enhancedModulesTable';
 import { ModuleForm } from './moduleForm';
 import { ExportButton } from '../../../../components/shared/exportButton';
 import type { ModulesManagementProps } from './ModulesManagement.types';
+import { modulosService } from '../../../../services/api/modulosService';
+import { useAlert } from '../../../../context/AlertContext';
 
-export const ModulesManagement: React.FC<ModulesManagementProps> = ({
-  modulos,
-  onModuloEdit,
-  onModuloCreate,
-  onModuloToggleEdicion,
-  onFiltersChange,
+export const ModulesManagement: React.FC<ModulesManagementProps> = ({ 
   loading = false
 }) => {
+  const { showAlert } = useAlert();
   const [filters, setFilters] = useState<ModuloFilters>({});
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [editingModulo, setEditingModulo] = useState<ModuloFormData | undefined>();
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
 
+  //uso de modulos de la api
+  const [modulos, setModulos] = useState<any[]>([]);
+  const [modulosLoading, setModulosLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    cargarModulos();
+  }, [])
+
+  const cargarModulos = async () => {
+    try {
+      setModulosLoading(true);
+      setError(null);
+      const modulosPaginadosReales = await modulosService.getAllModulos();
+      const modulosReales: any[] = modulosPaginadosReales.data;
+      setModulos(modulosReales);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error al cargar modulos';
+      setError(errorMsg);
+      showAlert('error', 'Error al cargar', errorMsg);
+    } finally {
+      setModulosLoading(false);
+    }
+  }
+
+
   // Filtrar módulos basado en los filtros
   const filteredModulos = useMemo(() => {
     return modulos.filter(modulo => {
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
-        const matchesSearch = 
+        const matchesSearch =
           modulo.dsModulo.toLowerCase().includes(searchLower) ||
           modulo.cdModulo.toLowerCase().includes(searchLower);
-        
+
         if (!matchesSearch) return false;
       }
 
@@ -42,33 +66,74 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
 
   const handleFiltersChange = (newFilters: ModuloFilters) => {
     setFilters(newFilters);
-    onFiltersChange(newFilters);
   };
 
   const handleCreateModule = () => {
     setEditingModulo(undefined);
     setIsFormOpen(true);
-    onModuloCreate();
   };
 
-  const handleEditModule = (modulo: any) => {
+  const handleEditModule = async (modulo: any) => {
+    const { cdModulo, dsModulo, flgEdicion } = await modulosService.getModulo(modulo.cdModulo);
     const formData: ModuloFormData = {
-      cdModulo: modulo.cdModulo,
-      dsModulo: modulo.dsModulo,
-      flgEdicion: modulo.flgEdicion
+      cdModulo: cdModulo,
+      dsModulo: dsModulo,
+      flgEdicion: flgEdicion
     };
     setEditingModulo(formData);
     setIsFormOpen(true);
-    onModuloEdit(modulo);
   };
 
   const handleFormSubmit = async (formData: ModuloFormData) => {
     setFormLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Datos del formulario módulo:', formData);
-    setFormLoading(false);
-    setIsFormOpen(false);
+    try {
+      if (formData.cdModulo && editingModulo) {
+        await modulosService.updateModulo(formData.cdModulo , {
+          dsModulo: formData.dsModulo,
+          flgEdicion : formData.flgEdicion
+        });
+        showAlert('success', ' Exito' , 'Modulo actualizado correctamente');
+      } else {
+        await modulosService.createModulo({
+          dsModulo: formData.dsModulo,
+          flgEdicion: formData.flgEdicion
+        });
+        showAlert('success', 'Existo', 'Modulo creado correctamente');
+      }
+
+      await cargarModulos();
+      setFormLoading(false);
+      setIsFormOpen(false);
+    } catch (error) {
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'Error desconocido al guardar el modulo';
+
+      showAlert('error', 'Error al guardar', errorMessage);
+    }finally {
+      setFormLoading(false);
+    }
   };
+
+  const handleModuloToggleStatus = async (cdModulo: string, editable : boolean) => {
+    try {
+        setModulosLoading(true);
+        const {dsModulo} = await modulosService.getModulo(cdModulo);
+        if(editable){
+          await modulosService.updateModulo(cdModulo,{dsModulo: dsModulo, flgEdicion:editable});
+          showAlert('success', 'Modulo editable', 'El modulo permite la edicion');
+        }else{
+          await modulosService.updateModulo(cdModulo,{dsModulo: dsModulo, flgEdicion:editable});
+          showAlert('warning', 'Modulo NO editable', 'El modulo NO permite la edicion');
+        }
+        await cargarModulos();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error al cambiar estado';
+      showAlert('error', 'Error', errorMessage);
+    } finally {
+      setModulosLoading(false);
+    }
+  }
 
   const handleFormCancel = () => {
     setIsFormOpen(false);
@@ -112,11 +177,11 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <ExportButton 
+          <ExportButton
             onExport={handleExport}
             loading={exportLoading}
           />
-          
+
           <button
             onClick={handleCreateModule}
             className="
@@ -139,6 +204,15 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
           </button>
         </div>
       </div>
+      {/* ✅ NUEVO: Mostrar error si existe */}
+      {error && (
+        <div className="error-message">
+          ❌ Error: {error}
+          <button onClick={cargarModulos} className="retry-button">
+            Reintentar
+          </button>
+        </div>
+      )}
 
       {/* Filtros */}
       <ModulesFilters
@@ -167,8 +241,8 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
       <EnhancedModulesTable
         modulos={filteredModulos}
         onEdit={handleEditModule}
-        onToggleEdicion={onModuloToggleEdicion}
-        loading={loading}
+        onToggleEdicion={handleModuloToggleStatus}
+        loading={modulosLoading || loading}
       />
 
       {/* Modal de Formulario */}

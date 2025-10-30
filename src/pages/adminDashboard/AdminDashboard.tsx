@@ -9,7 +9,7 @@ import { RolesManagement } from './components/rolesManagement';
 import { ModulesManagement } from './components/modulesManagement';
 import { AccessManagement } from './components/accessManagement';
 import { mockDashboardStats, mockRolesCompletos, mockModulos, mockAccesos } from '../../services/mocks/adminMocks';
-import type { DashboardStats, UsuarioFilters } from '../../types/admin.types';
+import type { DashboardStats } from '../../types/admin.types';
 
 export const AdminDashboard: React.FC = () => {
   const { usuario, logout } = useAuth();
@@ -18,7 +18,6 @@ export const AdminDashboard: React.FC = () => {
 
   const [stats, setStats] = useState<DashboardStats>(mockDashboardStats);
   const [cargando, setCargando] = useState<boolean>(false);
-  const [usuariosLoading, setUsuariosLoading] = useState<boolean>(false);
   const [itemActivo, setItemActivo] = useState<string>('dashboard');
   // Determinar item activo basado en la ruta actual
 
@@ -29,16 +28,18 @@ export const AdminDashboard: React.FC = () => {
       '/admin/roles': 'roles',
       '/admin/modulos': 'modulos',
       '/admin/accesos': 'accesos'
-    };
+    } as const;
 
-    setItemActivo(rutas[location.pathname] || 'dashboard');
+    const item = rutas[location.pathname as keyof typeof rutas] || 'dashboard';
+    setItemActivo(item);
   }, [location.pathname]);
 
   const manejarNavegacion = (ruta: string) => {
     navigate(ruta);
   };
 
-  // Simular carga de datos
+  //********PARA EL DASHBOARD HEADER********** */
+
   useEffect(() => {
     const cargarDatos = async () => {
       setCargando(true);
@@ -59,35 +60,7 @@ export const AdminDashboard: React.FC = () => {
     }));
     setCargando(false);
   };
-
-  // Handlers para UsersManagement
-  const handleUsuarioEdit = (usuario: any) => {
-    console.log('Editando usuario:', usuario);
-  };
-
-  const handleUsuarioCreate = () => {
-    console.log('Creando nuevo usuario');
-  };
-
-  const handleUsuarioToggleStatus = async (cdUsuario: string, nuevoEstado: boolean) => {
-    // setUsuariosLoading(true);
-    // // Simular llamada a API
-    // await new Promise(resolve => setTimeout(resolve, 500));
-
-    // setUsuarios(prev => prev.map(usuario =>
-    //   usuario.cdUsuario === cdUsuario
-    //     ? { ...usuario, estaActivo: nuevoEstado }
-    //     : usuario
-    // ));
-
-    // setUsuariosLoading(false);
-    console.log(`Cambiando estado del usuario ${cdUsuario} a ${nuevoEstado}`);
-  };
-
-  const handleFiltersChange = (filters: UsuarioFilters) => {
-    console.log('Filtros cambiados:', filters);
-  };
-
+  //********************************************* */
   if (!usuario) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
@@ -138,40 +111,19 @@ export const AdminDashboard: React.FC = () => {
             <div className="dashboard-content">
               {location.pathname === '/admin/usuarios' && (
                 <div className="animate-fade-in">
-                  <UsersManagement
-                    onUsuarioEdit={handleUsuarioEdit}
-                    onUsuarioCreate={handleUsuarioCreate}
-                    onUsuarioToggleStatus={handleUsuarioToggleStatus}
-                    onFiltersChange={handleFiltersChange}
-                    loading={usuariosLoading}
-                  />
+                  <UsersManagement/>
                 </div>
               )}
 
               {location.pathname === '/admin/roles' && (
                 <div className="animate-fade-in">
-                  <RolesManagement
-                    onRolEdit={(rol) => console.log('Editando rol:', rol)}
-                    onRolCreate={() => console.log('Creando nuevo rol')}
-                    onRolToggleStatus={async (cdRol, nuevoEstado) => {
-                      console.log(`Cambiando estado del rol ${cdRol} a ${nuevoEstado}`);
-                    }}
-                    onFiltersChange={(filters) => console.log('Filtros roles:', filters)}
-                  />
+                  <RolesManagement/>
                 </div>
               )}
 
               {location.pathname === '/admin/modulos' && (
                 <div className="animate-fade-in">
-                  <ModulesManagement
-                    modulos={mockModulos}
-                    onModuloEdit={(modulo) => console.log('Editando módulo:', modulo)}
-                    onModuloCreate={() => console.log('Creando nuevo módulo')}
-                    onModuloToggleEdicion={async (cdModulo, nuevoEstado) => {
-                      console.log(`Cambiando edición del módulo ${cdModulo} a ${nuevoEstado}`);
-                    }}
-                    onFiltersChange={(filters) => console.log('Filtros módulos:', filters)}
-                  />
+                  <ModulesManagement/>
                 </div>
               )}
 

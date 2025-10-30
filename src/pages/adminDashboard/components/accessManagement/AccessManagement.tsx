@@ -18,7 +18,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const [exportLoading, setExportLoading] = useState<boolean>(false);
-  const [selectedRole, setSelectedRole] = useState<RolDetallado | undefined>();
+  const [selectedRole, setSelectedRole] = useState<any>();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
 
   const [roles, setRoles] = useState<RolResumen[]>([]);

@@ -3,7 +3,7 @@ import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/acc
 import { convertirPermisoANumero, type ModuloResumen, type RolDetallado, type TipoPermiso } from '../../../../../types/admin.types';
 
 export interface RoleDetailsModalProps {
-  roleDetail?: RolDetallado;
+  roleDetail:any;
   isOpen: boolean;
   modulos: ModuloResumen[];
   onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
@@ -28,7 +28,19 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
         const accesoExistente = roleDetail.accesos?.find((a: any) => a.cdModulo === modulo.cdModulo);
 
         if (accesoExistente) {
-          return { ...accesoExistente };
+          // Convierte los permisosNombres a permisos numéricos
+          const permisosNumericos = accesoExistente.permisosNombres?.map((nombre: string) => {
+            const tipoPermiso = convertirPermisoANumero(nombre);
+            return tipoPermiso ? {
+              tipoPermiso: tipoPermiso,
+              descripcionPermiso: permisosConfig[tipoPermiso]?.descripcion || nombre,
+              fecAsignacion: new Date().toISOString()
+            } : null;
+          }).filter(Boolean) || [];
+          return { 
+            ...accesoExistente,
+            permisos: permisosNumericos 
+          };
 
         }
         return {
@@ -51,12 +63,17 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
 
   const tienePermiso = (cdModulo: string, tipoPermiso: TipoPermiso) => {
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
-    if (acceso) {
-      return acceso.permisosNombres?.some((permiso: string) => {
-        const permisoNumerico = convertirPermisoANumero(permiso);
-        return permisoNumerico === tipoPermiso;
-      }) || false;
+
+    if (acceso && acceso.permisos) {
+      // Lee directamente de los permisos numéricos en el estado local
+      return acceso.permisos.some((p: any) => p.tipoPermiso === tipoPermiso);
     }
+    // if (acceso ) {
+    //   return acceso.permisosNombres?.some((permiso: string) => {
+    //     const permisoNumerico = convertirPermisoANumero(permiso);
+    //     return permisoNumerico === tipoPermiso;
+    //   }) || false;
+    // }
 
     return false;
   }

@@ -8,7 +8,6 @@ export interface DashboardStats {
   ultimaActualizacion: string;
 }
 
-
 /*********EMTIDADES DETALLADAS******* */
 export interface UsuarioDetallado {
   cdUsuario: string;
@@ -122,8 +121,31 @@ export interface Permiso {
 
 export type TipoPermiso = 1 | 2 | 3 | 4 | 5;
 // export type TipoPermiso = 'Consultar' | 'Crear' | 'Modificar' | 'Eliminar' | 'ControlTotal';
+// Función para convertir TipoPermiso a nombre (por si necesitas)
+export const convertirPermisoANombre = (tipoPermiso: TipoPermiso): string => {
+  const mapeoInverso: Record<TipoPermiso, string> = {
+    1: "Consultar",
+    2: "Crear",
+    3: "Modificar",
+    4: "Eliminar",
+    5: "Control Total",
+  };
 
+  return mapeoInverso[tipoPermiso];
+};
 
+// Función para convertir nombre de permiso a TipoPermiso
+export const convertirPermisoANumero = (permisoNombre: string): TipoPermiso | null => {
+  const mapeo: Record<string, TipoPermiso> = {
+    "Consultar": 1,
+    "Crear": 2,
+    "Modificar": 3, 
+    "Eliminar": 4,
+    "ControlTotal": 5
+  };
+  
+  return mapeo[permisoNombre] || null;
+};
 
 export interface PermisoConfig {
   tipo: TipoPermiso;
@@ -132,9 +154,7 @@ export interface PermisoConfig {
   icono: string;
 }
 
-
 /********************************** */
-
 
 // Props para los componentes compartidos //
 
@@ -161,7 +181,7 @@ export interface ActionsDropdownProps<T extends BaseEntity> {
 }
 
 export interface ExportButtonProps {
-  onExport: (formato: 'excel' | 'pdf') => void;
+  onExport: (formato: "excel" | "pdf") => void;
   loading?: boolean;
 }
 
@@ -174,7 +194,7 @@ export interface TablePaginationProps {
   onRegistrosPorPaginaChange: (cantidad: number) => void;
 }
 
-//admin dashboard components // 
+//admin dashboard components //
 export interface DashboardHeaderProps {
   stats: DashboardStats;
   onRefresh?: () => void;
@@ -187,9 +207,8 @@ export interface StatsCardProps {
   subtitulo?: string;
   variacion?: number;
   icono?: string;
-  tipo?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  tipo?: "primary" | "success" | "warning" | "danger" | "info";
 }
-
 
 // Props para componentes de usuarios
 export interface UsuarioFilters {
@@ -251,7 +270,6 @@ export interface RolesFiltersProps {
 
 // Props para componentes de modulos
 
-
 export interface ModuloFilters {
   flgEdicion?: boolean;
   searchTerm?: string;
@@ -280,14 +298,22 @@ export interface ModulesFiltersProps {
   onFiltersChange: (filters: ModuloFilters) => void;
 }
 
-
 /***********************ACcesos ************************* */
 export interface MatrizAccesosProps {
   roles: RolResumen[];
   modulos: ModuloResumen[];
   accesos: AccesoResume[];
-  onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
-  onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
+  onPermisoChange: (
+    cdRol: string,
+    cdModulo: string,
+    tipoPermiso: TipoPermiso,
+    asignado: boolean
+  ) => void;
+  onModuloHabilitadoChange: (
+    cdRol: string,
+    cdModulo: string,
+    habilitado: boolean
+  ) => void;
   loading?: boolean;
 }
 
@@ -297,7 +323,12 @@ export interface PermisoCellProps {
   acceso?: AccesoResume;
   tipoPermiso: TipoPermiso;
   configPermiso: PermisoConfig;
-  onChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
+  onChange: (
+    cdRol: string,
+    cdModulo: string,
+    tipoPermiso: TipoPermiso,
+    asignado: boolean
+  ) => void;
 }
 
 export interface ModuloHabilitadoCellProps {
@@ -342,12 +373,12 @@ export interface AccesoFormData {
   cdRol: string;
   cdModulo: string;
   modulosHabilitados: boolean;
-  permisos: TipoPermiso[]
+  permisos: TipoPermiso[];
 }
 //  LA LOS CAMPOS AL CREAR Y MODIFICAR SON DIFERENTES
-export interface AccesoFromDataUpdate{
+export interface AccesoFromDataUpdate {
   modulosHabilitados: boolean;
-  permisos: TipoPermiso[]
+  permisos: TipoPermiso[];
 }
 
 /************************************** */

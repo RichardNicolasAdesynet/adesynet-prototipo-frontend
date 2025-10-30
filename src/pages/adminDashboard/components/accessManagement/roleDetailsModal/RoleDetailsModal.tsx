@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/accessManagementData';
-import type { ModuloResumen, RolDetallado, TipoPermiso } from '../../../../../types/admin.types';
+import { convertirPermisoANumero, type ModuloResumen, type RolDetallado, type TipoPermiso } from '../../../../../types/admin.types';
 
 export interface RoleDetailsModalProps {
   roleDetail?: RolDetallado;
@@ -48,40 +48,18 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   }, [isOpen, roleDetail, modulos]);
 
-  // Mapeo de nombres de permisos a números
-  const mapeoPermisos: Record<string, TipoPermiso> = {
-    "Consultar": 1,
-    "Crear": 2,
-    "Modificar": 3,
-    "Eliminar": 4,
-    "ControlTotal": 5
-  };
 
   const tienePermiso = (cdModulo: string, tipoPermiso: TipoPermiso) => {
-    console.log('=== DEBUG tienePermiso ===');
-    console.log('cdModulo buscado:', cdModulo);
-    console.log('tipoPermiso buscado:', tipoPermiso);
-    console.log('accesosLocales:', accesosLocales);
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
-    console.log('acceso encontrado:', acceso);
     if (acceso) {
-      console.log('permisos del acceso:', acceso.permisosNombres);
-      const tiene = acceso.permisosNombres?.some((permiso: string) => {
-        const permisoNumerico = mapeoPermisos[permiso];
-        console.log('permiso actual:', permiso);
-        console.log('tipoPermiso del permiso:', permiso);
-        console.log('¿coincide?:', permisoNumerico === tipoPermiso);
+      return acceso.permisosNombres?.some((permiso: string) => {
+        const permisoNumerico = convertirPermisoANumero(permiso);
         return permisoNumerico === tipoPermiso;
       }) || false;
-
-      console.log('resultado final:', tiene);
-      return tiene;
     }
 
-    console.log('resultado final: false (no se encontró acceso)');
     return false;
-    // return acceso?.permisos?.some((permiso: any) => permiso.tipoPermiso === tipoPermiso) || false;
-  };
+  }
 
   const moduloEstaHabilitado = (cdModulo: string) => {
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);

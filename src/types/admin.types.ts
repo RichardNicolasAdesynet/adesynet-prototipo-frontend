@@ -121,6 +121,9 @@ export interface Permiso {
 }
 
 export type TipoPermiso = 1 | 2 | 3 | 4 | 5;
+// export type TipoPermiso = 'Consultar' | 'Crear' | 'Modificar' | 'Eliminar' | 'ControlTotal';
+
+
 
 export interface PermisoConfig {
   tipo: TipoPermiso;

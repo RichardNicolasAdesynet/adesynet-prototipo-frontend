@@ -31,15 +31,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Cargar datos de autenticación al iniciar
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔐 Inicializando autenticación...');
       const storedToken = authService.getStoredToken();
       const storedUserInfo = authService.getStoredUserInfo();
 
-      console.log('📦 Datos almacenados:', { storedToken, storedUserInfo });
 
       if (storedToken && storedUserInfo) {
         if (!authService.isTokenExpired(storedUserInfo.expires)) {
-          console.log('✅ Token válido encontrado');
 
           apiClient.setToken(storedToken);
 
@@ -52,8 +49,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             permisos: storedUserInfo.permisos || []
           };
 
-          console.log('👤 Usuario creado:', usuario);
-
           setAuthState({
             usuario,
             token: storedToken,
@@ -61,12 +56,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             cargando: false,
           });
         } else {
-          console.log('❌ Token expirado');
           authService.logout();
           setAuthState(prev => ({ ...prev, cargando: false }));
         }
       } else {
-        console.log('📭 No hay datos de autenticación almacenados');
         setAuthState(prev => ({ ...prev, cargando: false }));
       }
     };
@@ -90,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (credenciales: Credenciales): Promise<LoginResult> => {
     try {
 
-      console.log('🔐 Iniciando login con:', credenciales);
       setAuthState(prev => ({ ...prev, cargando: true }));
 
       // Convertir Credenciales a LoginRequest (son compatibles ahora)
@@ -98,8 +90,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         idUsuario: credenciales.idUsuario,
         claveUsuario: credenciales.claveUsuario
       });
-
-      console.log('✅ Login exitoso, datos recibidos:', loginData);
 
       const usuario: Usuario = {
         id: loginData.idUsuario,
@@ -110,8 +100,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         permisos: loginData.permisos || []
       };
 
-      console.log('👤 Usuario mapeado:', usuario);
-
       setAuthState({
         usuario,
         token: loginData.token,
@@ -119,15 +107,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         cargando: false,
       });
 
-      console.log('🎯 Estado actualizado debería estar en true ahora');
-
       return {
         exito: true,
         usuario,
         token: loginData.token
       };
     } catch (error) {
-      console.error('❌ Error en login:', error);
       setAuthState(prev => ({ ...prev, cargando: false }));
 
       return {

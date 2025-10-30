@@ -42,11 +42,6 @@ class ApiClient {
 
         try {
           const errorResponse = await response.json();
-          console.log(
-            "🔍 ApiClient - Respuesta de error COMPLETA:",
-            errorResponse
-          );
-
           // ✅ EXTRACCIÓN MEJORADA: Buscar mensaje en diferentes estructuras
           if (errorResponse.message) {
             errorMessage = errorResponse.message;
@@ -62,7 +57,6 @@ class ApiClient {
             errorMessage = errorResponse.data.message;
           }
 
-          console.log("📝 ApiClient - Mensaje extraído:", errorMessage);
         } catch (parseError) {
           // Si no se puede parsear JSON, usar el texto de la respuesta
           try {
@@ -85,10 +79,8 @@ class ApiClient {
       let apiResponse: ApiResponse<T>;
 
       if (this.isWrappedResponse(responseData)) {
-        console.log("📦 ApiClient - Respuesta envuelta detectada");
         apiResponse = responseData;
       } else {
-        console.log("🎯 ApiClient - Respuesta directa detectada");
         apiResponse = {
           data: responseData,
           isSuccess: true,
@@ -97,11 +89,9 @@ class ApiClient {
         };
       }
 
-      console.log("📡 ApiClient - Respuesta procesada:", apiResponse);
 
       return apiResponse;
     } catch (error) {
-      console.error("❌ API Request failed:", error);
 
       // ✅ MEJORADO: Pasar el mensaje exacto del error
       const errorMessage =

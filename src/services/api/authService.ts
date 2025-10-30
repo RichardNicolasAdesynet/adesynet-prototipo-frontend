@@ -9,17 +9,14 @@ export const authService = {
       API_CONFIG.ENDPOINTS.AUTH.LOGIN,
       credentials
     );
-    console.log("📡 AuthService - Respuesta completa:", response); // DEBUG
 
     const loginData = response.data;
 
     if (!loginData?.token) {
-      console.error("❌ AuthService - Error en respuesta:", response);
       throw new Error(response.message || "Error en el login");
     }
 
     // DEBUG: Verificar estructura de datos
-    console.log('✅ AuthService - Login exitoso, datos:', response.data);
     // Guardar token en el cliente
     apiClient.setToken(loginData.token);
 

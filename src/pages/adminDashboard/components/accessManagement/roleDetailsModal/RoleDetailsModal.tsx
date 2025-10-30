@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/accessManagementData';
-import type { TipoPermiso } from '../../../../../types/admin.types';
+import type { ModuloResumen, RolDetallado, TipoPermiso } from '../../../../../types/admin.types';
 
 export interface RoleDetailsModalProps {
-  role: any;
+  roleDetail?: RolDetallado;
   isOpen: boolean;
-  modulos: any[];
+  modulos: ModuloResumen[];
   onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
   onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
   onClose: () => void;
 }
 
 export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
-  role,
+  roleDetail,
   isOpen,
   modulos,
   onPermisoChange,
@@ -23,31 +23,64 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   const [accesosLocales, setAccesosLocales] = useState<any[]>([]);
 
   useEffect(() => {
-    if (isOpen && role) {
+    if (isOpen && roleDetail) {
       const accesosIniciales = modulos.map(modulo => {
-        const accesoExistente = role.accesos?.find((a: any) => a.cdModulo === modulo.cdModulo);
-        
+        const accesoExistente = roleDetail.accesos?.find((a: any) => a.cdModulo === modulo.cdModulo);
+
         if (accesoExistente) {
           return { ...accesoExistente };
+
         }
-        
         return {
-          cdRol: role.cdRol,
+          cdRol: roleDetail.cdRol,
           cdModulo: modulo.cdModulo,
           moduloNombre: modulo.dsModulo,
           moduloHabilitado: false,
           permisos: []
         };
       });
-      
+      //console.log(accesosIniciales);
       setAccesosLocales(accesosIniciales);
       setCambiosPendientes(false);
+    } else {
+      setAccesosLocales([]);
+      setCambiosPendientes(false);
     }
-  }, [isOpen, role, modulos]);
+  }, [isOpen, roleDetail, modulos]);
+
+  // Mapeo de nombres de permisos a números
+  const mapeoPermisos: Record<string, TipoPermiso> = {
+    "Consultar": 1,
+    "Crear": 2,
+    "Modificar": 3,
+    "Eliminar": 4,
+    "ControlTotal": 5
+  };
 
   const tienePermiso = (cdModulo: string, tipoPermiso: TipoPermiso) => {
+    console.log('=== DEBUG tienePermiso ===');
+    console.log('cdModulo buscado:', cdModulo);
+    console.log('tipoPermiso buscado:', tipoPermiso);
+    console.log('accesosLocales:', accesosLocales);
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
-    return acceso?.permisos?.some((permiso: any) => permiso.tipoPermiso === tipoPermiso) || false;
+    console.log('acceso encontrado:', acceso);
+    if (acceso) {
+      console.log('permisos del acceso:', acceso.permisosNombres);
+      const tiene = acceso.permisosNombres?.some((permiso: string) => {
+        const permisoNumerico = mapeoPermisos[permiso];
+        console.log('permiso actual:', permiso);
+        console.log('tipoPermiso del permiso:', permiso);
+        console.log('¿coincide?:', permisoNumerico === tipoPermiso);
+        return permisoNumerico === tipoPermiso;
+      }) || false;
+
+      console.log('resultado final:', tiene);
+      return tiene;
+    }
+
+    console.log('resultado final: false (no se encontró acceso)');
+    return false;
+    // return acceso?.permisos?.some((permiso: any) => permiso.tipoPermiso === tipoPermiso) || false;
   };
 
   const moduloEstaHabilitado = (cdModulo: string) => {
@@ -58,11 +91,11 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   const handlePermisoToggle = (cdModulo: string, tipoPermiso: TipoPermiso) => {
     const nuevosAccesos = [...accesosLocales];
     const accesoIndex = nuevosAccesos.findIndex(a => a.cdModulo === cdModulo);
-    
+
     if (accesoIndex !== -1) {
       const acceso = { ...nuevosAccesos[accesoIndex] };
       const tieneElPermiso = acceso.permisos?.some((p: any) => p.tipoPermiso === tipoPermiso);
-      
+
       if (tieneElPermiso) {
         acceso.permisos = acceso.permisos.filter((p: any) => p.tipoPermiso !== tipoPermiso);
       } else {
@@ -74,39 +107,40 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
           fecAsignacion: new Date().toISOString()
         });
       }
-      
+
       nuevosAccesos[accesoIndex] = acceso;
       setAccesosLocales(nuevosAccesos);
       setCambiosPendientes(true);
-      
-      onPermisoChange(role.cdRol, cdModulo, tipoPermiso, !tieneElPermiso);
+      if (!roleDetail) return;
+      onPermisoChange(roleDetail.cdRol, cdModulo, tipoPermiso, !tieneElPermiso);
     }
   };
 
   const handleModuloToggle = (cdModulo: string) => {
     const nuevosAccesos = [...accesosLocales];
     const accesoIndex = nuevosAccesos.findIndex(a => a.cdModulo === cdModulo);
-    
+
     if (accesoIndex !== -1) {
       const acceso = { ...nuevosAccesos[accesoIndex] };
       const nuevoEstado = !acceso.moduloHabilitado;
-      
+
       acceso.moduloHabilitado = nuevoEstado;
-      
+
       if (!nuevoEstado) {
         acceso.permisos = [];
       }
-      
+
       nuevosAccesos[accesoIndex] = acceso;
       setAccesosLocales(nuevosAccesos);
       setCambiosPendientes(true);
-      
-      onModuloHabilitadoChange(role.cdRol, cdModulo, nuevoEstado);
+      if (!roleDetail) return;
+      onModuloHabilitadoChange(roleDetail.cdRol, cdModulo, nuevoEstado);
     }
   };
 
   const handleSave = () => {
-    console.log('Guardando cambios para el rol:', role.cdRol, accesosLocales);
+    if (!roleDetail) return;
+    console.log('Guardando cambios para el rol:', roleDetail.cdRol, accesosLocales);
     setCambiosPendientes(false);
     onClose();
   };
@@ -122,18 +156,12 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   };
 
-  const contarUsuariosDelRol = (cdRol: string) => {
-    const usuariosPorRol: Record<string, number> = {
-      'ROL01': 3,
-      'ROL02': 1,
-      'ROL03': 2,
-      'ROL04': 4,
-      'ROL05': 8
-    };
-    return usuariosPorRol[cdRol] || 0;
+  const contarUsuariosDelRol = () => {
+    if (!roleDetail) return;
+    return roleDetail.cantidadUsuarios;
   };
 
-  if (!isOpen || !role) return null;
+  if (!isOpen || !roleDetail) return null;
 
   return (
     <div className="
@@ -171,17 +199,17 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
               🎭
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">{role.nombre}</h2>
+              <h2 className="text-xl font-bold text-white">{roleDetail.nombre}</h2>
               <div className="flex items-center space-x-4 text-white/90 text-sm">
-                <span className="bg-white/20 px-2 py-1 rounded">Código: {role.cdRol}</span>
+                <span className="bg-white/20 px-2 py-1 rounded">Código: {roleDetail.cdRol}</span>
                 <span className="flex items-center space-x-1">
                   <span>👥</span>
-                  <span>{contarUsuariosDelRol(role.cdRol)} usuarios</span>
+                  <span>{contarUsuariosDelRol()} usuarios</span>
                 </span>
               </div>
             </div>
           </div>
-          <button 
+          <button
             onClick={handleClose}
             className="
               w-8 h-8
@@ -222,7 +250,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
             {modulos.map(modulo => {
               const habilitado = moduloEstaHabilitado(modulo.cdModulo);
               const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
-              
               return (
                 <div key={modulo.cdModulo} className="
                   border border-slate-200
@@ -236,8 +263,8 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
                     px-4 py-3
                     flex items-center justify-between
                     transition-colors duration-200
-                    ${habilitado 
-                      ? 'bg-emerald-50 border-b border-emerald-200' 
+                    ${habilitado
+                      ? 'bg-emerald-50 border-b border-emerald-200'
                       : 'bg-slate-50 border-b border-slate-200'
                     }
                   `}>
@@ -271,7 +298,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
                           `}></div>
                         </div>
                       </label>
-                      
+
                       <div className="flex items-center space-x-3">
                         <div className="
                           w-8 h-8
@@ -288,20 +315,20 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     <span className={`
                       px-3 py-1
                       rounded-full
                       text-sm font-medium
-                      ${habilitado 
-                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                      ${habilitado
+                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
                         : 'bg-slate-100 text-slate-700 border border-slate-200'
                       }
                     `}>
                       {habilitado ? '✅ Habilitado' : '❌ Deshabilitado'}
                     </span>
                   </div>
-                  
+
                   {/* Permisos del Módulo */}
                   {habilitado && (
                     <div className="p-4 bg-white">
@@ -313,12 +340,12 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
                         <span>🔐</span>
                         <span>Permisos Disponibles</span>
                       </h4>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {tiposPermisoDisponibles.map(tipoPermiso => {
                           const tieneElPermiso = tienePermiso(modulo.cdModulo, tipoPermiso);
                           const configPermiso = permisosConfig[tipoPermiso];
-                          
+
                           return (
                             <label key={tipoPermiso} className="
                               flex items-center space-x-3
@@ -387,7 +414,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
               </span>
             )}
           </div>
-          
+
           <div className="flex space-x-3">
             <button
               onClick={handleClose}

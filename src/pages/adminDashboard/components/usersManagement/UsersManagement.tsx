@@ -39,16 +39,13 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     try {
       setUsuariosLoading(true);
       setError(null);
-      console.log('🔄 Cargando usuarios desde API...');
       //obtengo los usuarios  
       const usuariosReales = await userService.getUsuariosList();
       cargarRolUsuario();
-      console.log('✅ Usuarios cargados:', usuariosReales);
 
       //los setteo en set usuarios para despues tratar con toda esa data de usuarios
       setUsuarios(usuariosReales);
     } catch (err) {
-      console.error('❌ Error cargando usuarios:', err);
       const errorMsg = err instanceof Error ? err.message : 'Error al cargar usuarios';
       setError(errorMsg);
       showAlert('error', 'Error al cargar', errorMsg);
@@ -127,7 +124,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       cdRol: cdRol,
       estaActivo: estaActivoLaboralmente
     };
-    console.log('cargando formData.estaActivo asignado desde usuario:', formData.estaActivo);
     setEditingUsuario(formData);
     setIsFormOpen(true);
   };
@@ -136,8 +132,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const handleFormSubmit = async (formData: UsuarioFormData) => {
     setFormLoading(true);
     try {
-      console.log('🔄 Enviando datos del usuario:', formData);
-
       if (formData.cdUsuario && editingUsuario) {
         // Actualizar usuario existente
         await userService.updateUsuario(formData.cdUsuario, {
@@ -150,7 +144,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
           cdRol: formData.cdRol
         });
         showAlert('success', 'Éxito', 'Usuario actualizado correctamente');
-        console.log('✅ Usuario actualizado exitosamente');
       } else {
         // Crear nuevo usuario
         await userService.createUsuario({
@@ -163,7 +156,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
           email: formData.email,
           cdRol: formData.cdRol
         });
-        console.log('✅ Usuario creado exitosamente');
         showAlert('success', 'Éxito', 'Usuario creado correctamente');
       }
 
@@ -173,9 +165,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       setFormLoading(false);
       setIsFormOpen(false);
     } catch (err) {
-      console.error('❌ Error guardando usuario:', err);
-      // Aquí podrías mostrar un mensaje de error al usuario
-      // ✅ MEJORADO: Mostrar alerta en lugar de alert nativo
       const errorMessage = err instanceof Error
         ? err.message
         : 'Error desconocido al guardar usuario';
@@ -190,8 +179,6 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const handleUsuarioToggleStatus = async (cdUsuario: string, nuevoEstado: boolean) => {
     try {
       setUsuariosLoading(true);
-      console.log(`🔄 Cambiando estado del usuario ${cdUsuario} a ${nuevoEstado}`);
-
       if (nuevoEstado) {
         // Activar/Desbloquear usuario
         await userService.desbloquearUsuario(cdUsuario);
@@ -202,13 +189,10 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
         showAlert('warning', 'Usuario desactivado', 'El usuario ha sido desactivado');
       }
 
-      console.log('✅ Estado cambiado exitosamente');
-
       // Recargar usuarios para reflejar el cambio
       await cargarUsuarios();
 
     } catch (err) {
-      console.error('❌ Error cambiando estado:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error al cambiar estado';
       showAlert('error', 'Error', errorMessage);
     } finally {

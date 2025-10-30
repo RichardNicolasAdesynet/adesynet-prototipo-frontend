@@ -7,6 +7,8 @@ import { rolesService } from '../../../../services/api/rolesServices';
 import { useAlert } from '../../../../context/AlertContext';
 import { modulosService } from '../../../../services/api/modulosService';
 import { accesosService } from '../../../../services/api/accesosService';
+import type { AccesoResume, RolDetallado, RolResumen } from '../../../../types/admin.types';
+import type { PaginatedResponse } from '../../../../types/api.types';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
   onPermisoChange,
@@ -16,15 +18,15 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
 }) => {
   const { showAlert } = useAlert();
   const [exportLoading, setExportLoading] = useState<boolean>(false);
-  const [selectedRole, setSelectedRole] = useState<any>(null);
+  const [selectedRole, setSelectedRole] = useState<RolDetallado | undefined>();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
 
-  const [roles, setRoles] = useState<any[]>([]);
+  const [roles, setRoles] = useState<RolResumen[]>([]);
   const [modulos, setModulos] = useState<any[]>([]);
   const [accesos, setAccesos] = useState<any[]>([]);
   const [accesosLoading, setAccesosLoading] = useState<boolean>(true);
 
-  useEffect(()=>{
+  useEffect(() => {
     cargarAccesos();
     cargarModulos();
     cargarRoles();
@@ -33,8 +35,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
 
   const cargarRoles = async () => {
     try {
-      const rolesPagiandosReales = await rolesService.getAllRoles();
-      const rolesReales: any[] = rolesPagiandosReales.data;
+      const rolesPagiandosReales: PaginatedResponse<RolResumen> = await rolesService.getAllRoles();
+      const rolesReales: RolResumen[] = rolesPagiandosReales.data;
       setRoles(rolesReales);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Error al cargar roles';
@@ -57,13 +59,12 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     try {
       setAccesosLoading(true);
       const accesosPaginadoReales = await accesosService.getAllAccesos();
-      const accesosReales: any[] = accesosPaginadoReales.data;
-      console.log(accesosReales);
+      const accesosReales: AccesoResume[] = accesosPaginadoReales.data;
       setAccesos(accesosReales);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Error al cargar accesos';
       showAlert('error', 'Error al cargar', errorMsg);
-    }finally{
+    } finally {
       setAccesosLoading(false);
     }
   }
@@ -82,6 +83,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
       accesos: accesosDelRol
     });
     setIsDetailsModalOpen(true);
+    console.log(accesosDelRol);
+  
   };
 
   const handleBulkPermissions = () => {
@@ -90,7 +93,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
 
   const closeDetailsModal = () => {
     setIsDetailsModalOpen(false);
-    setSelectedRole(null);
+    setSelectedRole(undefined);
   };
 
   return (
@@ -210,12 +213,12 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         accesos={accesos}
         modulos={modulos}
         onRoleClick={handleRoleClick}
-        loading={accesosLoading ||loading}
+        loading={accesosLoading || loading}
       />
 
       {/* Modal de Detalles del Rol */}
       <RoleDetailsModal
-        role={selectedRole}
+        roleDetail={selectedRole}
         isOpen={isDetailsModalOpen}
         modulos={modulos}
         onPermisoChange={onPermisoChange}

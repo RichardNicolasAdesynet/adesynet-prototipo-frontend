@@ -7,16 +7,6 @@ import { TecnicoDashboard } from '../pages/tecnicoDashboard/TecnicoDashboard';
 
 export const AppRouter: React.FC = () => {
     const { estaAutenticado, usuario, cargando } = useAuth();
-
-    // DEBUG: Ver qué datos tenemos
-    console.log('🚀 AppRouter - Estado:', {
-        estaAutenticado,
-        usuario: usuario,
-        rol: usuario?.rol,
-        redirigiendoA: estaAutenticado
-            ? (usuario?.rol === 'administrador' ? '/admin' : '/dashboard')
-            : '/login'
-    });
     if (cargando) {
         return (
             <>
@@ -27,7 +17,6 @@ export const AppRouter: React.FC = () => {
                 </div>
             </>
         );
-        console.log({cargando});
     }
 
     const esAdminOGerente = () => {

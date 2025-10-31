@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/accessManagementData';
 import { convertirPermisoANumero, type ModuloResumen, type RolDetallado, type TipoPermiso } from '../../../../../types/admin.types';
-import { accesosService } from '../../../../../services/api/accesosService';
 
 export interface RoleDetailsModalProps {
   roleDetail: any;
@@ -9,6 +8,7 @@ export interface RoleDetailsModalProps {
   modulos: ModuloResumen[];
   onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
   onModuloHabilitadoChange: (cdRol: string, cdModulo: string, habilitado: boolean) => void;
+  onSave: (accesosLocales: any[], roleDetail: any) => Promise<void>;
   onClose: () => void;
 }
 
@@ -18,6 +18,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   modulos,
   onPermisoChange,
   onModuloHabilitadoChange,
+  onSave,
   onClose
 }) => {
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
@@ -133,37 +134,8 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
 
   const handleSave = async () => {
     if (!roleDetail) return;
-
     try {
-      console.log('Guardando accesos:', roleDetail.cdRol, accesosLocales);
-      const promesas = accesosLocales.map(async (acceso) => {
-        const permisosNumericos = acceso.permisos.map((p: any) => p.tipoPermiso);
-
-        //validar si es nuevo o ya existe
-        if (acceso.esNuevo && acceso.moduloHabilitado) {
-          // CREAR NUEVO ACCESO (solo si está habilitado)
-          const payload = {
-            cdRol: roleDetail.cdRol,
-            cdModulo: acceso.cdModulo,
-            moduloHabilitado: acceso.moduloHabilitado,
-            permisos: permisosNumericos
-          };
-          console.log(`CREANDO nuevo acceso para ${acceso.cdModulo}:`, payload);
-          return await accesosService.createAcceso(payload);
-        } else if (!acceso.esNuevo) {
-          // ACTUALIZAR ACCESO EXISTENTE
-          const payload = {
-            moduloHabilitado: acceso.moduloHabilitado,
-            permisos: acceso.moduloHabilitado ? permisosNumericos : [] // si está deshabilitado, sin permisos
-          };
-          console.log(`ACTUALIZANDO acceso existente para ${acceso.cdModulo}:`, payload);
-          return await accesosService.updateAcceso(roleDetail.cdRol, acceso.cdModulo, payload);
-        }
-
-        return Promise.resolve();
-      });
-
-      await Promise.all(promesas);
+      await onSave(accesosLocales, roleDetail);
       setCambiosPendientes(false);
       onClose();
     } catch (error) {

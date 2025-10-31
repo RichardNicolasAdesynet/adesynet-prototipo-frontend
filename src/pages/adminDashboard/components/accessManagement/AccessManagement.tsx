@@ -87,9 +87,49 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
   
   };
 
-  const handlePermisoChange = () => {};
+  const handleSaveAccesos = async (accesosLocales: any[], roleDetail: any) => {
+    try {
+      console.log('Guardando accesos:', roleDetail.cdRol, accesosLocales);
+      const promesas = accesosLocales.map(async (acceso) => {
+        const permisosNumericos = acceso.permisos.map((p: any) => p.tipoPermiso);
 
-  const handleModuloHabilitadoChange = () => {};
+        //validar si es nuevo o ya existe
+        if (acceso.esNuevo && acceso.moduloHabilitado) {
+          // CREAR NUEVO ACCESO (solo si está habilitado)
+          const payload = {
+            cdRol: roleDetail.cdRol,
+            cdModulo: acceso.cdModulo,
+            moduloHabilitado: acceso.moduloHabilitado,
+            permisos: permisosNumericos
+          };
+          console.log(`CREANDO nuevo acceso para ${acceso.cdModulo}:`, payload);
+          return await accesosService.createAcceso(payload);
+        } else if (!acceso.esNuevo) {
+          // ACTUALIZAR ACCESO EXISTENTE
+          const payload = {
+            moduloHabilitado: acceso.moduloHabilitado,
+            permisos: acceso.moduloHabilitado ? permisosNumericos : [] // si está deshabilitado, sin permisos
+          };
+          console.log(`ACTUALIZANDO acceso existente para ${acceso.cdModulo}:`, payload);
+          return await accesosService.updateAcceso(roleDetail.cdRol, acceso.cdModulo, payload);
+        }
+
+        return Promise.resolve();
+      });
+
+      await Promise.all(promesas);
+      await cargarAccesos();
+      await cargarModulos();
+      await cargarRoles();
+      showAlert('success', 'Cambios guardados', 'Los permisos se han actualizado correctamente');
+
+    } catch (error) {
+      console.error('Error al guardar cambios:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Error al guardar cambios';
+      showAlert('error', 'Error', errorMsg);
+      throw error; 
+    }
+  };
 
   const handleBulkPermissions = () => {
     console.log('Abriendo modal para asignación masiva de permisos');
@@ -227,6 +267,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
         modulos={modulos}
         onPermisoChange={onPermisoChange}
         onModuloHabilitadoChange={onModuloHabilitadoChange}
+        onSave={handleSaveAccesos}
         onClose={closeDetailsModal}
       />
 

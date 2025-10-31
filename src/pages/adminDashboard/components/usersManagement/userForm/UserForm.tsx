@@ -49,10 +49,11 @@ export const UserForm: React.FC<UserFormProps> = ({
   
   const validateForm = (): boolean => {
     const newErrors: Partial<UsuarioFormData> = {};
-
-    if (!formData.cdUsuario.trim()) {
-      newErrors.cdUsuario = 'Código de usuario es requerido';
-    }
+//******************comentado en caso se requiera colocar el id manualmente ************
+// ********************* por ahora la api lo proporciona de forma automatizada */
+    // if (!formData.cdUsuario.trim()) {
+    //   newErrors.cdUsuario = 'Código de usuario es requerido';
+    // }
 
     if (!formData.dsUsuario.trim()) {
       newErrors.dsUsuario = 'Descripción de usuario es requerida';

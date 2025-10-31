@@ -35,12 +35,14 @@ export const RoleForm: React.FC<RoleFormProps> = ({
 
   const validateForm = (): boolean => {
     const newErrors: Partial<RolFormData> = {};
+//******************comentado en caso se requiera colocar el id manualmente ************
+// ********************* por ahora la api lo proporciona de forma automatizada */
 
-    if (!formData.cdRol.trim()) {
-      newErrors.cdRol = 'Código de rol es requerido';
-    } else if (formData.cdRol.length !== 5) {
-      newErrors.cdRol = 'El código debe tener 5 caracteres';
-    }
+    // if (!formData.cdRol.trim()) {
+    //   newErrors.cdRol = 'Código de rol es requerido';
+    // } else if (formData.cdRol.length !== 5) {
+    //   newErrors.cdRol = 'El código debe tener 5 caracteres';
+    // }
 
     if (!formData.nombre.trim()) {
       newErrors.nombre = 'Nombre del rol es requerido';

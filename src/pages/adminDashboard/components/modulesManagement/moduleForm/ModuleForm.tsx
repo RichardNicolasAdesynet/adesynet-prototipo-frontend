@@ -33,12 +33,13 @@ export const ModuleForm: React.FC<ModuleFormProps> = ({
 
   const validateForm = (): boolean => {
     const newErrors: Partial<ModuloFormData> = {};
-
-    if (!formData.cdModulo.trim()) {
-      newErrors.cdModulo = 'Código de módulo es requerido';
-    } else if (formData.cdModulo.length !== 5) {
-      newErrors.cdModulo = 'El código debe tener 5 caracteres';
-    }
+//******************comentado en caso se requiera colocar el id manualmente ************
+// ********************* por ahora la api lo proporciona de forma automatizada */
+    // if (!formData.cdModulo.trim()) {
+    //   newErrors.cdModulo = 'Código de módulo es requerido';
+    // } else if (formData.cdModulo.length !== 5) {
+    //   newErrors.cdModulo = 'El código debe tener 5 caracteres';
+    // }
 
     if (!formData.dsModulo.trim()) {
       newErrors.dsModulo = 'Descripción del módulo es requerida';

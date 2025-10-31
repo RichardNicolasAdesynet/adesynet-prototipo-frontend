@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/accessManagementData';
 import { convertirPermisoANumero, type ModuloResumen, type RolDetallado, type TipoPermiso } from '../../../../../types/admin.types';
+import { accesosService } from '../../../../../services/api/accesosService';
 
 export interface RoleDetailsModalProps {
-  roleDetail:any;
+  roleDetail: any;
   isOpen: boolean;
   modulos: ModuloResumen[];
   onPermisoChange: (cdRol: string, cdModulo: string, tipoPermiso: TipoPermiso, asignado: boolean) => void;
@@ -37,21 +38,25 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
               fecAsignacion: new Date().toISOString()
             } : null;
           }).filter(Boolean) || [];
-          return { 
+          return {
             ...accesoExistente,
-            permisos: permisosNumericos 
+            permisos: permisosNumericos,
+            // ⭐ NUEVA PROPIEDAD: para saber si ya existía
+            esNuevo: false,
           };
 
         }
+        //console.log(accesoExistente);
         return {
           cdRol: roleDetail.cdRol,
           cdModulo: modulo.cdModulo,
           moduloNombre: modulo.dsModulo,
           moduloHabilitado: false,
+          esNuevo: true, // ⭐ MARCADOR PARA CREAR NUEVO
           permisos: []
         };
       });
-      //console.log(accesosIniciales);
+      console.log(accesosIniciales);
       setAccesosLocales(accesosIniciales);
       setCambiosPendientes(false);
     } else {
@@ -60,7 +65,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   }, [isOpen, roleDetail, modulos]);
 
-
+  //console.log(`esta es lo que llega al rol: ${JSON.stringify(roleDetail, null, 2)}` );
   const tienePermiso = (cdModulo: string, tipoPermiso: TipoPermiso) => {
     const acceso = accesosLocales.find(a => a.cdModulo === cdModulo);
 
@@ -68,13 +73,6 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       // Lee directamente de los permisos numéricos en el estado local
       return acceso.permisos.some((p: any) => p.tipoPermiso === tipoPermiso);
     }
-    // if (acceso ) {
-    //   return acceso.permisosNombres?.some((permiso: string) => {
-    //     const permisoNumerico = convertirPermisoANumero(permiso);
-    //     return permisoNumerico === tipoPermiso;
-    //   }) || false;
-    // }
-
     return false;
   }
 
@@ -133,11 +131,44 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!roleDetail) return;
-    console.log('Guardando cambios para el rol:', roleDetail.cdRol, accesosLocales);
-    setCambiosPendientes(false);
-    onClose();
+
+    try {
+      console.log('Guardando accesos:', roleDetail.cdRol, accesosLocales);
+      const promesas = accesosLocales.map(async (acceso) => {
+        const permisosNumericos = acceso.permisos.map((p: any) => p.tipoPermiso);
+
+        //validar si es nuevo o ya existe
+        if (acceso.esNuevo && acceso.moduloHabilitado) {
+          // CREAR NUEVO ACCESO (solo si está habilitado)
+          const payload = {
+            cdRol: roleDetail.cdRol,
+            cdModulo: acceso.cdModulo,
+            moduloHabilitado: acceso.moduloHabilitado,
+            permisos: permisosNumericos
+          };
+          console.log(`CREANDO nuevo acceso para ${acceso.cdModulo}:`, payload);
+          return await accesosService.createAcceso(payload);
+        } else if (!acceso.esNuevo) {
+          // ACTUALIZAR ACCESO EXISTENTE
+          const payload = {
+            moduloHabilitado: acceso.moduloHabilitado,
+            permisos: acceso.moduloHabilitado ? permisosNumericos : [] // si está deshabilitado, sin permisos
+          };
+          console.log(`ACTUALIZANDO acceso existente para ${acceso.cdModulo}:`, payload);
+          return await accesosService.updateAcceso(roleDetail.cdRol, acceso.cdModulo, payload);
+        }
+
+        return Promise.resolve();
+      });
+
+      await Promise.all(promesas);
+      setCambiosPendientes(false);
+      onClose();
+    } catch (error) {
+      console.error('Error al guardar cambios:', error);
+    }
   };
 
   const handleClose = () => {

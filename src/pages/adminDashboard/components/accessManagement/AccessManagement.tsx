@@ -11,8 +11,8 @@ import type { AccesoResume, RolDetallado, RolResumen } from '../../../../types/a
 import type { PaginatedResponse } from '../../../../types/api.types';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
-  onPermisoChange,
-  onModuloHabilitadoChange,
+  onPermisoChange, //aqui lo envian para mostrar en consola
+  onModuloHabilitadoChange,//aqui lo envian para mostrar en consola
   onBulkPermissionChange,
   loading = false
 }) => {
@@ -86,6 +86,10 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     console.log(accesosDelRol);
   
   };
+
+  const handlePermisoChange = () => {};
+
+  const handleModuloHabilitadoChange = () => {};
 
   const handleBulkPermissions = () => {
     console.log('Abriendo modal para asignación masiva de permisos');

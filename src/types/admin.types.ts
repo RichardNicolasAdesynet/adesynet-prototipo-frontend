@@ -372,12 +372,12 @@ export interface ModuloFormData {
 export interface AccesoFormData {
   cdRol: string;
   cdModulo: string;
-  modulosHabilitados: boolean;
+  moduloHabilitado: boolean;
   permisos: TipoPermiso[];
 }
 //  LA LOS CAMPOS AL CREAR Y MODIFICAR SON DIFERENTES
 export interface AccesoFromDataUpdate {
-  modulosHabilitados: boolean;
+  moduloHabilitado: boolean;
   permisos: TipoPermiso[];
 }
 

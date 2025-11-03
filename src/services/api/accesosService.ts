@@ -19,8 +19,8 @@ export const accesosService = {
 
   // GET: Lista paginada de accesos
   async getAllAccesos(params?: {
-    PageRequest_page?: number;
-    PageRequest_rows?: number;
+    'PageRequest.page'?: number;
+    'PageRequest.rows'?: number;
     PageRequest_sord?: string;
     PageRequest_sidx?: string;
     PageRequest_Skip?: number;

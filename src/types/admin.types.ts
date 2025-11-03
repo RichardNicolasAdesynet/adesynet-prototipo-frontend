@@ -154,7 +154,7 @@ export const convertirPermisoANumero = (
 
 /***********************/
 // Función auxiliar para calcular el tamaño de página
-const calcularPageSize = (total: number, base: number = 10): number => {
+export const calcularPageSize = (total: number, base: number = 10): number => {
     if (total <= base) return base;
     return Math.ceil(total / base) * base;
   };

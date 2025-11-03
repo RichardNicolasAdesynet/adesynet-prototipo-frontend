@@ -7,8 +7,7 @@ import { rolesService } from '../../../../services/api/rolesServices';
 import { useAlert } from '../../../../context/AlertContext';
 import { modulosService } from '../../../../services/api/modulosService';
 import { accesosService } from '../../../../services/api/accesosService';
-import type { RolResumen } from '../../../../types/admin.types';
-import type { PaginatedResponse } from '../../../../types/api.types';
+import { cargarDatosCompletos, type RolResumen } from '../../../../types/admin.types';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
   onPermisoChange, //aqui lo envian para mostrar en consola
@@ -32,40 +31,6 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     cargarRoles();
   }, [])
 
-  // Función auxiliar para calcular el tamaño de página
-  const calcularPageSize = (total: number, base: number = 10): number => {
-    if (total <= base) return base;
-    return Math.ceil(total / base) * base;
-  };
-
-  const cargarDatosCompletos = async (
-    serviceMethod: (params?: any) => Promise<PaginatedResponse<any>>,
-    setState: (data: any[]) => void,
-    entidadNombre: string
-  ): Promise<void> => {
-    try {
-      const respuestaInicial = await serviceMethod({
-        'PageRequest.page': 1,
-        'PageRequest.rows': 1
-      });
-      const total = respuestaInicial.totalRecords || 0;
-
-      // Calcular tamaño de página óptimo
-      const pageSize = calcularPageSize(total);
-
-      // Segunda llamada para obtener todos los datos
-      const respuestaCompleta = await serviceMethod({
-        'PageRequest.page': 1,
-        'PageRequest.rows': pageSize
-      });
-
-      setState(respuestaCompleta.data);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : `Error al cargar ${entidadNombre}`;
-      showAlert('error', 'Error al cargar', errorMsg);
-      throw error;
-    }
-  };
 
   const cargarRoles = async () => {
     await cargarDatosCompletos(rolesService.getAllRoles, setRoles,'roles');

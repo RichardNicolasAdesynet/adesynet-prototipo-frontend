@@ -7,6 +7,7 @@ import { TablePagination } from '../../../../../components/shared/tablePaginatio
 export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
   usuarios,
   onEdit,
+  onDelete,
   onToggleStatus,
   loading = false
 }) => {
@@ -162,6 +163,7 @@ export const EnhancedUsersTable: React.FC<UsersTableProps> = ({
                   <ActionsDropdown
                     entidad={convertirUsuarioABaseEntity(usuario)}
                     onEdit={onEdit}
+                    onDelete={onDelete}
                     onToggleStatus={onToggleStatus}
                     onViewDetails={handleViewDetails}
                   />

@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from "./api.types";
+
 // src/types/admin.types.ts
 export interface DashboardStats {
   totalUsuarios: number;
@@ -135,17 +137,60 @@ export const convertirPermisoANombre = (tipoPermiso: TipoPermiso): string => {
 };
 
 // Función para convertir nombre de permiso a TipoPermiso
-export const convertirPermisoANumero = (permisoNombre: string): TipoPermiso | null => {
+export const convertirPermisoANumero = (
+  permisoNombre: string
+): TipoPermiso | null => {
   const mapeo: Record<string, TipoPermiso> = {
-    "Consultar": 1,
-    "Crear": 2,
-    "Modificar": 3, 
-    "Eliminar": 4,
-    "ControlTotal": 5
+    Consultar: 1,
+    Crear: 2,
+    Modificar: 3,
+    Eliminar: 4,
+    ControlTotal: 5,
   };
-  
+
   return mapeo[permisoNombre] || null;
 };
+
+
+/***********************/
+// Función auxiliar para calcular el tamaño de página
+const calcularPageSize = (total: number, base: number = 10): number => {
+    if (total <= base) return base;
+    return Math.ceil(total / base) * base;
+  };
+
+export const cargarDatosCompletos = async (
+    serviceMethod: (params?: any) => Promise<PaginatedResponse<any>>,
+    setState: (data: any[]) => void,
+    entidadNombre: string
+  ): Promise<void> => {
+    try {
+      const respuestaInicial = await serviceMethod({
+        'PageRequest.page': 1,
+        'PageRequest.rows': 1
+      });
+      const total = respuestaInicial.totalRecords || 0;
+
+      // Calcular tamaño de página óptimo
+      const pageSize = calcularPageSize(total);
+
+      // Segunda llamada para obtener todos los datos
+      const respuestaCompleta = await serviceMethod({
+        'PageRequest.page': 1,
+        'PageRequest.rows': pageSize
+      });
+
+      setState(respuestaCompleta.data);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : `Error al cargar ${entidadNombre}`;
+      // showAlert('error', 'Error al cargar', errorMsg);
+      throw error;
+    }
+  };
+
+
+
+//****** */
 
 export interface PermisoConfig {
   tipo: TipoPermiso;
@@ -170,6 +215,7 @@ export interface BaseEntity {
 export interface ActionsDropdownProps<T extends BaseEntity> {
   entidad: T;
   onEdit: (entidad: T) => void;
+  onDelete: (id: string) => void;
   onToggleStatus: (id: string, nuevoEstado: boolean) => void;
   onViewDetails: (entidad: T) => void;
   customActions?: Array<{
@@ -235,6 +281,7 @@ export interface UsersFiltersProps {
 export interface UsersTableProps {
   usuarios: UsuarioResumen[];
   onEdit: (usuario: UsuarioResumen) => void;
+  onDelete: (cdUsuario: string) => void;
   onToggleStatus: (cdUsuario: string, nuevoEstado: boolean) => void;
   loading?: boolean;
 }
@@ -259,6 +306,7 @@ export interface RoleFormProps {
 export interface RolesTableProps {
   roles: RolResumen[];
   onEdit: (rol: RolResumen) => void;
+  onDelete: (cdRol: string) => void;
   onToggleStatus: (cdRol: string, nuevoEstado: boolean) => void;
   loading?: boolean;
 }
@@ -289,6 +337,7 @@ export interface ModuleFormProps {
 export interface ModulesTableProps {
   modulos: ModuloResumen[];
   onEdit: (modulo: ModuloResumen) => void;
+  onDelete: (cdModulo: string) => void;
   onToggleEdicion: (cdModulo: string, nuevoEstado: boolean) => void;
   loading?: boolean;
 }

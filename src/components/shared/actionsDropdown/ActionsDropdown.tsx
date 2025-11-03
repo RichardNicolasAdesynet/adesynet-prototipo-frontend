@@ -4,6 +4,7 @@ import type { ActionsDropdownProps, BaseEntity } from '../../../types/admin.type
 export const ActionsDropdown = <T extends BaseEntity>({
   entidad,
   onEdit,
+  onDelete,
   onToggleStatus,
   onViewDetails,
   customActions = []
@@ -28,6 +29,11 @@ export const ActionsDropdown = <T extends BaseEntity>({
     onEdit(entidad);
     setIsOpen(false);
   };
+
+  const handleDelete = () => {
+    onDelete(entidad.id);
+    setIsOpen(false);
+  }
 
   const handleToggleStatus = () => {
     onToggleStatus(entidad.id, !entidad.estaActivo);
@@ -60,7 +66,7 @@ export const ActionsDropdown = <T extends BaseEntity>({
           ⋯
         </span>
       </button>
-      
+
       {/* Menú desplegable */}
       {isOpen && (
         <div className="
@@ -90,7 +96,7 @@ export const ActionsDropdown = <T extends BaseEntity>({
             </div>
             <span className="font-medium">Ver Detalles</span>
           </button>
-          
+
           {/* Editar */}
           <button
             onClick={handleEdit}
@@ -109,7 +115,7 @@ export const ActionsDropdown = <T extends BaseEntity>({
             </div>
             <span className="font-medium">Editar</span>
           </button>
-          
+
           {/* Activar/Desactivar */}
           <button
             onClick={handleToggleStatus}
@@ -118,8 +124,8 @@ export const ActionsDropdown = <T extends BaseEntity>({
               flex items-center space-x-3
               transition-all duration-200
               group
-              ${entidad.estaActivo 
-                ? 'text-slate-700 hover:text-red-700 hover:bg-red-50/80' 
+              ${entidad.estaActivo
+                ? 'text-slate-700 hover:text-red-700 hover:bg-red-50/80'
                 : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80'
               }
             `}
@@ -139,6 +145,24 @@ export const ActionsDropdown = <T extends BaseEntity>({
             </span>
           </button>
 
+          {/*Eliminar entidad <*/}
+          <button
+            onClick={handleDelete}
+            className="
+              w-full px-4 py-3
+              flex items-center space-x-3
+              text-slate-700 hover:text-red-700
+              hover:bg-red-50/60
+              transition-all duration-200
+              group
+            "
+            type="button"
+          >
+            <div className="w-6 h-6 bg-pink-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-red-600 text-sm">🗑️</span>
+            </div>
+            <span className="font-medium">Eliminar</span>
+          </button>
           {/* Línea separadora */}
           {customActions.length > 0 && (
             <div className="border-t border-slate-200/60 my-2"></div>
@@ -154,8 +178,8 @@ export const ActionsDropdown = <T extends BaseEntity>({
                 flex items-center space-x-3
                 transition-all duration-200
                 group
-                ${accion.peligroso 
-                  ? 'text-slate-700 hover:text-red-700 hover:bg-red-50/80' 
+                ${accion.peligroso
+                  ? 'text-slate-700 hover:text-red-700 hover:bg-red-50/80'
                   : 'text-slate-700 hover:text-purple-700 hover:bg-purple-50/80'
                 }
               `}

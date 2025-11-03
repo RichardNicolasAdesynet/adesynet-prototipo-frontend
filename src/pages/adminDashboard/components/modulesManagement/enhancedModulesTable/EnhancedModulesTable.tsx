@@ -6,6 +6,7 @@ import { TablePagination } from '../../../../../components/shared/tablePaginatio
 export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
   modulos,
   onEdit,
+  onDelete,
   onToggleEdicion,
   loading = false
 }) => {
@@ -225,6 +226,7 @@ export const EnhancedModulesTable: React.FC<ModulesTableProps> = ({
                   <ActionsDropdown
                     entidad={convertirModuloABaseEntity(modulo)}
                     onEdit={onEdit}
+                    onDelete={onDelete}
                     onToggleStatus={handleToggleStatus}
                     onViewDetails={handleViewDetails}
                     customActions={customActions}

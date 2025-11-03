@@ -173,6 +173,20 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
   };
 
 
+  // const handleForceSave = async () => {
+  //   // El usuario decide guardar de todos modos
+  //   setShowValidationModal(false);
+  //   setModulosInvalidos([]);
+
+  //   try {
+  //     await onSave(accesosLocales, roleDetail);
+  //     setCambiosPendientes(false);
+  //     onClose();
+  //   } catch (error) {
+  //     console.error('Error al guardar cambios:', error);
+  //   }
+  // };
+
   const handleClose = () => {
     if (cambiosPendientes) {
       const confirmar = window.confirm('Tienes cambios sin guardar. ¿Seguro que quieres cerrar?');

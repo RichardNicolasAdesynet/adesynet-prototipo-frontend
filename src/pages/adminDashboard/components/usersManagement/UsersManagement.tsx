@@ -128,6 +128,16 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     setIsFormOpen(true);
   };
 
+  const handleDeleteUsuario = async(cdUsuario: string) =>{
+    try {
+      await userService.deleteUsuario(cdUsuario);
+      showAlert('warning', 'Usuario Eliminado' ,'Usuario eliminado de la Base de datos')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
+      showAlert('error', 'No se puede al usuario', errorMessage);
+    }
+  }
+
   // ✅ ACTUALIZADO: Manejar envío del formulario con API real
   const handleFormSubmit = async (formData: UsuarioFormData) => {
     setFormLoading(true);
@@ -314,6 +324,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
       {/* Tabla */}
       <EnhancedUsersTable
         usuarios={filteredUsuarios}
+        onDelete={handleDeleteUsuario}
         onEdit={handleEditUser}
         onToggleStatus={handleUsuarioToggleStatus}
         loading={usuariosLoading || loading}

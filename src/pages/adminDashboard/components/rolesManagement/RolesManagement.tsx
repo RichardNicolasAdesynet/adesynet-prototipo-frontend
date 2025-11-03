@@ -86,6 +86,18 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     setIsFormOpen(true);
   };
 
+  const handleDeleteRole = async (cdRol: string) =>{
+    console.log(`el rol es de ID : ${cdRol}`);
+    try {
+      await rolesService.deleteRol(cdRol);
+      showAlert('warning', 'Rol Eliminado' ,'Rol eliminado de la Base de datos');
+      await cargarRoles();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
+      showAlert('error', 'No se puede eliminar', errorMessage);
+    }
+  }
+
   //enviar data a la api en base a form update | create 
   const handleFormSubmit = async (formData: RolFormData) => {
     setFormLoading(true);
@@ -244,6 +256,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
       <EnhancedRolesTable
         roles={filteredRoles}
         onEdit={handleEditRole}
+        onDelete={handleDeleteRole}
         onToggleStatus={handleRolToggleStatus}
         loading={rolesLoading || loading}
       />
@@ -257,6 +270,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
         onCancel={handleFormCancel}
         loading={formLoading}
       />
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import type { DashboardStats, RolResumen, ModuloResumen, AccesoResume } from '../../types/admin.types';
+import type { RolResumen, ModuloResumen, AccesoResume } from '../../types/admin.types';
 
 // export const mockDashboardStats: DashboardStats = {
 //   totalUsuarios: 45,

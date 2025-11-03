@@ -6,6 +6,7 @@ import { TablePagination } from '../../../../../components/shared/tablePaginatio
 export const EnhancedRolesTable: React.FC<RolesTableProps> = ({
   roles,
   onEdit,
+  onDelete,
   onToggleStatus,
   loading = false
 }) => {
@@ -206,6 +207,7 @@ export const EnhancedRolesTable: React.FC<RolesTableProps> = ({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <ActionsDropdown
                     entidad={convertirRolABaseEntity(rol)}
+                    onDelete={onDelete}
                     onEdit={onEdit}
                     onToggleStatus={onToggleStatus}
                     onViewDetails={handleViewDetails}

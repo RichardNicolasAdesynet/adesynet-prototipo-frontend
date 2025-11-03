@@ -84,6 +84,16 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
     setIsFormOpen(true);
   };
 
+  const handleDeleteModule = async (cdModulo: string) =>{
+    try {
+      await modulosService.deleteModulo(cdModulo);
+      showAlert('warning', 'Modulo Eliminado' ,'Modulo eliminado de la Base de datos');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
+      showAlert('error', 'No se puede eliminar', errorMessage);
+    }
+  }
+  
   const handleFormSubmit = async (formData: ModuloFormData) => {
     setFormLoading(true);
     try {
@@ -241,6 +251,7 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
       <EnhancedModulesTable
         modulos={filteredModulos}
         onEdit={handleEditModule}
+        onDelete={handleDeleteModule}
         onToggleEdicion={handleModuloToggleStatus}
         loading={modulosLoading || loading}
       />

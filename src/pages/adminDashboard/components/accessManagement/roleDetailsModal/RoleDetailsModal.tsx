@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { permisosConfig, tiposPermisoDisponibles } from '../../../../../data/accessManagementData';
-import { convertirPermisoANumero, type ModuloResumen, type RolDetallado, type TipoPermiso } from '../../../../../types/admin.types';
+import { convertirPermisoANumero, type ModuloResumen, type TipoPermiso } from '../../../../../types/admin.types';
 
 export interface RoleDetailsModalProps {
   roleDetail: any;
@@ -247,7 +247,7 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
           <div className="space-y-4">
             {modulos.map(modulo => {
               const habilitado = moduloEstaHabilitado(modulo.cdModulo);
-              const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
+              //const acceso = accesosLocales.find(a => a.cdModulo === modulo.cdModulo);
               return (
                 <div key={modulo.cdModulo} className="
                   border border-slate-200

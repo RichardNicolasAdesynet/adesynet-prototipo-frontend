@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-white font-bold text-lg">A+</span>
               </div>
               <div>
-                <h2 className="text-slate-800 font-bold text-lg leading-tight">ADES+ NET</h2>
+                <h2 className="text-slate-800 font-bold text-lg leading-tight">ADESY NET</h2>
                 <p className="text-cyan-600 text-xs">Sistema Soporte TI</p>
               </div>
             </div>

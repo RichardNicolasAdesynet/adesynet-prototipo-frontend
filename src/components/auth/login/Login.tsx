@@ -34,8 +34,8 @@ export const Login: React.FC<LoginProps> = ({
                     <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl mb-8 animate-float">
                         {/* Reemplaza esta ruta con la ubicación real de tu logo */}
                         <img 
-                            src="../public/adesyLogo.png" // 📁 CAMBIA ESTA RUTA
-                            alt="ADES+ NET Logo"
+                            src="./adesyLogo.png" // 📁 CAMBIA ESTA RUTA
+                            alt="ADESY NET Logo"
                             className="w-48 h-auto mx-auto mb-4 drop-shadow-2xl"
                         />
                         <div className="text-center">
@@ -61,7 +61,7 @@ export const Login: React.FC<LoginProps> = ({
                     <div className="text-center mb-8 lg:hidden">
                         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 mb-6">
                             <img 
-                                src="../public/adesyLogo.png" // 📁 CAMBIA ESTA RUTA
+                                src="./adesyLogo.png" // 📁 CAMBIA ESTA RUTA
                                 alt="ADESY NET Logo"
                                 className="w-32 h-auto mx-auto mb-3"
                             />

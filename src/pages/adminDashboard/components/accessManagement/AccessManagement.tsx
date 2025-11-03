@@ -7,13 +7,13 @@ import { rolesService } from '../../../../services/api/rolesServices';
 import { useAlert } from '../../../../context/AlertContext';
 import { modulosService } from '../../../../services/api/modulosService';
 import { accesosService } from '../../../../services/api/accesosService';
-import type { AccesoResume, RolDetallado, RolResumen } from '../../../../types/admin.types';
+import type { RolResumen } from '../../../../types/admin.types';
 import type { PaginatedResponse } from '../../../../types/api.types';
 
 export const AccessManagement: React.FC<AccessManagementProps> = ({
   onPermisoChange, //aqui lo envian para mostrar en consola
   onModuloHabilitadoChange,//aqui lo envian para mostrar en consola
-  onBulkPermissionChange,
+  // onBulkPermissionChange,
   loading = false
 }) => {
   const { showAlert } = useAlert();

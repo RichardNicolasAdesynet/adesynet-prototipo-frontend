@@ -136,9 +136,9 @@ export const AdminDashboard: React.FC = () => {
                     onModuloHabilitadoChange={async (cdRol, cdModulo, habilitado) => {
                       console.log(`Módulo ${cdModulo} ${habilitado ? 'habilitado' : 'deshabilitado'} para rol ${cdRol}`);
                     }}
-                    onBulkPermissionChange={async (cdRol, permisos) => {
-                      console.log(`Asignación masiva de permisos ${permisos.join(', ')} para rol ${cdRol}`);
-                    }}
+                    // onBulkPermissionChange={async (cdRol, permisos) => {
+                    //   console.log(`Asignación masiva de permisos ${permisos.join(', ')} para rol ${cdRol}`);
+                    // }}
                   />
                 </div>
               )}

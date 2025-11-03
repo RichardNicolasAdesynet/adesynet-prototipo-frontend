@@ -8,18 +8,28 @@ import { UsersManagement } from './components/usersManagement';
 import { RolesManagement } from './components/rolesManagement';
 import { ModulesManagement } from './components/modulesManagement';
 import { AccessManagement } from './components/accessManagement';
-import { mockDashboardStats } from '../../services/mocks/adminMocks';
 import type { DashboardStats } from '../../types/admin.types';
+import { userService } from '../../services/api/userService';
+import { modulosService } from '../../services/api/modulosService';
+import { rolesService } from '../../services/api/rolesServices';
 
 export const AdminDashboard: React.FC = () => {
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [stats, setStats] = useState<DashboardStats>(mockDashboardStats);
+  const statsIniciales: DashboardStats = {
+    totalModulos: 0,
+    totalRoles: 0,
+    totalUsuarios: 0,
+    usuariosActivos: 0,
+    usuariosInactivos: 0,
+    ultimaActualizacion: new Date().toISOString()
+  };
+  const [stats, setStats] = useState<DashboardStats>(statsIniciales);
   const [cargando, setCargando] = useState<boolean>(false);
   const [itemActivo, setItemActivo] = useState<string>('dashboard');
   // Determinar item activo basado en la ruta actual
+
 
   useEffect(() => {
     const rutas: Record<string, string> = {
@@ -39,12 +49,28 @@ export const AdminDashboard: React.FC = () => {
   };
 
   //********PARA EL DASHBOARD HEADER********** */
+  const cargarStats = async (): Promise<DashboardStats> => {
+    const totalUsuarios = (await userService.getUsuariosList()).length;
+    const usuarioActivos = ((await userService.getUsuariosList()).filter(u => u.estaActivo === true)).length;
+    const totalModulos = (await modulosService.getModulosList()).length;
+    const totalRoles = (await rolesService.getRolesList()).length;
 
+    return {
+      totalModulos: totalModulos,
+      totalRoles: totalRoles,
+      totalUsuarios: totalUsuarios,
+      usuariosActivos: usuarioActivos,
+      usuariosInactivos: (totalUsuarios - usuarioActivos),
+      ultimaActualizacion: new Date().toISOString()
+    };
+  };
   useEffect(() => {
     const cargarDatos = async () => {
       setCargando(true);
+      const statsData = await cargarStats();
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setStats(mockDashboardStats);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setStats(statsData);
       setCargando(false);
     };
 
@@ -54,10 +80,8 @@ export const AdminDashboard: React.FC = () => {
   const manejarRefresh = async () => {
     setCargando(true);
     await new Promise(resolve => setTimeout(resolve, 800));
-    setStats(prev => ({
-      ...prev,
-      ultimaActualizacion: new Date().toISOString()
-    }));
+    const statsActualizados = await cargarStats();
+    setStats(statsActualizados);
     setCargando(false);
   };
   //********************************************* */
@@ -111,19 +135,19 @@ export const AdminDashboard: React.FC = () => {
             <div className="dashboard-content">
               {location.pathname === '/admin/usuarios' && (
                 <div className="animate-fade-in">
-                  <UsersManagement/>
+                  <UsersManagement />
                 </div>
               )}
 
               {location.pathname === '/admin/roles' && (
                 <div className="animate-fade-in">
-                  <RolesManagement/>
+                  <RolesManagement />
                 </div>
               )}
 
               {location.pathname === '/admin/modulos' && (
                 <div className="animate-fade-in">
-                  <ModulesManagement/>
+                  <ModulesManagement />
                 </div>
               )}
 
@@ -136,9 +160,9 @@ export const AdminDashboard: React.FC = () => {
                     onModuloHabilitadoChange={async (cdRol, cdModulo, habilitado) => {
                       console.log(`Módulo ${cdModulo} ${habilitado ? 'habilitado' : 'deshabilitado'} para rol ${cdRol}`);
                     }}
-                    // onBulkPermissionChange={async (cdRol, permisos) => {
-                    //   console.log(`Asignación masiva de permisos ${permisos.join(', ')} para rol ${cdRol}`);
-                    // }}
+                  // onBulkPermissionChange={async (cdRol, permisos) => {
+                  //   console.log(`Asignación masiva de permisos ${permisos.join(', ')} para rol ${cdRol}`);
+                  // }}
                   />
                 </div>
               )}

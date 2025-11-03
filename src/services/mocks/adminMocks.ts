@@ -1,13 +1,13 @@
 import type { DashboardStats, RolResumen, ModuloResumen, AccesoResume } from '../../types/admin.types';
 
-export const mockDashboardStats: DashboardStats = {
-  totalUsuarios: 45,
-  totalRoles: 8,
-  totalModulos: 12,
-  usuariosActivos: 38,
-  usuariosInactivos: 7,
-  ultimaActualizacion: new Date().toISOString()
-};
+// export const mockDashboardStats: DashboardStats = {
+//   totalUsuarios: 45,
+//   totalRoles: 8,
+//   totalModulos: 12,
+//   usuariosActivos: 38,
+//   usuariosInactivos: 7,
+//   ultimaActualizacion: new Date().toISOString()
+// };
 
 // export const mockUsuarios: UsuarioResumen[] = [
 //   {

@@ -182,7 +182,8 @@ export const cargarDatosCompletos = async (
 
       setState(respuestaCompleta.data);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : `Error al cargar ${entidadNombre}`;
+      //const errorMsg = error instanceof Error ? error.message : `Error al cargar ${entidadNombre}`;
+      console.log(entidadNombre);
       // showAlert('error', 'Error al cargar', errorMsg);
       throw error;
     }

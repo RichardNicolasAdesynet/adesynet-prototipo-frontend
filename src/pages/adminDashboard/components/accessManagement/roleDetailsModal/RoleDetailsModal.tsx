@@ -23,6 +23,8 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
 }) => {
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
   const [accesosLocales, setAccesosLocales] = useState<any[]>([]);
+  const [showValidationModal, setShowValidationModal] = useState(false);
+  const [modulosInvalidos, setModulosInvalidos] = useState<string[]>([]);
 
   useEffect(() => {
     if (isOpen && roleDetail) {
@@ -132,8 +134,30 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
     }
   };
 
+  const validarAccesos = (accesos: any[]): { valido: boolean; modulosInvalidos: string[] } => {
+    const modulosInvalidos: string[] = [];
+
+    accesos.forEach(acceso => {
+      if (acceso.moduloHabilitado && (!acceso.permisos || acceso.permisos.length === 0)) {
+        modulosInvalidos.push(acceso.moduloNombre || acceso.cdModulo);
+      }
+    });
+
+    return {
+      valido: modulosInvalidos.length === 0,
+      modulosInvalidos
+    }
+  };
+
   const handleSave = async () => {
     if (!roleDetail) return;
+    // Validar antes de guardar
+    const validacion = validarAccesos(accesosLocales);
+    if (!validacion.valido) {
+      setModulosInvalidos(validacion.modulosInvalidos);
+      setShowValidationModal(true);
+      return;
+    }
     try {
       await onSave(accesosLocales, roleDetail);
       setCambiosPendientes(false);
@@ -142,6 +166,12 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
       console.error('Error al guardar cambios:', error);
     }
   };
+
+  const handleCloseValidationModal = () => {
+    setShowValidationModal(false);
+    setModulosInvalidos([]);
+  };
+
 
   const handleClose = () => {
     if (cambiosPendientes) {
@@ -456,6 +486,110 @@ export const RoleDetailsModal: React.FC<RoleDetailsModalProps> = ({
           </div>
         </div>
       </div>
+      {/* Modal de Validación */}
+      {showValidationModal && (
+        <div className="
+          fixed inset-0
+          bg-black/50
+          backdrop-blur-sm
+          flex items-center justify-center
+          p-4
+          z-[60]
+          animate-fade-in
+        ">
+          <div className="
+            bg-white
+            rounded-2xl
+            shadow-2xl
+            w-full max-w-md
+            animate-scale-in
+          ">
+            {/* Header del Modal de Validación */}
+            <div className="
+              bg-gradient-to-r from-amber-500 to-orange-500
+              px-6 py-4
+              flex items-center space-x-3
+            ">
+              <div className="
+                w-10 h-10
+                bg-white/20
+                rounded-lg
+                flex items-center justify-center
+                text-white text-xl
+              ">
+                ⚠️
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Validación Requerida</h2>
+                <p className="text-white/90 text-sm">Módulos incompletos detectados</p>
+              </div>
+            </div>
+
+            {/* Contenido del Modal de Validación */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-slate-700 mb-3">
+                  Los siguientes módulos están habilitados pero no tienen permisos asignados:
+                </p>
+                <ul className="bg-amber-50 border border-amber-200 rounded-lg p-3 max-h-32 overflow-y-auto">
+                  {modulosInvalidos.map((modulo, index) => (
+                    <li key={index} className="flex items-center space-x-2 py-1">
+                      <span className="text-amber-500">•</span>
+                      <span className="text-amber-800 font-medium">{modulo}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-amber-600 text-sm mt-3">
+                  ⚠️ Cada módulo habilitado debe tener al menos un permiso asignado.
+                </p>
+              </div>
+            </div>
+
+            {/* Footer del Modal de Validación */}
+            <div className="
+              px-6 py-4
+              border-t border-slate-200
+              bg-slate-50
+              flex items-center justify-end space-x-3
+            ">
+              <button
+                onClick={handleCloseValidationModal}
+                className="
+                  px-6 py-2
+                  border border-slate-300
+                  text-slate-700
+                  rounded-lg
+                  font-medium
+                  hover:bg-slate-50
+                  hover:border-slate-400
+                  transition-all duration-200
+                "
+                type="button"
+              >
+                Corregir
+              </button>
+              {/* <button
+                onClick={handleForceSave}
+                className="
+                  px-6 py-2
+                  bg-gradient-to-r from-amber-500 to-orange-500
+                  hover:from-amber-600 hover:to-orange-600
+                  text-white font-medium
+                  rounded-lg
+                  shadow-lg shadow-amber-500/25
+                  hover:shadow-xl hover:shadow-amber-500/35
+                  transition-all duration-300
+                  flex items-center space-x-2
+                "
+                type="button"
+              >
+                <span>💾</span>
+                <span>Guardar de todos modos</span>
+              </button> */}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

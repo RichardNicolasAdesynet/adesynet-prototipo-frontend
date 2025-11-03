@@ -46,11 +46,11 @@ export const UserForm: React.FC<UserFormProps> = ({
     }
     setErrors({});
   }, [usuario, isOpen]);
-  
+
   const validateForm = (): boolean => {
     const newErrors: Partial<UsuarioFormData> = {};
-//******************comentado en caso se requiera colocar el id manualmente ************
-// ********************* por ahora la api lo proporciona de forma automatizada */
+    //******************comentado en caso se requiera colocar el id manualmente ************
+    // ********************* por ahora la api lo proporciona de forma automatizada */
     // if (!formData.cdUsuario.trim()) {
     //   newErrors.cdUsuario = 'Código de usuario es requerido';
     // }
@@ -154,37 +154,30 @@ export const UserForm: React.FC<UserFormProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Código de Usuario */}
-            <div className="space-y-2">
-              <label htmlFor="cdUsuario" className="
+            {isEditing && (
+              <div className="space-y-2">
+                <label htmlFor="cdUsuario" className="
                 block text-sm font-medium text-slate-700
               ">
-                Código de Usuario *
-              </label>
-              <input
-                id="cdUsuario"
-                type="text"
-                value={formData.cdUsuario}
-                onChange={(e) => handleChange('cdUsuario', e.target.value.toUpperCase())}
-                className={`
-                  w-full px-4 py-3
-                  border rounded-xl
-                  focus:outline-none focus:ring-2 transition-all duration-200
-                  ${errors.cdUsuario
-                    ? 'border-rose-300 focus:ring-rose-500 bg-rose-50'
-                    : 'border-slate-300 focus:ring-cyan-500 focus:border-transparent'
-                  }
-                `}
-                maxLength={5}
-                disabled={isEditing}
-                placeholder="USR01"
-              />
-              {errors.cdUsuario && (
-                <p className="text-rose-600 text-sm flex items-center space-x-1">
-                  <span>⚠️</span>
-                  <span>{errors.cdUsuario}</span>
+                  Código de Usuario
+                </label>
+                <div className="w-full px-4 py-3 
+                bg-slate-50 border border-slate-300 rounded-xl
+                text-slate-700 font-mono
+                ">
+                  {formData.cdUsuario}
+                </div>
+                <p className="text-slate-500 text-sm">
+                  Identificador único del usuario
                 </p>
-              )}
-            </div>
+                {errors.cdUsuario && (
+                  <p className="text-rose-600 text-sm flex items-center space-x-1">
+                    <span>⚠️</span>
+                    <span>{errors.cdUsuario}</span>
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Descripción del Usuario */}
             <div className="space-y-2">
@@ -389,6 +382,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                   cursor-pointer
                 "
               >
+                <option>Seleccione el rol....</option>
                 {roles.map(rol => (
                   <option key={rol.cdRol} value={rol.cdRol}>
                     {rol.nombre}

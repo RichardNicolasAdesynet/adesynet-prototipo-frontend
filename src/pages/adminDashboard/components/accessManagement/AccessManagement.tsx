@@ -151,7 +151,8 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           };
           console.log(`CREANDO nuevo acceso para ${acceso.cdModulo}:`, payload);
           return await accesosService.createAcceso(payload);
-        } else if (!acceso.esNuevo) {
+        } else {
+          if (!acceso.esNuevo && acceso.moduloHabilitado) {
           // ACTUALIZAR ACCESO EXISTENTE
           const payload = {
             moduloHabilitado: acceso.moduloHabilitado,
@@ -159,8 +160,11 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
           };
           console.log(`ACTUALIZANDO acceso existente para ${acceso.cdModulo}:`, payload);
           return await accesosService.updateAcceso(roleDetail.cdRol, acceso.cdModulo, payload);
-        }
-
+          }else if(!acceso.esNuevo && !acceso.moduloHabilitado){
+          console.log(`Eliminando acceso para ${acceso.cdModulo}:`);
+          return await accesosService.deleteAcceso(roleDetail.cdRol, acceso.cdModulo);
+          }
+        } 
         return Promise.resolve();
       });
 

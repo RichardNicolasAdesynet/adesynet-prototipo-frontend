@@ -32,42 +32,89 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     cargarRoles();
   }, [])
 
+  // Función auxiliar para calcular el tamaño de página
+  const calcularPageSize = (total: number, base: number = 10): number => {
+    if (total <= base) return base;
+    return Math.ceil(total / base) * base;
+  };
+
+  const cargarDatosCompletos = async (
+    serviceMethod: (params?: any) => Promise<PaginatedResponse<any>>,
+    setState: (data: any[]) => void,
+    entidadNombre: string
+  ): Promise<void> => {
+    try {
+      const respuestaInicial = await serviceMethod({
+        'PageRequest.page': 1,
+        'PageRequest.rows': 1
+      });
+      const total = respuestaInicial.totalRecords || 0;
+
+      // Calcular tamaño de página óptimo
+      const pageSize = calcularPageSize(total);
+
+      // Segunda llamada para obtener todos los datos
+      const respuestaCompleta = await serviceMethod({
+        'PageRequest.page': 1,
+        'PageRequest.rows': pageSize
+      });
+
+      setState(respuestaCompleta.data);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : `Error al cargar ${entidadNombre}`;
+      showAlert('error', 'Error al cargar', errorMsg);
+      throw error;
+    }
+  };
 
   const cargarRoles = async () => {
-    try {
-      const rolesPagiandosReales: PaginatedResponse<RolResumen> = await rolesService.getAllRoles();
-      const rolesReales: RolResumen[] = rolesPagiandosReales.data;
-      setRoles(rolesReales);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error al cargar roles';
-      showAlert('error', 'Error al cargar', errorMsg);
-    }
+    await cargarDatosCompletos(rolesService.getAllRoles, setRoles,'roles');
   }
 
   const cargarModulos = async () => {
-    try {
-      const modulosPaginadosReales = await modulosService.getAllModulos();
-      const modulosReales: any[] = modulosPaginadosReales.data;
-      setModulos(modulosReales);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error al cargar modulos';
-      showAlert('error', 'Error al cargar', errorMsg);
-    }
+    await cargarDatosCompletos(modulosService.getAllModulos, setModulos, 'modulos');
   }
 
   const cargarAccesos = async () => {
-    try {
-      setAccesosLoading(true);
-      const accesosPaginadoReales = await accesosService.getAllAccesos();
-      const accesosReales: AccesoResume[] = accesosPaginadoReales.data;
-      setAccesos(accesosReales);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error al cargar accesos';
-      showAlert('error', 'Error al cargar', errorMsg);
-    } finally {
-      setAccesosLoading(false);
-    }
+    setAccesosLoading(true);
+    await cargarDatosCompletos(accesosService.getAllAccesos, setAccesos, 'accesos');
+    setAccesosLoading(false);
   }
+  // const cargarRoles = async () => {
+  //   try {
+  //     const rolesPagiandosReales: PaginatedResponse<RolResumen> = await rolesService.getAllRoles();
+  //     const rolesReales: RolResumen[] = rolesPagiandosReales.data;
+  //     setRoles(rolesReales);
+  //   } catch (error) {
+  //     const errorMsg = error instanceof Error ? error.message : 'Error al cargar roles';
+  //     showAlert('error', 'Error al cargar', errorMsg);
+  //   }
+  // }
+
+  // const cargarModulos = async () => {
+  //   try {
+  //     const modulosPaginadosReales = await modulosService.getAllModulos();
+  //     const modulosReales: any[] = modulosPaginadosReales.data;
+  //     setModulos(modulosReales);
+  //   } catch (error) {
+  //     const errorMsg = error instanceof Error ? error.message : 'Error al cargar modulos';
+  //     showAlert('error', 'Error al cargar', errorMsg);
+  //   }
+  // }
+
+  // const cargarAccesos = async () => {
+  //   try {
+  //     setAccesosLoading(true);
+  //     const accesosPaginadoReales = await accesosService.getAllAccesos();
+  //     const accesosReales: AccesoResume[] = accesosPaginadoReales.data;
+  //     setAccesos(accesosReales);
+  //   } catch (error) {
+  //     const errorMsg = error instanceof Error ? error.message : 'Error al cargar accesos';
+  //     showAlert('error', 'Error al cargar', errorMsg);
+  //   } finally {
+  //     setAccesosLoading(false);
+  //   }
+  // }
 
   const handleExport = async (formato: 'excel' | 'pdf') => {
     setExportLoading(true);
@@ -84,7 +131,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
     });
     setIsDetailsModalOpen(true);
     console.log(accesosDelRol);
-  
+
   };
 
   const handleSaveAccesos = async (accesosLocales: any[], roleDetail: any) => {
@@ -127,7 +174,7 @@ export const AccessManagement: React.FC<AccessManagementProps> = ({
       console.error('Error al guardar cambios:', error);
       const errorMsg = error instanceof Error ? error.message : 'Error al guardar cambios';
       showAlert('error', 'Error', errorMsg);
-      throw error; 
+      throw error;
     }
   };
 

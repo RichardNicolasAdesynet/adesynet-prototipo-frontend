@@ -27,8 +27,8 @@ export const rolesService = {
 
   // GET: Lista paginada de roles
   async getAllRoles(params?: {
-    PageRequest_page?: number;
-    PageRequest_rows?: number;
+    'PageRequest.page'?: number;
+    'PageRequest.rows'?: number;
     PageRequest_sord?: string;
     PageRequest_sidx?: string;
     PageRequest_Skip?: number;

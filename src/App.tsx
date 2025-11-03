@@ -21,25 +21,6 @@ function App() {
                 </div>
             </AuthProvider>
         </AlertProvider>
-
-
-        // <AuthProvider>
-        //     {/* Contenedor principal con estilos globales */}
-        //     <div className="
-        //         App
-        //         min-h-screen
-        //         bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/10
-        //         text-slate-900
-        //         antialiased
-        //         font-sans
-        //     ">
-        //         {/* Sistema de alertas */}
-        //         <AlertContainer />
-
-        //         {/* Router principal */}
-        //         <AppRouter />
-        //     </div>
-        // </AuthProvider>
     );
 }
 

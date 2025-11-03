@@ -21,9 +21,10 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 interface AlertProviderProps {
   children: ReactNode;
+   maxAlerts?: number; 
 }
 
-export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
+export const AlertProvider: React.FC<AlertProviderProps> = ({ children,  maxAlerts = 3 }) => {
   const [alerts, setAlerts] = useState<AlertState[]>([]);
 
   const showAlert = useCallback((
@@ -42,14 +43,17 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 
     console.log('🚨 ALERTA MOSTRADA:', { type, title, message }); // DEBUG
 
-    setAlerts(prev => [...prev, newAlert]);
+    setAlerts(prev =>{
+      const updatedAlerts = [newAlert, ...prev];
+      return updatedAlerts.slice(0, maxAlerts);
+    });
 
     if (autoClose) {
       setTimeout(() => {
         removeAlert(newAlert.id);
       }, 5000);
     }
-  }, []);
+  }, [maxAlerts]);
 
   const removeAlert = useCallback((id: string) => {
     setAlerts(prev => prev.filter(alert => alert.id !== id));

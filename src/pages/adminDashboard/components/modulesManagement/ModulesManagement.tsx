@@ -8,7 +8,14 @@ import type { ModulesManagementProps } from './ModulesManagement.types';
 import { modulosService } from '../../../../services/api/modulosService';
 import { useAlert } from '../../../../context/AlertContext';
 
-export const ModulesManagement: React.FC<ModulesManagementProps> = ({ 
+interface accesosNombre {
+  cdRol: string;
+  rolNombre: string;
+  moduloHabilitado: boolean;
+  cantidadPermisos: number;
+}
+
+export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   loading = false
 }) => {
   const { showAlert } = useAlert();
@@ -17,6 +24,14 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
   const [editingModulo, setEditingModulo] = useState<ModuloFormData | undefined>();
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
+
+  //Modal de confirmacion para modulos
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [loadingDeleteInfo, setLoadingDeleteInfo] = useState<boolean>(false);
+  const [moduloToDelete, setModuloToDelete] = useState<any>(null);
+  const [moduloConRole, setModuloConRole] = useState<any>(null);
+  const [puedeEliminar, setPuedeEliminar] = useState<boolean>(true);
+  const [detalleModuloConRole, setDetalleModuloConRole] = useState<accesosNombre[]>([])
 
   //uso de modulos de la api
   const [modulos, setModulos] = useState<any[]>([]);
@@ -84,25 +99,78 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
     setIsFormOpen(true);
   };
 
-  const handleDeleteModule = async (cdModulo: string) =>{
+  const obtenerInfoEliminacion = async (cdModulo: string) => {
     try {
-      await modulosService.deleteModulo(cdModulo);
-      showAlert('warning', 'Modulo Eliminado' ,'Modulo eliminado de la Base de datos');
+      setLoadingDeleteInfo(true);
+
+      const respuesta = await modulosService.getModulo(cdModulo);
+      const rolesConAcceso = respuesta.cantidadRolesConAcceso;
+      const accesosNombre: accesosNombre[] | undefined = respuesta.accesos;
+      setDetalleModuloConRole(accesosNombre || [])
+      // if(rolesConAcceso>0 && accesosNombre){
+      //   console.log(accesosNombre);
+      //   const nombreRoles = accesosNombre.map(rol => rol.rolNombre);
+      //   console.log(nombreRoles);
+      //   setDetalleModuloConRole(nombreRoles);
+      // }
+
+      return {
+        modulosConRoles: rolesConAcceso,
+        puedeEliminar: rolesConAcceso == 0,
+      }
+    } catch (error) {
+      console.error('Error al obtener información de accesos:', error);
+      return {
+        modulosConRoles: 0,
+        puedeEliminar: false
+      }
+    } finally {
+      setLoadingDeleteInfo(false);
+    }
+  }
+
+  const handleDeleteModule = async (cdModulo: string) => {
+    setModuloToDelete(cdModulo);
+    const infoEliminacion = await obtenerInfoEliminacion(cdModulo);
+    setModuloConRole(infoEliminacion.modulosConRoles);
+    setPuedeEliminar(infoEliminacion.puedeEliminar);
+    setDeleteModalOpen(true);
+  }
+
+  const handleConfirmDeleteModule = async () => {
+    if (!moduloToDelete) return;
+    try {
+      await modulosService.deleteModulo(moduloToDelete);
+      showAlert('warning', 'Modulo Eliminado', 'Modulo eliminado de la Base de datos');
+      await cargarModulos();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
       showAlert('error', 'No se puede eliminar', errorMessage);
+    } finally {
+      setDeleteModalOpen(false);
+      setModuloToDelete(null);
+      setModuloConRole(0);
+      setDetalleModuloConRole([]);
     }
   }
-  
+
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setModuloToDelete(null);
+    setModuloConRole(0);
+    setDetalleModuloConRole([]);
+  }
+
+
   const handleFormSubmit = async (formData: ModuloFormData) => {
     setFormLoading(true);
     try {
       if (formData.cdModulo && editingModulo) {
-        await modulosService.updateModulo(formData.cdModulo , {
+        await modulosService.updateModulo(formData.cdModulo, {
           dsModulo: formData.dsModulo,
-          flgEdicion : formData.flgEdicion
+          flgEdicion: formData.flgEdicion
         });
-        showAlert('success', ' Exito' , 'Modulo actualizado correctamente');
+        showAlert('success', ' Exito', 'Modulo actualizado correctamente');
       } else {
         await modulosService.createModulo({
           dsModulo: formData.dsModulo,
@@ -120,23 +188,23 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         : 'Error desconocido al guardar el modulo';
 
       showAlert('error', 'Error al guardar', errorMessage);
-    }finally {
+    } finally {
       setFormLoading(false);
     }
   };
 
-  const handleModuloToggleStatus = async (cdModulo: string, editable : boolean) => {
+  const handleModuloToggleStatus = async (cdModulo: string, editable: boolean) => {
     try {
-        setModulosLoading(true);
-        const {dsModulo} = await modulosService.getModulo(cdModulo);
-        if(editable){
-          await modulosService.updateModulo(cdModulo,{dsModulo: dsModulo, flgEdicion:editable});
-          showAlert('success', 'Modulo editable', 'El modulo permite la edicion');
-        }else{
-          await modulosService.updateModulo(cdModulo,{dsModulo: dsModulo, flgEdicion:editable});
-          showAlert('warning', 'Modulo NO editable', 'El modulo NO permite la edicion');
-        }
-        await cargarModulos();
+      setModulosLoading(true);
+      const { dsModulo } = await modulosService.getModulo(cdModulo);
+      if (editable) {
+        await modulosService.updateModulo(cdModulo, { dsModulo: dsModulo, flgEdicion: editable });
+        showAlert('success', 'Modulo editable', 'El modulo permite la edicion');
+      } else {
+        await modulosService.updateModulo(cdModulo, { dsModulo: dsModulo, flgEdicion: editable });
+        showAlert('warning', 'Modulo NO editable', 'El modulo NO permite la edicion');
+      }
+      await cargarModulos();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al cambiar estado';
       showAlert('error', 'Error', errorMessage);
@@ -265,6 +333,175 @@ export const ModulesManagement: React.FC<ModulesManagementProps> = ({
         onCancel={handleFormCancel}
         loading={formLoading}
       />
+      {/**Modal de confirmaciond de eliminacion */}
+      {deleteModalOpen && (
+        <div className="
+          fixed inset-0
+          bg-black/50
+          backdrop-blur-sm
+          flex items-center justify-center
+          p-4
+          z-50
+          animate-fade-in
+        ">
+          <div className="
+            bg-white
+            rounded-2xl
+            shadow-2xl
+            w-full max-w-md
+            animate-scale-in
+          ">
+            {/* Header del Modal */}
+            <div className="
+              bg-gradient-to-r from-red-500 to-orange-500
+              px-6 py-4
+              flex items-center space-x-3
+            ">
+              <div className="
+                w-10 h-10
+                bg-white/20
+                rounded-lg
+                flex items-center justify-center
+                text-white text-xl
+              ">
+                ⚠️</div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Confirmar Eliminacion</h2>
+                <p className='text-white/80 text-sm'>Eliminacion permanente</p>
+              </div>
+            </div >
+            {/* Contenido del Modal */}
+            <div className="p-6">
+              {loadingDeleteInfo ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-slate-700 mb-4">
+                    ¿Estas seguro de querer eliminar este Modulo {'  '}
+                    <span className="font-bold text-red-600">{moduloToDelete}</span>
+                  </p>
+                  {/* BLOQUEO si tiene roles asociados */}
+                  {moduloConRole > 0 && (
+                    <div className="
+                      bg-red-50
+                      border border-red-200
+                      rounded-lg
+                      p-4
+                      mb-4
+                    ">
+                      <div className="flex items-center space-x-2 text-red-800 mb-2">
+                        <span>🚫</span>
+                        <span className="font-semibold">No se puede eliminar</span>
+                      </div>
+                      <p className="text-red-700 text-sm">
+                        Este modulo esta asignado a <span> {moduloConRole} roles(s)</span>.
+                        Para eliminar este modulo, primero debe quitar los roles asociados a este en el apartado de "Accesos"
+                      </p>
+                      <div className="flex items-center space-x-2 text-red-800 mb-2 py-3">
+                        <h2 className="font-bold">Role(s) Asociados:</h2>
+                        <ul>
+                          {detalleModuloConRole.map(rol => (
+                            <li key={rol.cdRol}
+                              className="
+                                flex items-center justify-center
+                                py-2
+                                px-3
+                                m-1
+                                bg-gradient-to-r from-red-500 to-orange-300
+                                rounded-lg
+                              text-white text-sm
+                              "
+                            >
+                              {rol.rolNombre}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                    </div>
+                  )}
+
+                  {/* INFORMACIÓN si no tiene relaciones */}
+                  {moduloConRole === 0 && (
+                    <div className="
+                      bg-blue-50
+                      border border-blue-200
+                      rounded-lg
+                      p-3
+                      mb-4
+                    ">
+                      <p className="text-blue-700 text-sm flex items-center space-x-2">
+                        <span>ℹ️</span>
+                        <span>Este Modulo no esta asociado a ningun rol</span>
+                      </p>
+                    </div>
+                  )}
+                  <div className="
+                    bg-red-50
+                    border border-red-200
+                    rounded-lg
+                    p-3
+                    mt-3
+                  ">
+                    <p className="text-red-700 text-sm flex items-center space-x-2">
+                      <span>🚨</span>
+                      <span>Esta acción no se puede deshacer.</span>
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+            {/* Footer del Modal*/}
+            <div className="
+              px-6 py-4
+              border-t border-slate-200
+             bg-slate-50
+              flex items-center justify-end space-x-3
+            ">
+              <button
+                onClick={handleCancelDelete}
+                className="
+                  px-6 py-2
+                  border border-slate-300
+                 text-slate-700
+                  rounded-lg
+                  font-medium
+                 hover:bg-slate-50
+                 hover:border-slate-400
+                  transition-all duration-200
+                "
+                type="button"
+              >
+                {puedeEliminar ? 'Cancelar' : 'Entendido'}
+              </button>
+              {puedeEliminar && (
+                <button
+                  onClick={handleConfirmDeleteModule}
+                  className="
+                    px-6 py-2
+                    bg-gradient-to-r from-red-500 to-orange-500
+                   hover:from-red-600 hover:to-orange-600
+                   text-white font-medium
+                    rounded-lg
+                    shadow-lg shadow-red-500/25
+                    hover:shadow-xl hover:shadow-red-500/35
+                    transition-all duration-300
+                    flex items-center space-x-2
+                  "
+                  type="button"
+                >
+                  <span>🗑️</span>
+                  <span>Eliminar Modulo</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 };

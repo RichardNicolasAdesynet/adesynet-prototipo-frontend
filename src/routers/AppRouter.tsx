@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/auth/useAuth';
 import { Login } from '../components/auth';
 import { AdminDashboard } from '../pages/adminDashboard/AdminDashboard';
 import { TecnicoDashboard } from '../pages/tecnicoDashboard/TecnicoDashboard';
+import { SoporteDashboard } from '../pages/soporteDashboard/SoporteDashboard';
 
 export const AppRouter: React.FC = () => {
     const { estaAutenticado, usuario, cargando } = useAuth();
@@ -23,13 +24,19 @@ export const AppRouter: React.FC = () => {
         return usuario && ['administrador', 'gerente'].includes(usuario.rol);
     }
 
-    const esTecnicoOUsuario =() =>{
-        return usuario && ['tecnico', 'desarrollador', 'soporte', 'supervisor'].includes(usuario.rol);
+    const esTecnicoOUsuario = () => {
+        return usuario && ['tecnico', 'desarrollador', 'supervisor'].includes(usuario.rol);
     }
+
+    const esSoporte = () => {
+        return usuario && ['soporte'].includes(usuario.rol);
+    }
+
 
     const getDefaultRoute = () => {
         if (!estaAutenticado) return '/login';
         if (esAdminOGerente()) return '/admin';
+        if (esSoporte()) return '/soporte';
         if (esTecnicoOUsuario()) return '/dashboard';
         return '/login'; // Fallback
     }
@@ -51,7 +58,15 @@ export const AppRouter: React.FC = () => {
                         : <Navigate to="/login" replace />
                 }
             />
-            
+
+            <Route
+                path='/soporte/*'
+                element={
+                    estaAutenticado && esSoporte()
+                        ? <SoporteDashboard/>
+                        : <Navigate to="/login" replace/>
+                }
+            />
 
             <Route
                 path="/dashboard"

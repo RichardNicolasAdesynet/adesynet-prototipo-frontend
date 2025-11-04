@@ -4,6 +4,7 @@ import { authService } from '../services/api/authService';
 import { apiClient } from '../services/api/apiClient';
 import type { AuthContextType, Credenciales, LoginResult, Usuario } from '../types/auth.types';
 import { useNavigate } from 'react-router-dom';
+import type { LoginResponse } from '../types/api.types';
 
 
 
@@ -44,7 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             id: storedUserInfo.idUsuario,
             nombre: storedUserInfo.nombreCompleto.split(' ')[0] || storedUserInfo.nombreCompleto,
             email: storedUserInfo.email,
-            rol: mapRolToInternal(storedUserInfo.idRol),
+            rol: mapRolToInternal(storedUserInfo),
             departamento: 'TI',
             permisos: storedUserInfo.permisos || []
           };
@@ -68,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // Mapear roles de API a roles internos
-  const mapRolToInternal = (idRol: string): any => {
+  const mapRolToInternal = (usuario: LoginResponse): any => {
     const roleMap: Record<string, string> = {
       'ROL01': 'desarrollador',
       'ROL02': 'gerente', //administrador
@@ -76,7 +77,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       'ROL04': 'supervisor',
       'ROL05': 'tecnico'
     };
-    return roleMap[idRol] || 'usuario';
+    const otrosRol = (usuario.rolNombre).toLowerCase();
+    console.log(otrosRol);
+    return roleMap[usuario.idRol] || `${otrosRol}`;
   };
 
   // CORREGIDO: Función login con tipos compatibles
@@ -95,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: loginData.idUsuario,
         nombre: loginData.nombreCompleto.split(' ')[0] || loginData.nombreCompleto,
         email: loginData.email,
-        rol: mapRolToInternal(loginData.idRol),
+        rol: mapRolToInternal(loginData),
         departamento: 'TI',
         permisos: loginData.permisos || []
       };

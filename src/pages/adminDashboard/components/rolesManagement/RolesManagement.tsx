@@ -138,7 +138,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
     if (!rolToDelete) return;
 
     try {
-      await rolesService.deleteRol(rolToDelete.cdRol);
+      await rolesService.deleteRol(rolToDelete);
       showAlert('warning', 'Rol Eliminado', 'Rol eliminado de la Base de datos');
       await cargarRoles();
     } catch (error) {

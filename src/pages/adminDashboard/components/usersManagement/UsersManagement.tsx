@@ -19,6 +19,11 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
 
+  //Modal de confirmacion para eliminacion
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [loadingDeleteInfo, setLoadingDeleteInfo] = useState<boolean>(false);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
+
   // ✅ NUEVO: Estado para usuarios reales
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState<boolean>(true);
@@ -55,7 +60,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     }
   };
 
-  const cargarRolUsuario = async () =>{
+  const cargarRolUsuario = async () => {
     const rolesUsuarioReales = await rolesService.getRolesList();
     setRolesUsuario(rolesUsuarioReales);
   }
@@ -112,7 +117,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
   };
 
   const handleEditUser = async (usuario: any) => {
-    const {cdUsuario,dsUsuario,nombre,apellidoP,apellidoM,dni,email,cdRol,estaActivoLaboralmente} = await userService.getUsuario(usuario.cdUsuario);
+    const { cdUsuario, dsUsuario, nombre, apellidoP, apellidoM, dni, email, cdRol, estaActivoLaboralmente } = await userService.getUsuario(usuario.cdUsuario);
     const formData: UsuarioFormData = {
       cdUsuario: cdUsuario,
       dsUsuario: dsUsuario,
@@ -128,14 +133,30 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     setIsFormOpen(true);
   };
 
-  const handleDeleteUsuario = async(cdUsuario: string) =>{
+  const handleDeleteUsuario = async (cdUsuario: string) => {
+    setUserToDelete(cdUsuario);
+    setDeleteModalOpen(true);
+  }
+
+  const handleConfirmDeleteUsuario = async () =>{
+    if(!userToDelete) return;
+
     try {
-      await userService.deleteUsuario(cdUsuario);
-      showAlert('warning', 'Usuario Eliminado' ,'Usuario eliminado de la Base de datos')
+      await userService.deleteUsuario(userToDelete);
+      showAlert('warning', 'Usuario Eliminado', 'Usuario eliminado de la Base de datos')
+      await cargarUsuarios();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido al guardar el rol';
       showAlert('error', 'No se puede al usuario', errorMessage);
+    } finally {
+      setDeleteModalOpen(false);
+      setUserToDelete(null);
     }
+  }
+
+  const handleCancelDelete = () =>{
+    setDeleteModalOpen(false);
+    setUserToDelete(null);
   }
 
   // ✅ ACTUALIZADO: Manejar envío del formulario con API real
@@ -340,6 +361,106 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
         onCancel={handleFormCancel}
         loading={formLoading}
       />
+      {/**Modal de confirmaciond de eliminacion */}
+      {deleteModalOpen && (
+        <div className="
+          fixed inset-0
+          bg-black/50
+          backdrop-blur-sm
+          flex items-center justify-center
+          p-4
+          z-50
+          animate-fade-in
+        ">
+          <div className="
+            bg-white
+            rounded-2xl
+            shadow-2xl
+            w-full max-w-md
+            animate-scale-in
+          ">
+            {/* Header del Modal */}
+            <div className="
+              bg-gradient-to-r from-red-500 to-orange-500
+              px-6 py-4
+              flex items-center space-x-3
+            ">
+              <div className="
+                w-10 h-10
+                bg-white/20
+                rounded-lg
+                flex items-center justify-center
+                text-white text-xl
+              ">⚠️</div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Confirmar Eliminación</h2>
+                <p className='text-white/80 text-sm'>Eliminación permanente</p>
+              </div>
+            </div>
+            {/* Contenido del Modal */}
+            <div className="p-6">
+              {loadingDeleteInfo ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-slate-700 mb-4">
+                    ¿Estás seguro de que deseas eliminar el Usuario .. 
+                    <span className="font-bold text-red-600">{userToDelete}</span>
+                  </p>
+
+
+                  
+                </>
+              )}
+            </div>
+            {/* Footer del Modal*/}
+            <div className="
+              px-6 py-4
+              border-t border-slate-200
+              bg-slate-50
+              flex items-center justify-end space-x-3
+            ">
+              <button 
+                onClick={handleCancelDelete}
+                className="
+                  px-6 py-2
+                  border border-slate-300
+                  text-slate-700
+                  rounded-lg
+                  font-medium
+                  hover:bg-slate-50
+                  hover:border-slate-400
+                  transition-all duration-200
+                "
+                type="button"
+              >
+                 Cancelar</button>
+              <button
+                onClick={handleConfirmDeleteUsuario}
+                className="
+                  px-6 py-2
+                  bg-gradient-to-r from-red-500 to-orange-500
+                  hover: from-red-600 hover:to-orange-600
+                  text-white font-medium
+                  rounded-lg
+                  shadow-lg shadow-red-500/
+                  hover:shadow-xl hover:shadow-red-500/40
+                  transition-all duration-300
+                  flex items-center space-x-2
+                "
+                type="button"
+              >
+                <span>🗑️</span>
+                <span>Eliminar Usuario</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
+
   );
 };

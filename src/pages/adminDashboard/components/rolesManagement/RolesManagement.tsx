@@ -412,7 +412,7 @@ export const RolesManagement: React.FC<RolesManagementProps> = ({
               ) : (
                 <>
                   <p className="text-slate-700 mb-4">
-                    ¿Estás seguro de que deseas eliminar el rol  
+                    ¿Estás seguro de que deseas eliminar el rol {' '}
                     <span className="font-bold text-red-600">"{rolToDelete}"</span>?
                   </p>
                   {/* BLOQUEO si tiene usuarios */}

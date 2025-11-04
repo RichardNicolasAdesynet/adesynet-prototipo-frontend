@@ -21,7 +21,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
 
   //Modal de confirmacion para eliminacion
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const [loadingDeleteInfo, setLoadingDeleteInfo] = useState<boolean>(false);
+  // const [loadingDeleteInfo, setLoadingDeleteInfo] = useState<boolean>(false);
   const [userToDelete, setUserToDelete] = useState<any>(null);
 
   // ✅ NUEVO: Estado para usuarios reales
@@ -138,8 +138,8 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     setDeleteModalOpen(true);
   }
 
-  const handleConfirmDeleteUsuario = async () =>{
-    if(!userToDelete) return;
+  const handleConfirmDeleteUsuario = async () => {
+    if (!userToDelete) return;
 
     try {
       await userService.deleteUsuario(userToDelete);
@@ -154,7 +154,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
     }
   }
 
-  const handleCancelDelete = () =>{
+  const handleCancelDelete = () => {
     setDeleteModalOpen(false);
     setUserToDelete(null);
   }
@@ -399,21 +399,22 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
             </div>
             {/* Contenido del Modal */}
             <div className="p-6">
-              {loadingDeleteInfo ? (
+              <p className="text-slate-700 mb-4">
+                ¿Estás seguro de que deseas eliminar el Usuario {' '}
+                <span className="font-bold text-red-600">{userToDelete}</span>
+              </p>
+              {/* {loadingDeleteInfo ? (
                 <div className="flex justify-center py-4">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
                 </div>
               ) : (
                 <>
-                  <p className="text-slate-700 mb-4">
-                    ¿Estás seguro de que deseas eliminar el Usuario .. 
-                    <span className="font-bold text-red-600">{userToDelete}</span>
-                  </p>
+                  
 
 
                   
                 </>
-              )}
+              )} */}
             </div>
             {/* Footer del Modal*/}
             <div className="
@@ -422,7 +423,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
               bg-slate-50
               flex items-center justify-end space-x-3
             ">
-              <button 
+              <button
                 onClick={handleCancelDelete}
                 className="
                   px-6 py-2
@@ -436,7 +437,7 @@ export const UsersManagement: React.FC<UsersManagementProps> = ({
                 "
                 type="button"
               >
-                 Cancelar</button>
+                Cancelar</button>
               <button
                 onClick={handleConfirmDeleteUsuario}
                 className="

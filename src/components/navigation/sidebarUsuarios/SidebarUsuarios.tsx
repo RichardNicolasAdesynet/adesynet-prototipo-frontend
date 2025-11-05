@@ -1,155 +1,183 @@
 // components/navigation/sidebarUsuarios/SidebarUsuarios.tsx
 import React, { useState, useEffect } from 'react';
-import type { MenuItem, SidebarProps } from '../../../types/sidebarUsuarios';
+import type { MenuItem, SidebarUsuariosProps } from '../../../types/sidebarUsuarios';
 import SidebarHeader from './SidebarUsuariosHeader';
-import SidebarMenu from './SidebarUsuariosMenu';
 import CollapsedMenu from './CollapsedMenu';
-import SidebarFooter from './SidebarUsuariosFooter';
+import SidebarUsuariosFooter from './SidebarUsuariosFooter';
+import SidebarUsuariosMenu from './SidebarUsuariosMenu';
 
-const SidebarUsuarios: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
-  const [activeItem, setActiveItem] = useState('dashboard');
+const SidebarUsuarios: React.FC<SidebarUsuariosProps> = ({
+  usuario,
+  onNavegacion,
+  itemActivo = 'dashboard',
+  isCollapsed,
+  onToggle,
+  modulos = []
+}) => {
+  const [itemActivoInterno, setItemActivoInterno] = useState(itemActivo);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  useEffect(()=>{
-    if(isCollapsed){
-      setExpandedItems([]); 
-    }
-  },[isCollapsed]);
+  // ✅ FUNCIÓN PARA BUSCAR ITEM EN TODOS LOS NIVELES
+  const encontrarItemPorId = (items: MenuItem[], itemId: string): MenuItem | null => {
+    // Buscar en el nivel actual
+    const itemEnNivelActual = items.find(item => item.id === itemId);
+    if (itemEnNivelActual) return itemEnNivelActual;
 
-  // Datos de ejemplo - reemplaza con tus módulos reales
-  const menuItems: MenuItem[] = [
-    {
-      id: 'dashboard',
-      name: 'Dashboard',
-      icon: '📊',
-      path: '/dashboard',
-      isActive: true
-    },
-    {
-      id: 'courses',
-      name: 'Cursos',
-      icon: '📚',
-      path: '/courses',
-      children: [
-        {
-          id: 'all-courses',
-          name: 'Todos los Cursos',
-          icon: '🎓',
-          path: '/courses/all',
-          badge: 12
-        },
-        {
-          id: 'my-courses',
-          name: 'Mis Cursos',
-          icon: '⭐',
-          path: '/courses/my',
-          badge: 3
-        },
-        {
-          id: '3d-animation',
-          name: 'Animación 3D',
-          icon: '🎬',
-          path: '/courses/3d-animation'
-        },
-        {
-          id: 'interaction-design',
-          name: 'Diseño de Interacción',
-          icon: '🎨',
-          path: '/courses/interaction-design'
-        }
-      ]
-    },
-    {
-      id: 'calendar',
-      name: 'Calendario',
-      icon: '📅',
-      path: '/calendar',
-      badge: 5
-    },
-    {
-      id: 'chat',
-      name: 'Chat',
-      icon: '💬',
-      path: '/chat',
-      badge: 3
-    },
-    {
-      id: 'support',
-      name: 'Soporte',
-      icon: '🔧',
-      path: '/support',
-      children: [
-        {
-          id: 'incidents',
-          name: 'Incidencias',
-          icon: '🚨',
-          path: '/support/incidents'
-        },
-        {
-          id: 'history',
-          name: 'Histórico',
-          icon: '📋',
-          path: '/support/history'
-        },
-        {
-          id: 'tracking',
-          name: 'Seguimiento',
-          icon: '👁️',
-          path: '/support/tracking'
-        }
-      ]
+    // Buscar recursivamente en los hijos
+    for (const item of items) {
+      if (item.hijos && item.hijos.length > 0) {
+        const itemEnHijos = encontrarItemPorId(item.hijos, itemId);
+        if (itemEnHijos) return itemEnHijos;
+      }
     }
-  ];
+
+    return null;
+  };
+
+  // ✅ FUNCIÓN PARA OBTENER NIVEL DEL ITEM
+  const obtenerNivelItem = (items: MenuItem[], itemId: string, nivelActual = 0): number => {
+    const itemEnNivelActual = items.find(item => item.id === itemId);
+    if (itemEnNivelActual) return nivelActual;
+
+    for (const item of items) {
+      if (item.hijos && item.hijos.length > 0) {
+        const nivelEnHijos = obtenerNivelItem(item.hijos, itemId, nivelActual + 1);
+        if (nivelEnHijos !== -1) return nivelEnHijos;
+      }
+    }
+
+    return -1;
+  };
+
+  // ✅ FUNCIÓN DEBUG COMPLETA
+  const debugItemClick = (itemId: string, item: MenuItem | null, items: MenuItem[]) => {
+    console.log('=== 🎯 DEBUG CLICK SIDEBAR ===');
+    console.log('📌 Item ID clickeado:', itemId);
+
+    if (item) {
+      const tieneHijos = item.hijos && item.hijos.length > 0;
+      const cantidadHijos = item.hijos?.length || 0;
+      const nivel = obtenerNivelItem(items, itemId);
+
+      console.log('📋 Item encontrado:', item.nombre);
+      console.log('🏷️  ID:', item.id);
+      console.log('📂 Nivel:', nivel);
+      console.log('👶 Tiene hijos:', tieneHijos);
+      console.log('🔢 Cantidad de hijos:', cantidadHijos);
+      console.log('📍 Ruta:', item.ruta);
+
+      if (tieneHijos && nivel === 0) {
+        console.log('🎯 Acción: SE EXPANDE/CONTRAE (es padre con hijos)');
+        console.log('📂 Hijos disponibles:', item.hijos?.map(h => `${h.nombre} [${h.id}]`).join(', '));
+      } else if (nivel > 0) {
+        console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
+        console.log('🚀 Navegación activada (es hijo)');
+      } else if (!tieneHijos) {
+        console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
+        console.log('🚀 Navegación activada (sin hijos)');
+      }
+    } else {
+      console.log('❌ Item NO encontrado en la estructura');
+      console.log('📊 Items disponibles en nivel 0:', items.map(m => `${m.nombre} [${m.id}]`).join(', '));
+    }
+    console.log('================================\n');
+  };
+
+
+  // Sincronizar itemActivo desde props
+  useEffect(() => {
+    if (itemActivo) {
+      setItemActivoInterno(itemActivo);
+    }
+  }, [itemActivo]);
+
+  useEffect(() => {
+    if (isCollapsed) {
+      setExpandedItems([]);
+    }
+  }, [isCollapsed]);
 
   const toggleExpanded = (itemId: string) => {
     if (isCollapsed) return;
+
+    console.log('=== 🔄 DEBUG EXPANSIÓN ===');
+    console.log('📌 Item ID:', itemId);
+    console.log('🎯 Acción:', expandedItems.includes(itemId) ? 'CONTRAER' : 'EXPANDIR');
+    console.log('=======================\n');
+
     setExpandedItems(prev =>
       prev.includes(itemId)
         ? prev.filter(id => id !== itemId)
         : [...prev, itemId]
     );
   };
-  
-   const handleItemClick = (itemId: string) => {
-    setActiveItem(itemId);
-    // Si el sidebar está colapsado y hacemos click, lo expandimos automáticamente?
-    // O puedes quitar esta funcionalidad si prefieres
-  };
 
+  const handleItemClick = (itemId: string, ruta: string) => {
+    setItemActivoInterno(itemId);
+    onNavegacion(ruta); // ← Navegación real
+  };
   return (
-    <div className={`
-      flex flex-col h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white
-      transition-all duration-300 ease-in-out
-      ${isCollapsed ? 'w-20' : 'w-64'}
+    <aside className={`
+      flex flex-col 
+      h-screen 
+      bg-linear-to-b from-slate-50 to-blue-100/80
+      backdrop-blur-xl border-r border-slate-200/60
+      transition-all duration-500 ease-in-out
+      ${isCollapsed ? 'w-20' : 'w-70'}
+      z-30
+      h-screen sticky top-0
       shadow-2xl
     `}>
       {/* Header */}
-      <SidebarHeader 
-        isCollapsed={isCollapsed} 
-        onToggle={onToggle} 
+      <SidebarHeader
+        isCollapsed={isCollapsed}
+        onToggle={onToggle}
       />
 
-      {/* Menu Navigation - Versión condicional */}
+      {/* Navegación */}
       {isCollapsed ? (
         <CollapsedMenu
-          items={menuItems}
-          activeItem={activeItem}
-          onItemClick={setActiveItem}
+          items={modulos}
+          itemActivo={itemActivoInterno}
+          onItemClick={(itemId) => {
+            const item = encontrarItemPorId(modulos, itemId); // ← Usar función recursiva
+            if (item) {
+              const nivel = obtenerNivelItem(modulos, itemId);
+              const tieneHijos = item.hijos && item.hijos.length > 0;
+              
+              if (nivel > 0 || !tieneHijos) {
+                handleItemClick(itemId, item.ruta);
+              }
+            }
+          }}
         />
       ) : (
-        <SidebarMenu
-          items={menuItems}
-          activeItem={activeItem}
+        <SidebarUsuariosMenu
+          items={modulos}
+          itemActivo={itemActivoInterno}
           expandedItems={expandedItems}
           isCollapsed={isCollapsed}
-          onItemClick={setActiveItem}
+          onItemClick={(itemId) => {
+            const item = encontrarItemPorId(modulos, itemId); // ← Usar función recursiva
+            debugItemClick(itemId, item, modulos);
+            if (item) {
+              const nivel = obtenerNivelItem(modulos, itemId);
+              const tieneHijos = item.hijos && item.hijos.length > 0;
+              if (nivel > 0 || !tieneHijos) {
+                handleItemClick(itemId, item.ruta);
+              }
+            }
+          }}
           onToggleExpanded={toggleExpanded}
         />
       )}
 
       {/* Footer */}
-      <SidebarFooter isCollapsed={isCollapsed} />
-    </div>
+      <SidebarUsuariosFooter
+        isCollapsed={isCollapsed}
+        usuario={usuario} // ← AGREGADO
+      />
+    </aside>
   );
 };
 

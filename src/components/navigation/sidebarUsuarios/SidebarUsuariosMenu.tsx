@@ -1,38 +1,29 @@
-// components/SidebarMenu.tsx
+// components/navigation/sidebarUsuarios/SidebarUsuariosMenu.tsx
 import React from 'react';
-import type { MenuItem } from '../../../types/sidebarUsuarios';
+import type { SidebarUsuariosMenuProps } from '../../../types/sidebarUsuarios';
 import MenuItemComponent from './MenuItem';
-
-interface SidebarUsuariosMenuProps {
-  items: MenuItem[];
-  activeItem: string;
-  expandedItems: string[];
-  isCollapsed: boolean;
-  onItemClick: (itemId: string) => void;
-  onToggleExpanded: (itemId: string) => void;
-}
 
 const SidebarUsuariosMenu: React.FC<SidebarUsuariosMenuProps> = ({
   items,
-  activeItem,
+  itemActivo, // ← CAMBIADO: activeItem → itemActivo
   expandedItems,
   isCollapsed,
   onItemClick,
   onToggleExpanded
 }) => {
   return (
-    <nav className="flex-1 overflow-y-auto py-4 px-3">
-      <div className="space-y-1">
+    <nav className="flex-1 p-4 overflow-y-auto">
+      <div className="space-y-2">
         {items.map((item) => (
           <MenuItemComponent
             key={item.id}
             item={item}
-            activeItem={activeItem}
+            itemActivo={itemActivo} // ← CAMBIADO
             expandedItems={expandedItems}
             isCollapsed={isCollapsed}
             onItemClick={onItemClick}
             onToggleExpanded={onToggleExpanded}
-            level={0}
+            nivel={0} // ← CAMBIADO: level → nivel
           />
         ))}
       </div>

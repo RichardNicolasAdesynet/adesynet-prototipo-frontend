@@ -101,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Footer del Sidebar */}
       <div className="p-4 border-t border-slate-200/60">
         {!estaColapsado ? (
-          <div className="user-info animate-fade-in">
+          <div className="animate-fade animate-ease-in">
             <div className="flex items-center space-x-3 p-3 bg-white/80 rounded-xl backdrop-blur-sm border border-slate-200/60 shadow-sm">
               <div className="w-10 h-10 bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
                 {usuario.nombre.charAt(0).toUpperCase()}

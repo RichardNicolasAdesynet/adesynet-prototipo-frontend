@@ -4,12 +4,14 @@ import { AlertProvider } from './context/AlertContext';
 import { AppRouter } from './routers/AppRouter';
 import { AlertContainer } from './components/shared/alert/AlertContainer';
 import { NotificacionCambiosAutomatica } from './components/shared/notificacionCambios/NotificacionCambiosAutomatica';
+import { ModalReconexion } from './components/shared/modalReconexion/ModalReconexion';
 
 // ✅ NUEVO: Componente que usa los hooks DENTRO del AuthProvider
 const AppWithAuth: React.FC = () => {
     return (
         <>
             <NotificacionCambiosAutomatica />
+            <ModalReconexion />
             <div className="
                 App
                 min-h-screen
@@ -30,7 +32,7 @@ function App() {
     return (
         <AlertProvider> {/* ✅ ENVOLVER CON AlertProvider */}
             <AuthProvider>
-                <AppWithAuth/>
+                <AppWithAuth />
             </AuthProvider>
         </AlertProvider>
     );

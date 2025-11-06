@@ -1,6 +1,7 @@
 // components/shared/ModalReconexion.tsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../hooks/auth/useAuth';
+import { authService } from '../../../services/api/authService';
 
 export const ModalReconexion: React.FC = () => {
   const [mostrar, setMostrar] = useState(false);
@@ -10,17 +11,54 @@ export const ModalReconexion: React.FC = () => {
   useEffect(() => {
     const manejarCambiosCriticos = (event: Event) => {
       const customEvent = event as CustomEvent;
-      setCambios(cambios);
+      setCambios(customEvent.detail.cambios);
       setMostrar(true);
+      console.table(` ${customEvent.detail.cambios}`);
     };
 
     window.addEventListener('cambiosCriticosDetectados', manejarCambiosCriticos);
     return () => window.removeEventListener('cambiosCriticosDetectados', manejarCambiosCriticos);
   }, []);
 
-  const handleReconectar = () => {
-    window.location.reload();
+//   const handleReconectar = () => {
+//     window.location.reload();
+//   };
+
+  const handleReconectar = async () => {
+    try {
+      console.log('🔄 Iniciando reconexión...');
+      
+      // ✅ 1. LIMPIAR CACHE LOCAL
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('permisos_hash'); // Si usas este
+      
+      // ✅ 2. OBTENER NUEVO TOKEN (forzar nueva autenticación)
+      const token = authService.getStoredToken();
+      if (token) {
+        const userInfoActualizado = await authService.getUserInfo(token);
+        
+        if (userInfoActualizado) {
+          // ✅ 3. ACTUALIZAR LOCALSTORAGE CON NUEVOS DATOS
+          localStorage.setItem('userInfo', JSON.stringify(userInfoActualizado));
+          console.log('✅ Datos actualizados en localStorage:', {
+            nombre: userInfoActualizado.nombreCompleto,
+            rol: userInfoActualizado.rolNombre
+          });
+        }
+      }
+      
+      // ✅ 4. RECARGAR PARA REINICIAR CONTEXTO
+      console.log('🔄 Recargando aplicación...');
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('❌ Error en reconexión:', error);
+      // Fallback: recargar igualmente
+      window.location.reload();
+    }
   };
+
+
 
   const handleCerrarSesion = () => {
     logout();

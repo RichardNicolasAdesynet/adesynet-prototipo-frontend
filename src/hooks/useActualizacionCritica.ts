@@ -36,7 +36,7 @@ export const useActualizacionCritica = () => {
       const minutosReales = (ahora - ultimaVerificacionRef.current) / (1000 * 60);
 
       // ✅ CAMBIOS CRÍTICOS: Cada 2 minutos
-      if (minutosReales >= 1) {
+      if (minutosReales >= 0.5) {
         console.log('🔍 Verificando cambios críticos...');
         
         const userInfoActualizado = await authService.getUserInfo(token);
@@ -44,7 +44,7 @@ export const useActualizacionCritica = () => {
 
         const nuevoRol = mapRolToInternal(userInfoActualizado);
         const nuevoNombre = getNombreCorto(userInfoActualizado.nombreCompleto);
-
+        
         const cambios = {
           nombre: usuario.nombre !== nuevoNombre,
           rol: usuario.rol !== nuevoRol,

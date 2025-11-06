@@ -8,10 +8,27 @@ class ApiClient {
 
   constructor() {
     this.baseURL = API_CONFIG.BASE_URL;
+    // ✅ NUEVO: Inicializar token desde localStorage inmediatamente
+    this.initializeTokenFromStorage();
+  }
+
+  // ✅ NUEVO MÉTODO: Cargar token al crear la instancia
+  private initializeTokenFromStorage() {
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      this.token = storedToken;
+      console.log("🔑 ApiClient - Token inicializado desde localStorage");
+    }
   }
 
   setToken(token: string | null) {
     this.token = token;
+    // ✅ OPCIONAL: También actualizar localStorage por consistencia
+    if (token) {
+      localStorage.setItem('authToken', token);
+    } else {
+      localStorage.removeItem('authToken');
+    }
   }
 
   private async request<T>(
@@ -56,7 +73,6 @@ class ApiClient {
           } else if (errorResponse.data?.message) {
             errorMessage = errorResponse.data.message;
           }
-
         } catch (parseError) {
           // Si no se puede parsear JSON, usar el texto de la respuesta
           try {
@@ -89,10 +105,8 @@ class ApiClient {
         };
       }
 
-
       return apiResponse;
     } catch (error) {
-
       // ✅ MEJORADO: Pasar el mensaje exacto del error
       const errorMessage =
         error instanceof Error ? error.message : "Error de conexión";

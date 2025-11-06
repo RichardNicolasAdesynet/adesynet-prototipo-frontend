@@ -23,6 +23,72 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     cargando: true,
   });
 
+    // Cargar datos de autenticación al iniciar
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedToken = authService.getStoredToken();
+      const storedUserInfo = authService.getStoredUserInfo();
+
+      if (storedToken && storedUserInfo) {
+        if (!authService.isTokenExpired(storedUserInfo.expires)) {
+          
+          // ✅ VERIFICAR SI LOS DATOS ESTÁN ACTUALIZADOS INMEDIATAMENTE
+          try {
+            const userInfoActualizado = await authService.getUserInfo(storedToken);
+            console.log(userInfoActualizado);
+            
+            if (userInfoActualizado) {
+              // ✅ USAR SIEMPRE DATOS ACTUALIZADOS, NO LOS CACHEADOS
+              const usuario: Usuario = {
+                id: userInfoActualizado.idUsuario,
+                nombre: userInfoActualizado.nombreCompleto.split(' ')[0] || userInfoActualizado.nombreCompleto,
+                email: userInfoActualizado.email,
+                rol: mapRolToInternal(userInfoActualizado),
+                departamento: 'TI',
+                permisos: userInfoActualizado.permisos || [] // ← DATOS ACTUALES
+              };
+
+              // ✅ ACTUALIZAR LOCALSTORAGE CON DATOS FRESCOS
+              localStorage.setItem('userInfo', JSON.stringify(userInfoActualizado));
+
+              setAuthState({
+                usuario,
+                token: storedToken,
+                estaAutenticado: true,
+                cargando: false,
+              });
+            }
+          } catch (error) {
+            console.warn('Error actualizando datos al cargar:', error);
+            // Fallback a datos almacenados
+            const usuario: Usuario = {
+              id: storedUserInfo.idUsuario,
+              nombre: storedUserInfo.nombreCompleto.split(' ')[0] || storedUserInfo.nombreCompleto,
+              email: storedUserInfo.email,
+              rol: mapRolToInternal(storedUserInfo),
+              departamento: 'TI',
+              permisos: storedUserInfo.permisos || []
+            };
+
+            setAuthState({
+              usuario,
+              token: storedToken,
+              estaAutenticado: true,
+              cargando: false,
+            });
+          }
+        } else {
+          authService.logout();
+          setAuthState(prev => ({ ...prev, cargando: false }));
+        }
+      } else {
+        setAuthState(prev => ({ ...prev, cargando: false }));
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
 
   // DEBUG: Ver cambios en el estado
   useEffect(() => {
@@ -51,44 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => window.removeEventListener('permisosActualizados', manejarActualizacionPermisos);
   }, []);
 
-  // Cargar datos de autenticación al iniciar
-  useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = authService.getStoredToken();
-      const storedUserInfo = authService.getStoredUserInfo();
 
-
-      if (storedToken && storedUserInfo) {
-        if (!authService.isTokenExpired(storedUserInfo.expires)) {
-
-          apiClient.setToken(storedToken);
-
-          const usuario: Usuario = {
-            id: storedUserInfo.idUsuario,
-            nombre: storedUserInfo.nombreCompleto.split(' ')[0] || storedUserInfo.nombreCompleto,
-            email: storedUserInfo.email,
-            rol: mapRolToInternal(storedUserInfo),
-            departamento: 'TI',
-            permisos: storedUserInfo.permisos || []
-          };
-
-          setAuthState({
-            usuario,
-            token: storedToken,
-            estaAutenticado: true,
-            cargando: false,
-          });
-        } else {
-          authService.logout();
-          setAuthState(prev => ({ ...prev, cargando: false }));
-        }
-      } else {
-        setAuthState(prev => ({ ...prev, cargando: false }));
-      }
-    };
-
-    initializeAuth();
-  }, []);
 
   // Mapear roles de API a roles internos
   const mapRolToInternal = (usuario: LoginResponse): any => {

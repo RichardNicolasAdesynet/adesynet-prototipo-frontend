@@ -7,12 +7,14 @@ import { TecnicoDashboard } from '../pages/tecnicoDashboard/TecnicoDashboard';
 import { SoporteDashboard } from '../pages/soporteDashboard/SoporteDashboard';
 import { useActualizacionCritica } from '../hooks/useActualizacionCritica';
 import { useActualizacionAutomatica } from '../hooks/useActualizacionAutomatica';
+import { useActualizacionInmediata } from '../hooks/useActualizacionInmediata';
 
 export const AppRouter: React.FC = () => {
     const { estaAutenticado, usuario, cargando } = useAuth();
+    useActualizacionInmediata();
     useActualizacionCritica();
     useActualizacionAutomatica();
-    
+
     if (cargando) {
         return (
             <>

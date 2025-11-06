@@ -138,7 +138,7 @@ export const SoporteDashboard: React.FC = () => {
     // 🔍 Detectar si hay categorías (items con hijos en nivel 0)
     const tieneCategorias = modulos.some(modulo => modulo.hijos && modulo.hijos.length > 0);
 
-    console.log('🔍 Modo:', tieneCategorias ? 'CON CATEGORÍAS' : 'SIN CATEGORÍAS');
+    //console.log('🔍 Modo:', tieneCategorias ? 'CON CATEGORÍAS' : 'SIN CATEGORÍAS');
 
     const modulosFiltrados = modulos
       .filter(modulo => {
@@ -174,8 +174,6 @@ export const SoporteDashboard: React.FC = () => {
 
   // ✅ Módulos filtrados según permisos del usuario
   const modulosFiltrados = filtrarModulosPorPermisos(modulosDesdeAPI);
-
-  console.log(modulosFiltrados);
 
   // Manejar navegación
   const manejarNavegacion = (ruta: string) => {

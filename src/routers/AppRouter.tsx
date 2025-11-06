@@ -5,9 +5,14 @@ import { Login } from '../components/auth';
 import { AdminDashboard } from '../pages/adminDashboard/AdminDashboard';
 import { TecnicoDashboard } from '../pages/tecnicoDashboard/TecnicoDashboard';
 import { SoporteDashboard } from '../pages/soporteDashboard/SoporteDashboard';
+import { useActualizacionCritica } from '../hooks/useActualizacionCritica';
+import { useActualizacionAutomatica } from '../hooks/useActualizacionAutomatica';
 
 export const AppRouter: React.FC = () => {
     const { estaAutenticado, usuario, cargando } = useAuth();
+    useActualizacionCritica();
+    useActualizacionAutomatica();
+    
     if (cargando) {
         return (
             <>
@@ -63,8 +68,8 @@ export const AppRouter: React.FC = () => {
                 path='/soporte/*'
                 element={
                     estaAutenticado && esSoporte()
-                        ? <SoporteDashboard/>
-                        : <Navigate to="/login" replace/>
+                        ? <SoporteDashboard />
+                        : <Navigate to="/login" replace />
                 }
             />
 

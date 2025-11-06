@@ -23,11 +23,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     cargando: true,
   });
 
+
   // DEBUG: Ver cambios en el estado
   useEffect(() => {
     console.log('🔄 AuthContext - Estado actualizado:', authState);
   }, [authState]);
 
+
+  // ✅ FUNCIÓN SIMPLIFICADA: Solo actualizar permisos
+  const actualizarPermisos = (nuevosPermisos: string[]) => {
+    setAuthState(prev => ({
+      ...prev,
+      usuario: prev.usuario ? { ...prev.usuario, permisos: nuevosPermisos } : null
+    }));
+  };
+
+  // Escuchar eventos de actualización de permisos
+  useEffect(() => {
+    const manejarActualizacionPermisos = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail.nuevosPermisos) {
+        actualizarPermisos(customEvent.detail.nuevosPermisos);
+      }
+    };
+
+    window.addEventListener('permisosActualizados', manejarActualizacionPermisos);
+    return () => window.removeEventListener('permisosActualizados', manejarActualizacionPermisos);
+  }, []);
 
   // Cargar datos de autenticación al iniciar
   useEffect(() => {
@@ -133,13 +155,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       estaAutenticado: false,
       cargando: false,
     });
-    navigate('/login', {replace: true});
+    navigate('/login', { replace: true });
   };
 
   const value: AuthContextType = {
     ...authState,
     login,
     logout,
+    actualizarPermisos,       // ✅ NUEVO  
   };
 
   return (

@@ -36,4 +36,7 @@ export interface AuthContextType {
   cargando: boolean;
   login: (credenciales: Credenciales) => Promise<LoginResult>; // ← ACTUALIZAR
   logout: () => void;
+  // ✅ NUEVAS FUNCIONES
+  actualizarPermisos?: (nuevosPermisos: string[]) => void;
+
 }

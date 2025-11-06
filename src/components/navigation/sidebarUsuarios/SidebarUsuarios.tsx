@@ -49,61 +49,61 @@ const SidebarUsuarios: React.FC<SidebarUsuariosProps> = ({
     return -1;
   };
 
-  // ✅ FUNCIÓN DEBUG COMPLETA
-  const debugItemClick = (itemId: string, item: MenuItem | null, items: MenuItem[]) => {
-    console.log('=== 🎯 DEBUG CLICK SIDEBAR ===');
-    console.log('📌 Item ID clickeado:', itemId);
+  //********** */ ✅ FUNCIÓN DEBUG COMPLETA
+  // const debugItemClick = (itemId: string, item: MenuItem | null, items: MenuItem[]) => {
+  //   console.log('=== 🎯 DEBUG CLICK SIDEBAR ===');
+  //   console.log('📌 Item ID clickeado:', itemId);
 
-    if (item) {
-      const tieneHijos = item.hijos && item.hijos.length > 0;
-      const cantidadHijos = item.hijos?.length || 0;
-      const nivel = obtenerNivelItem(items, itemId);
+  //   if (item) {
+  //     const tieneHijos = item.hijos && item.hijos.length > 0;
+  //     const cantidadHijos = item.hijos?.length || 0;
+  //     const nivel = obtenerNivelItem(items, itemId);
 
-      console.log('📋 Item encontrado:', item.nombre);
-      console.log('🏷️  ID:', item.id);
-      console.log('📂 Nivel:', nivel);
-      console.log('👶 Tiene hijos:', tieneHijos);
-      console.log('🔢 Cantidad de hijos:', cantidadHijos);
-      console.log('📍 Ruta:', item.ruta);
+  //     console.log('📋 Item encontrado:', item.nombre);
+  //     console.log('🏷️  ID:', item.id);
+  //     console.log('📂 Nivel:', nivel);
+  //     console.log('👶 Tiene hijos:', tieneHijos);
+  //     console.log('🔢 Cantidad de hijos:', cantidadHijos);
+  //     console.log('📍 Ruta:', item.ruta);
 
-      if (tieneHijos && nivel === 0) {
-        console.log('🎯 Acción: SE EXPANDE/CONTRAE (es padre con hijos)');
-        console.log('📂 Hijos disponibles:', item.hijos?.map(h => `${h.nombre} [${h.id}]`).join(', '));
-      } else if (nivel > 0) {
-        console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
-        console.log('🚀 Navegación activada (es hijo)');
-      } else if (!tieneHijos) {
-        console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
-        console.log('🚀 Navegación activada (sin hijos)');
-      }
-    } else {
-      console.log('❌ Item NO encontrado en la estructura');
-      console.log('📊 Items disponibles en nivel 0:', items.map(m => `${m.nombre} [${m.id}]`).join(', '));
-    }
-    console.log('================================\n');
-  };
+  //     if (tieneHijos && nivel === 0) {
+  //       console.log('🎯 Acción: SE EXPANDE/CONTRAE (es padre con hijos)');
+  //       console.log('📂 Hijos disponibles:', item.hijos?.map(h => `${h.nombre} [${h.id}]`).join(', '));
+  //     } else if (nivel > 0) {
+  //       console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
+  //       console.log('🚀 Navegación activada (es hijo)');
+  //     } else if (!tieneHijos) {
+  //       console.log('🎯 Acción: REDIRIGIENDO A →', item.ruta);
+  //       console.log('🚀 Navegación activada (sin hijos)');
+  //     }
+  //   } else {
+  //     console.log('❌ Item NO encontrado en la estructura');
+  //     console.log('📊 Items disponibles en nivel 0:', items.map(m => `${m.nombre} [${m.id}]`).join(', '));
+  //   }
+  //   console.log('================================\n');
+  // };
 
 
-  // Sincronizar itemActivo desde props
-  useEffect(() => {
-    if (itemActivo) {
-      setItemActivoInterno(itemActivo);
-    }
-  }, [itemActivo]);
+  // // Sincronizar itemActivo desde props
+  // useEffect(() => {
+  //   if (itemActivo) {
+  //     setItemActivoInterno(itemActivo);
+  //   }
+  // }, [itemActivo]);
 
-  useEffect(() => {
-    if (isCollapsed) {
-      setExpandedItems([]);
-    }
-  }, [isCollapsed]);
+  // useEffect(() => {
+  //   if (isCollapsed) {
+  //     setExpandedItems([]);
+  //   }
+  // }, [isCollapsed]);
 
   const toggleExpanded = (itemId: string) => {
     if (isCollapsed) return;
 
-    console.log('=== 🔄 DEBUG EXPANSIÓN ===');
-    console.log('📌 Item ID:', itemId);
-    console.log('🎯 Acción:', expandedItems.includes(itemId) ? 'CONTRAER' : 'EXPANDIR');
-    console.log('=======================\n');
+    // console.log('=== 🔄 DEBUG EXPANSIÓN ===');
+    // console.log('📌 Item ID:', itemId);
+    // console.log('🎯 Acción:', expandedItems.includes(itemId) ? 'CONTRAER' : 'EXPANDIR');
+    // console.log('=======================\n');
 
     setExpandedItems(prev =>
       prev.includes(itemId)
@@ -159,7 +159,7 @@ const SidebarUsuarios: React.FC<SidebarUsuariosProps> = ({
           isCollapsed={isCollapsed}
           onItemClick={(itemId) => {
             const item = encontrarItemPorId(modulos, itemId); // ← Usar función recursiva
-            debugItemClick(itemId, item, modulos);
+            //debugItemClick(itemId, item, modulos);
             if (item) {
               const nivel = obtenerNivelItem(modulos, itemId);
               const tieneHijos = item.hijos && item.hijos.length > 0;

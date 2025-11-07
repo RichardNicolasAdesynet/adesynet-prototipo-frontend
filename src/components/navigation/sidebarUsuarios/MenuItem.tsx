@@ -25,11 +25,11 @@ const MenuItemComponent: React.FC<MenuItemProps> = ({
   const handleMainClick = () => {
     if (puedeExpandir) {
       // Si puede expandir (tiene hijos), expandir/contraer
-      console.log(`🔧 MenuItem: ${item.nombre} - EXPANDIENDO/CONTRALLENDO (tiene ${item.hijos?.length} hijos)`);
+      //console.log(`🔧 MenuItem: ${item.nombre} - EXPANDIENDO/CONTRALLENDO (tiene ${item.hijos?.length} hijos)`);
       onToggleExpanded(item.id);
     } else if (puedeNavegar) {
       // Si puede navegar (no tiene hijos), navegar
-      console.log(`🔧 MenuItem: ${item.nombre} - NAVEGANDO a ${item.ruta}`);
+      //console.log(`🔧 MenuItem: ${item.nombre} - NAVEGANDO a ${item.ruta}`);
       onItemClick(item.id);
     }
   };

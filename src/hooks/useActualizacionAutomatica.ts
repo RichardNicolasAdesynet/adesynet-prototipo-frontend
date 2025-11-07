@@ -9,27 +9,29 @@ export const useActualizacionAutomatica = () => {
   useEffect(() => {
     if (!usuario || !token) return;
 
-    console.log('🔄 useActualizacionAutomatica - Permisos normales (15 min)');
+    //console.log('🔄 useActualizacionAutomatica - Permisos normales (15 min)');
 
     const verificarPermisosNormales = async () => {
       const ahora = Date.now();
       const minutosReales = (ahora - ultimaVerificacionRef.current) / (1000 * 60);
-
+      //console.log(`pasaron ... ${minutosReales} minuto(s)`);
       // ✅ PERMISOS NORMALES: Cada 15 minutos
-      if (minutosReales >= 0.5) {
-        console.log('🔍 Verificando permisos normales...');
+      if (minutosReales >= 15) {
+        //console.log('🔍 Verificando permisos normales...');
         
         const nuevosPermisos = await authService.getUpdatedPermissions(token);
         const permisosActuales = usuario.permisos || [];
         const hayCambios = JSON.stringify(permisosActuales) !== JSON.stringify(nuevosPermisos);
         
         if (hayCambios && actualizarPermisos) {
+          //console.log('🔄HAY  CAMBIO DE Permisos');
           actualizarPermisos(nuevosPermisos);
-          console.log('🔄 Permisos normales actualizados');
+          //console.log('🔄 Permisos normales actualizados');
           
           window.dispatchEvent(new CustomEvent('permisosActualizados', {
             detail: { cambios: detectarCambios(permisosActuales, nuevosPermisos) }
           }));
+          //console.log('🔄 SE DISPARA EL EVENTO');
         }
         
         ultimaVerificacionRef.current = ahora;
@@ -37,7 +39,7 @@ export const useActualizacionAutomatica = () => {
     };
 
     // Intervalo de 1 minuto para compensación
-    const interval = setInterval(verificarPermisosNormales, 30 * 1000);
+    const interval = setInterval(verificarPermisosNormales, 60 * 1000);
     verificarPermisosNormales();
 
     return () => clearInterval(interval);

@@ -8,7 +8,7 @@ const CollapsedMenu: React.FC<CollapsedMenuProps> = ({
   onItemClick
 }) => {
   return (
-    <nav className="flex-1 p-4 overflow-y-auto">
+    <nav className="flex-1 p-2 overflow-y-auto overflow-x-hidden">
       <ul className="space-y-2">
         {items.map((item) => (
           <CollapsedMenuItem
@@ -97,7 +97,7 @@ const CollapsedMenuItem: React.FC<{
       </div>
 
       {/* Tooltip */}
-      <div className="absolute left-full ml-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 whitespace-nowrap shadow-xl">
+      {/* <div className="absolute left-full ml-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 whitespace-nowrap shadow-xl">
         {item.nombre}
         {tieneHijos && (
           <div className="text-xs text-gray-300 mt-1">
@@ -105,6 +105,17 @@ const CollapsedMenuItem: React.FC<{
           </div>
         )}
         <div className="absolute right-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-0 border-r-4 border-r-slate-800 border-t-transparent border-b-transparent"></div>
+      </div> */}
+
+      {/* Tooltip interno - NO se sale del contenedor */}
+      <div className="absolute left-1/2 top-full mt-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 whitespace-nowrap shadow-xl transform -translate-x-1/2">
+        {item.nombre}
+        {tieneHijos && (
+          <div className="text-xs text-gray-300 mt-1">
+            Tiene {item.hijos?.length} subitems
+          </div>
+        )}
+        <div className="absolute left-1/2 bottom-full transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-0 border-t-4 border-t-slate-800 border-l-transparent border-r-transparent"></div>
       </div>
     </li>
   );

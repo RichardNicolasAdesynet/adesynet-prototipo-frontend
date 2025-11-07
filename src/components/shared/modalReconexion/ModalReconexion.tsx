@@ -13,7 +13,6 @@ export const ModalReconexion: React.FC = () => {
       const customEvent = event as CustomEvent;
       setCambios(customEvent.detail.cambios);
       setMostrar(true);
-      console.table(` ${customEvent.detail.cambios}`);
     };
 
     window.addEventListener('cambiosCriticosDetectados', manejarCambiosCriticos);

@@ -25,7 +25,7 @@ export const ModalReconexion: React.FC = () => {
 
   const handleReconectar = async () => {
     try {
-      console.log('🔄 Iniciando reconexión...');
+      //console.log('🔄 Iniciando reconexión...');
       
       // ✅ 1. LIMPIAR CACHE LOCAL
       localStorage.removeItem('userInfo');
@@ -39,19 +39,19 @@ export const ModalReconexion: React.FC = () => {
         if (userInfoActualizado) {
           // ✅ 3. ACTUALIZAR LOCALSTORAGE CON NUEVOS DATOS
           localStorage.setItem('userInfo', JSON.stringify(userInfoActualizado));
-          console.log('✅ Datos actualizados en localStorage:', {
-            nombre: userInfoActualizado.nombreCompleto,
-            rol: userInfoActualizado.rolNombre
-          });
+          // console.log('✅ Datos actualizados en localStorage:', {
+          //   nombre: userInfoActualizado.nombreCompleto,
+          //   rol: userInfoActualizado.rolNombre
+          // });
         }
       }
       
       // ✅ 4. RECARGAR PARA REINICIAR CONTEXTO
-      console.log('🔄 Recargando aplicación...');
+      // console.log('🔄 Recargando aplicación...');
       window.location.reload();
       
     } catch (error) {
-      console.error('❌ Error en reconexión:', error);
+      // console.error('❌ Error en reconexión:', error);
       // Fallback: recargar igualmente
       window.location.reload();
     }

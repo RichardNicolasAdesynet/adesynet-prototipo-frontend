@@ -1,7 +1,6 @@
 // src/context/AuthContext.tsx - ACTUALIZAR
 import React, { createContext, useState, useEffect, type ReactNode } from 'react';
 import { authService } from '../services/api/authService';
-import { apiClient } from '../services/api/apiClient';
 import type { AuthContextType, Credenciales, LoginResult, Usuario } from '../types/auth.types';
 import { useNavigate } from 'react-router-dom';
 import type { LoginResponse } from '../types/api.types';

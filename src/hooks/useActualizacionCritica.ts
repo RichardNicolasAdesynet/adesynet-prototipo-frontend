@@ -29,7 +29,7 @@ export const useActualizacionCritica = () => {
   useEffect(() => {
     if (!usuario || !token) return;
 
-    console.log('🔒 useActualizacionCritica - Cambios críticos (2 min)');
+    // console.log('🔒 useActualizacionCritica - Cambios críticos (2 min)');
 
     const verificarCambiosCriticos = async () => {
       const ahora = Date.now();
@@ -37,7 +37,7 @@ export const useActualizacionCritica = () => {
 
       // ✅ CAMBIOS CRÍTICOS: Cada 2 minutos
       if (minutosReales >= 2) {
-        console.log('🔍 Verificando cambios críticos...');
+        // console.log('🔍 Verificando cambios críticos...');
         
         const userInfoActualizado = await authService.getUserInfo(token);
         if (!userInfoActualizado) return;
@@ -54,22 +54,22 @@ export const useActualizacionCritica = () => {
           )
         };
 
-        console.log('📊 Estado cambios críticos:', {
-          nombre: cambios.nombre ? '🔴' : '✅',
-          rol: cambios.rol ? '🔴' : '✅', 
-          permisosCriticos: cambios.permisosCriticos ? '🔴' : '✅',
-          minutosDesdeVerificacion: minutosReales.toFixed(1)
-        });
+        // console.log('📊 Estado cambios críticos:', {
+        //   nombre: cambios.nombre ? '🔴' : '✅',
+        //   rol: cambios.rol ? '🔴' : '✅', 
+        //   permisosCriticos: cambios.permisosCriticos ? '🔴' : '✅',
+        //   minutosDesdeVerificacion: minutosReales.toFixed(1)
+        // });
 
         // 🔴 PERMISOS CRÍTICOS: Inmediato
         if (cambios.permisosCriticos) {
-          console.warn('🚨 ACCESO CRÍTICO PERDIDO - Redirigiendo');
+          // console.warn('🚨 ACCESO CRÍTICO PERDIDO - Redirigiendo');
           if (actualizarPermisos) actualizarPermisos(userInfoActualizado.permisos);
           navigate('/acceso-restringido', { replace: true });
         }
         // 🟡 NOMBRE/ROL: 2-5 minutos  
         else if (cambios.nombre || cambios.rol) {
-          console.warn('⚠️ CAMBIOS NOMBRE/ROL - Mostrando modal');
+          // console.warn('⚠️ CAMBIOS NOMBRE/ROL - Mostrando modal');
           window.dispatchEvent(new CustomEvent('cambiosCriticosDetectados', {
             detail: { cambios, userInfoActualizado }
           }));

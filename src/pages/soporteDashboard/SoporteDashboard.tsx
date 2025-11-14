@@ -6,6 +6,8 @@ import SidebarUsuarios from "../../components/navigation/sidebarUsuarios/Sidebar
 import type { MenuItem } from "../../types/sidebarUsuarios";
 import { modulosService } from "../../services/api/modulosService";
 import { transformarModulosAMenuItems } from "../../utils/transformModules";
+import { PruebaDashboard } from "./components/PruebaDashboard";
+import { Flip } from "./components/FlipSupport";
 
 export const SoporteDashboard: React.FC = () => {
   const { usuario, logout } = useAuth();
@@ -13,7 +15,7 @@ export const SoporteDashboard: React.FC = () => {
   const [modulosDesdeAPI, setModulosDesdeAPI] = useState<MenuItem[]>([]);
   const [cargando, setCargando] = useState(true);
   const [sidebarColapsado, setSidebarColapsado] = useState(false);
-  const [rutaActiva, setRutaActiva] = useState('dashboard'); // ← AGREGAR: Estado para ruta activa
+  // const [rutaActiva, setRutaActiva] = useState('dashboard'); // ← AGREGAR: Estado para ruta activa
 
   // Data de prueba CON PERMISOS REALES basados en tu estructura
   const modulosDePrueba = [
@@ -184,14 +186,14 @@ export const SoporteDashboard: React.FC = () => {
     return <div>Error: No se encontró información del usuario</div>;
   }
 
-   if (cargando) return <div>Cargando módulos...</div>;
+  if (cargando) return <div>Cargando módulos...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-purple-50/10 flex flex-1 min-w-0">
       <SidebarUsuarios
         usuario={usuario}
         onNavegacion={manejarNavegacion} // ← CORREGIDO
-        itemActivo={rutaActiva} // ← CORREGIDO
+        //itemActivo={rutaActiva} // ← CORREGIDO
         isCollapsed={sidebarColapsado}
         onToggle={() => setSidebarColapsado(!sidebarColapsado)}
         modulos={modulosFiltrados}
@@ -228,6 +230,13 @@ export const SoporteDashboard: React.FC = () => {
                   <p className="text-sm text-gray-600 mt-2">
                     Basado en tus permisos, puedes acceder a las secciones del menú lateral.
                   </p>
+                </div>
+                <div>
+                  <div className="e-card">
+                    Sample Card
+                  </div>
+                  <PruebaDashboard/>
+                  <Flip/>
                 </div>
               </div>
             </div>

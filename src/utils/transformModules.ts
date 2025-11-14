@@ -41,7 +41,7 @@ const transformarModuloIndividual = (modulo: ModuloFromAPI): MenuItem => {
     id: modulo.cdModulo,
     nombre: modulo.dsModulo,
     icono: obtenerIconoPorModulo(modulo.cdModulo),
-    ruta: generarRutaDesdeModulo(modulo.dsModulo, modulo.cdModulo),
+    ruta: generarRutaDesdeModulo(modulo.dsModulo),// modulo.cdModulo
     modulo: modulo.cdModulo,
     permisosRequeridos: [`${modulo.cdModulo}:Consultar`], // Permiso básico de consulta
     hijos:[] // Por ahora vacío, se llenará cuando tengas sub-módulos
@@ -49,8 +49,8 @@ const transformarModuloIndividual = (modulo: ModuloFromAPI): MenuItem => {
 };
 
 // ✅ GENERAR RUTA AUTOMÁTICA
-const generarRutaDesdeModulo = (nombreModulo: string, cdModulo: string): string => {
-  const nombreNormalizado = nombreModulo
+const generarRutaDesdeModulo = (nombreModulo: string): string => {//, cdModulo: string
+    const nombreNormalizado = nombreModulo
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos

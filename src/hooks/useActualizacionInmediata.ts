@@ -21,7 +21,7 @@ export const useActualizacionInmediata = () => {
   useEffect(() => {
     if (!usuario || !token) return;
 
-    console.log("⚡ useActualizacionInmediata - Verificación al cargar");
+    //console.log("⚡ useActualizacionInmediata - Verificación al cargar");
 
     const verificarInmediatamente = async () => {
       try {
@@ -48,9 +48,9 @@ export const useActualizacionInmediata = () => {
         }
 
         if (hayCambios) {
-          console.log(
-            "⚡ Cambios detectados al cargar - Actualizando inmediatamente"
-          );
+          // console.log(
+          //   "⚡ Cambios detectados al cargar - Actualizando inmediatamente"
+          // );
 
           if (actualizarPermisos) {
             actualizarPermisos(nuevosPermisos);
@@ -66,10 +66,10 @@ export const useActualizacionInmediata = () => {
           // ✅ ACTUALIZAR LOCALSTORAGE INMEDIATAMENTE
           localStorage.setItem("userInfo", JSON.stringify(userInfoActualizado));
         } else {
-          console.log("✅ useActualizacionInmediata - Sin cambios al cargar");
+          // console.log("✅ useActualizacionInmediata - Sin cambios al cargar");
         }
       } catch (error) {
-        console.warn("❌ Error en verificación inmediata:", error);
+        // console.warn("❌ Error en verificación inmediata:", error);
       }
     };
 

@@ -13,6 +13,8 @@
     "@iconify/json": "^2.2.403",
     "@iconify/tailwind4": "^1.1.0",
     "@syncfusion/ej2-layouts": "^31.2.2",
+    "@syncfusion/ej2-react-inputs": "^31.2.10",
+    "@syncfusion/ej2-react-navigations": "^31.2.5",
     "@tailwindcss/vite": "^4.1.15",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

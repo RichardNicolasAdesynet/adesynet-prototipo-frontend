@@ -5,9 +5,12 @@ import { AppRouter } from './routers/AppRouter';
 import { AlertContainer } from './components/shared/alert/AlertContainer';
 import { NotificacionCambiosAutomatica } from './components/shared/notificacionCambios/NotificacionCambiosAutomatica';
 import { ModalReconexion } from './components/shared/modalReconexion/ModalReconexion';
+import { registerLicense } from '@syncfusion/ej2-base';
+
 
 // ✅ NUEVO: Componente que usa los hooks DENTRO del AuthProvider
 const AppWithAuth: React.FC = () => {
+    registerLicense('Ngo9BigBOggjHTQxAR8/V1JFaF1cX2hIfEx3QXxbf1x1ZFZMZV9bQHFPIiBoS35Rc0RiWHpfcXdcQmlcUkxyVEFc');
     return (
         <>
             <NotificacionCambiosAutomatica />

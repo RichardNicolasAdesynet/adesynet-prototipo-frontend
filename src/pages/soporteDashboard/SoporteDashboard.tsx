@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ← IMPORTANTE: Agregar esto
+import { useLocation, useNavigate } from "react-router-dom"; // ← IMPORTANTE: Agregar esto
 import { useAuth } from "../../hooks/auth/useAuth";
 import { BaseLayout } from "../layout/BaseLayout";
 import SidebarUsuarios from "../../components/navigation/sidebarUsuarios/SidebarUsuarios";
@@ -8,12 +8,14 @@ import { modulosService } from "../../services/api/modulosService";
 import { transformarModulosAMenuItems } from "../../utils/transformModules";
 import { PruebaDashboard } from "./components/PruebaDashboard";
 import { Flip } from "./components/FlipSupport";
+import { AdmisionManagement } from "./components/admisionManagement/AdmisionManagement";
 
 export const SoporteDashboard: React.FC = () => {
   const { usuario, logout } = useAuth();
   const navigate = useNavigate(); // ← AGREGAR: Hook de navegación
+  const location = useLocation();
   const [modulosDesdeAPI, setModulosDesdeAPI] = useState<MenuItem[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const [cargando, setCargando] = useState<boolean>(true);
   const [sidebarColapsado, setSidebarColapsado] = useState(false);
   // const [rutaActiva, setRutaActiva] = useState('dashboard'); // ← AGREGAR: Estado para ruta activa
 
@@ -131,6 +133,16 @@ export const SoporteDashboard: React.FC = () => {
     cargarModulos();
   }, []);
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      setCargando(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setCargando(false);
+    };
+    cargarDatos();
+  }, []);
+
   // ✅ FUNCIÓN ADAPTATIVA QUE DETECTA SI HAY CATEGORÍAS
   const filtrarModulosPorPermisos = (modulos: MenuItem[]): MenuItem[] => {
     const permisosUsuarioNormalizados = usuario?.permisos?.map(p =>
@@ -202,44 +214,56 @@ export const SoporteDashboard: React.FC = () => {
       {/* Contenido Principal */}
       <div className="flex-1 flex flex-col min-w-0">
         <BaseLayout usuario={usuario} onLogout={logout}>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Panel de Soporte TI
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Bienvenido/a, {usuario.nombre}. Rol: {usuario.rol}
-            </p>
-
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-lg font-semibold mb-4">Información de Permisos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-medium text-gray-700">Tus Permisos:</h3>
-                  <ul className="text-sm text-gray-600 mt-2 space-y-1">
-                    {usuario.permisos.slice(0, 6).map((permiso, index) => (
-                      <li key={index}>• {permiso}</li>
-                    ))}
-                    {usuario.permisos.length > 6 && (
-                      <li>... y {usuario.permisos.length - 6} más</li>
-                    )}
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-700">Módulos Disponibles:</h3>
-                  {/* <span className="icon-[fa-solid--user] text-blue-700"></span> */}
-                  <p className="text-sm text-gray-600 mt-2">
-                    Basado en tus permisos, puedes acceder a las secciones del menú lateral.
-                  </p>
-                </div>
-                <div>
-                  <div className="e-card">
-                    Sample Card
+          <div className="space-y-6">
+            {location.pathname === '/soporte/' && (
+              <>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  Panel de Soporte TI
+                </h1>
+                <p className="text-gray-600 mb-6">
+                  Bienvenido/a, {usuario.nombre}. Rol: {usuario.rol}
+                </p>
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h2 className="text-lg font-semibold mb-4">Información de Permisos</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-medium text-gray-700">Tus Permisos:</h3>
+                      <ul className="text-sm text-gray-600 mt-2 space-y-1">
+                        {usuario.permisos.slice(0, 6).map((permiso, index) => (
+                          <li key={index}>• {permiso}</li>
+                        ))}
+                        {usuario.permisos.length > 6 && (
+                          <li>... y {usuario.permisos.length - 6} más</li>
+                        )}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-700">Módulos Disponibles:</h3>
+                      {/* <span className="icon-[fa-solid--user] text-blue-700"></span> */}
+                      <p className="text-sm text-gray-600 mt-2">
+                        Basado en tus permisos, puedes acceder a las secciones del menú lateral.
+                      </p>
+                    </div>
+                    <div>
+                      <div className="e-card">
+                        Sample Card
+                      </div>
+                      <PruebaDashboard />
+                      <Flip />
+                    </div>
                   </div>
-                  <PruebaDashboard/>
-                  <Flip/>
                 </div>
-              </div>
+              </>
+            )}
+            <div className="soporte-content">
+              {location.pathname === '/soporte/admision' && (
+                <div className="animate-fade-up">
+                  <AdmisionManagement />
+                </div>
+              )}
             </div>
+
+
           </div>
         </BaseLayout>
       </div>
